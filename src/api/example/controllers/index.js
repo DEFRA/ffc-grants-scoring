@@ -1,4 +1,3 @@
-import { exampleFindOneController } from '~/src/api/example/controllers/example-find-one.js'
-import { exampleFindAllController } from '~/src/api/example/controllers/example-find-all.js'
+import { exampleHelloWorldController } from '~/src/api/example/controllers/example-hello-world.js'
 
-export { exampleFindOneController, exampleFindAllController }
+export { exampleHelloWorldController }

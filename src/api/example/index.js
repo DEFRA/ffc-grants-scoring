@@ -1,7 +1,4 @@
-import {
-  exampleFindOneController,
-  exampleFindAllController
-} from '~/src/api/example/controllers/index.js'
+import { exampleHelloWorldController } from '~/src/api/example/controllers/index.js'
 
 /**
  * @satisfies {ServerRegisterPluginObject<void>}
@@ -13,13 +10,8 @@ const example = {
       server.route([
         {
           method: 'GET',
-          path: '/example',
-          ...exampleFindAllController
-        },
-        {
-          method: 'GET',
-          path: '/example/{exampleId}',
-          ...exampleFindOneController
+          path: '/hello-world',
+          ...exampleHelloWorldController
         }
       ])
     }
