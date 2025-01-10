@@ -15,7 +15,6 @@ Core delivery platform Node.js Backend Template.
     - [Windows prettier issue](#windows-prettier-issue)
 - [API endpoints](#api-endpoints)
 - [Development helpers](#development-helpers)
-  - [MongoDB Locks](#mongodb-locks)
 - [Docker](#docker)
   - [Development image](#development-image)
   - [Production image](#production-image)
@@ -105,56 +104,10 @@ git config --global core.autocrlf false
 
 ## API endpoints
 
-| Endpoint             | Description                    |
-| :------------------- | :----------------------------- |
-| `GET: /health`       | Health                         |
-| `GET: /example    `  | Example API (remove as needed) |
-| `GET: /example/<id>` | Example API (remove as needed) |
-
-## Development helpers
-
-### MongoDB Locks
-
-If you require a write lock for Mongo you can acquire it via `server.locker` or `request.locker`:
-
-```javascript
-async function doStuff(server) {
-  const lock = await server.locker.lock('unique-resource-name')
-
-  if (!lock) {
-    // Lock unavailable
-    return
-  }
-
-  try {
-    // do stuff
-  } finally {
-    await lock.free()
-  }
-}
-```
-
-Keep it small and atomic.
-
-You may use **using** for the lock resource management.
-Note test coverage reports do not like that syntax.
-
-```javascript
-async function doStuff(server) {
-  await using lock = await server.locker.lock('unique-resource-name')
-
-  if (!lock) {
-    // Lock unavailable
-    return
-  }
-
-  // do stuff
-
-  // lock automatically released
-}
-```
-
-Helper methods are also available in `/src/helpers/mongo-lock.js`.
+| Endpoint                | Description                    |
+| :---------------------- | :----------------------------- |
+| `GET: /health`          | Health                         |
+| `GET: /hello-world    ` | Example API (remove as needed) |
 
 ## Docker
 
@@ -191,10 +144,7 @@ docker run -e PORT=3001 -p 3001:3001 ffc-grants-scoring
 A local environment with:
 
 - Localstack for AWS services (S3, SQS)
-- Redis
-- MongoDB
 - This service.
-- A commented out frontend example.
 
 ```bash
 docker compose up --build -d
