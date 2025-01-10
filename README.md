@@ -104,10 +104,10 @@ git config --global core.autocrlf false
 
 ## API endpoints
 
-| Endpoint                 | Description                    |
-| :----------------------- | :----------------------------- |
-| `GET: /health`           | Health                         |
-| `GET: /hellow-world    ` | Example API (remove as needed) |
+| Endpoint                | Description                    |
+| :---------------------- | :----------------------------- |
+| `GET: /health`          | Health                         |
+| `GET: /hello-world    ` | Example API (remove as needed) |
 
 ## Docker
 
