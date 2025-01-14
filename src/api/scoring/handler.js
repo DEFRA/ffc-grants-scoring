@@ -1,20 +1,19 @@
-import { score, simpleScore } from './score.js'
+import { simpleScore } from '~/src/services/scoring/simple-score.js'
+import { scoringData } from '../../../src/config/scoring-data.js'
+import { score } from '../../services/scoring/score.js'
 
 export const handler = (request, h) => {
-  // Example usage:
-  const scoringData = [
-    {
-      id: 1,
-      answers: [
-        { answer: 'Protected cropping', score: 3 },
-        { answer: 'Fruit', score: 2 },
-        { answer: 'Field-scale crops', score: 1 }
-      ]
-    }
-  ]
+  const { answers } = request.payload
 
-  // score(scoringObject)({ question id })({ question answer })({ scoringFunction })
-  const result = score(scoringData)(1)('Fruit')(simpleScore) // Expected output: 3
+  // Extract question IDs and answers
+  const questionId = answers.map((answer) => answer.questionId)[0]
+  const answer = answers.map((answer) => answer.answer)[0]
 
-  return h.response({ message: String(result) }).code(200)
+  try {
+    // Find matching scoring data for the provided questionIds
+    const result = score(scoringData)(questionId)(answer)(simpleScore)
+    return h.response({ message: String(result) }).code(200)
+  } catch (error) {
+    return h.response({ message: error.message }).code(400)
+  }
 }
