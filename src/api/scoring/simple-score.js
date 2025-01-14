@@ -22,12 +22,22 @@ export function score(scoringData) {
 
 /**
  * Processes scoring data and returns the scor of a given question
- * @param {object} questionScores
+ * @param {object} questionScores - Array of question data containing answers and scores.
  * @param {string} userAnswer - The input value representing a category of crops.
- * @returns {number} A numeric value corresponding to the provided answer: 3 for 'Protected cropping', 2 for 'Fruit', 1 for 'Field-scale crops', or 0 for any other value.
+ * @returns {number} A numeric value corresponding to the provided answer
  */
 export function simpleScore(questionScores, userAnswer) {
-  return questionScores[0].answers.find(
+  if (
+    !Array.isArray(questionScores) ||
+    questionScores.length === 0 ||
+    !questionScores[0]?.answers
+  ) {
+    throw new Error('Invalid questionScores structure.')
+  }
+
+  const matchingAnswer = questionScores[0].answers.find(
     (answer) => answer.answer === userAnswer
-  ).score
+  )
+
+  return matchingAnswer ? matchingAnswer.score : 0
 }
