@@ -1,4 +1,4 @@
-import { score, simpleScore } from './simple-score.js'
+import { score, simpleScore } from './score.js'
 
 export const handler = (request, h) => {
   // Example usage:
