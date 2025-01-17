@@ -1,7 +1,7 @@
 import mapToFinalResult from './scoring-mapper.js'
 import singleScore from './methods/single-score.js'
 import multiScore from './methods/multi-score.js'
-import { ScoreBands } from '~/src/config/scoring-config.js'
+import { ScoreBands } from '../../config/score-bands.js'
 
 describe('mapToFinalResult', () => {
   const scoringConfig = {

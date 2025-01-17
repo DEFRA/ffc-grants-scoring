@@ -10,7 +10,7 @@ const scoring = {
     register: (server) => {
       server.route({
         method: 'POST',
-        path: '/score',
+        path: '/scoring/api/v1/{grantType}/score',
         ...scoringController,
         options: {
           validate: {

@@ -1,109 +1,105 @@
-import { jest, describe, it, expect } from '@jest/globals'
+import { jest, describe, it, expect, afterEach } from '@jest/globals'
 import { handler } from './handler.js'
-import { scoringConfig } from '../../../src/config/scoring-config.js'
+import { getScoringConfig } from '../../config/scoring-config.js'
 import mapToFinalResult from '../../../src/services/scoring/scoring-mapper.js'
 import score from '../../../src/services/scoring/score.js'
 
+jest.mock('../../config/scoring-config.js')
 jest.mock('../../../src/services/scoring/scoring-mapper.js', () => ({
-  __esModule: true, // Ensures Jest treats it as an ES module
-  default: jest.fn() // Mocking the named export `mapToFinalResult`
+  __esModule: true,
+  default: jest.fn()
 }))
-
 jest.mock('../../../src/services/scoring/score.js', () => ({
-  __esModule: true, // Ensures Jest treats it as an ES module
-  default: jest.fn() // Mocking the default export `score`
+  __esModule: true,
+  default: jest.fn()
 }))
 
 describe('Handler Function', () => {
-  const code = jest.fn()
-  const h = {
-    response: jest.fn(() => ({
-      code
-    }))
-  }
-
   afterEach(() => {
     jest.clearAllMocks()
   })
 
-  it('should return a 200 response with the final result when scoring is successful', async () => {
-    const answers = [
-      { questionId: 'singleAnswer', answers: ['A'] },
-      { questionId: 'multiAnswer', answers: ['B', 'C'] }
-    ]
-    const request = { payload: { answers } }
-    const rawScores = [
-      { questionId: 'singleAnswer', score: { value: 4, band: 'Medium' } },
-      { questionId: 'multiAnswer', score: { value: 6, band: 'Medium' } }
-    ]
-    const finalResult = { eligibility: 'Eligible', totalScore: 10 }
+  const mockH = {
+    response: jest.fn().mockReturnThis(),
+    code: jest.fn().mockReturnThis()
+  }
 
-    const mockScoreWithConfig = jest.fn().mockReturnValue(rawScores)
-    score.mockReturnValue(mockScoreWithConfig)
-    mapToFinalResult.mockReturnValue(finalResult)
+  const mockScoringConfig = {
+    questions: [],
+    scoreBand: [],
+    maxScore: 10,
+    eligibilityPercentageThreshold: 50
+  }
 
-    await handler(request, h)
+  const mockAnswers = [
+    { questionId: 'singleAnswer', answers: ['A'] },
+    { questionId: 'multiAnswer', answers: ['B', 'C'] }
+  ]
 
-    expect(score).toHaveBeenCalledWith(scoringConfig)
-    expect(mockScoreWithConfig).toHaveBeenCalledWith(answers)
-    expect(mapToFinalResult).toHaveBeenCalledWith(scoringConfig, rawScores)
-    expect(h.response).toHaveBeenCalledWith(finalResult)
-    expect(code).toHaveBeenCalledWith(200)
+  const mockRequest = (grantType = 'example-grant', answers = mockAnswers) => ({
+    payload: { answers },
+    params: { grantType }
   })
 
-  it('should return a 400 response with the error message when scoring fails', async () => {
-    const answers = [{ questionId: 'invalidQuestion', answers: ['A'] }]
-    const request = { payload: { answers } }
+  const mockRawScores = [
+    { questionId: 'singleAnswer', score: { value: 4, band: 'Medium' } },
+    { questionId: 'multiAnswer', score: { value: 6, band: 'Medium' } }
+  ]
+
+  const mockFinalResult = { eligibility: 'eligible', score: 8 }
+
+  it('should return 400 for invalid grant type', async () => {
+    getScoringConfig.mockReturnValue(null)
+
+    await handler(mockRequest('invalid-grant'), mockH)
+
+    expect(mockH.response).toHaveBeenCalledWith({ error: 'Invalid grant type' })
+    expect(mockH.code).toHaveBeenCalledWith(400)
+  })
+
+  it('should process valid grant type and return final result', async () => {
+    getScoringConfig.mockReturnValue(mockScoringConfig)
+    score.mockReturnValue(jest.fn().mockReturnValue(mockRawScores))
+    mapToFinalResult.mockReturnValue(mockFinalResult)
+
+    await handler(mockRequest('example-grant'), mockH)
+
+    expect(getScoringConfig).toHaveBeenCalledWith('example-grant')
+    expect(score).toHaveBeenCalledWith(mockScoringConfig)
+    expect(score(mockScoringConfig)).toHaveBeenCalledWith(mockAnswers)
+    expect(mapToFinalResult).toHaveBeenCalledWith(
+      mockScoringConfig,
+      mockRawScores
+    )
+    expect(mockH.response).toHaveBeenCalledWith(mockFinalResult)
+    expect(mockH.code).toHaveBeenCalledWith(200)
+  })
+
+  it('should return 400 response with the error message when scoring fails', async () => {
     const errorMessage =
       'Question with id invalidQuestion not found in scoringData.'
-
-    const mockScoreWithConfig = jest.fn().mockImplementation(() => {
+    score.mockImplementation(() => {
       throw new Error(errorMessage)
     })
-    score.mockReturnValue(mockScoreWithConfig)
+    getScoringConfig.mockReturnValue(mockScoringConfig)
 
-    await handler(request, h)
+    await handler(mockRequest('example-grant'), mockH)
 
-    expect(score).toHaveBeenCalledWith(scoringConfig)
-    expect(score(scoringConfig)).toHaveBeenCalledWith(answers)
-    expect(mapToFinalResult).not.toHaveBeenCalled()
-    expect(h.response).toHaveBeenCalledWith(errorMessage)
-    expect(code).toHaveBeenCalledWith(400)
+    expect(mockH.response).toHaveBeenCalledWith(errorMessage)
+    expect(mockH.code).toHaveBeenCalledWith(400)
   })
 
   it('should return a 400 response with the error message when mapping fails', async () => {
-    const answers = [
-      { questionId: 'singleAnswer', answers: ['A'] },
-      { questionId: 'multiAnswer', answers: ['B', 'C'] }
-    ]
-    const rawScores = [
-      { questionId: 'singleAnswer', score: { value: 4, band: 'Medium' } },
-      { questionId: 'multiAnswer', score: { value: 6, band: 'Medium' } }
-    ]
-    const request = { payload: { answers } }
     const errorMessage = 'Mapping error occurred.'
-    const code = jest.fn()
-    const h = {
-      response: jest.fn(() => ({
-        code
-      }))
-    }
-
-    // Mock the implementations
-    const mockScoreWithConfig = jest.fn().mockReturnValue(rawScores)
-    score.mockReturnValue(mockScoreWithConfig)
     mapToFinalResult.mockImplementation(() => {
       throw new Error(errorMessage)
     })
+    score.mockReturnValue(jest.fn().mockReturnValue(mockRawScores))
+    getScoringConfig.mockReturnValue(mockScoringConfig)
 
-    // Call the handler
-    await handler(request, h)
+    await handler(mockRequest('example-grant'), mockH)
 
-    // Assertions
-    expect(score).toHaveBeenCalledWith(scoringConfig)
-    expect(mockScoreWithConfig).toHaveBeenCalledWith(answers)
-    expect(mapToFinalResult).toHaveBeenCalledWith(scoringConfig, rawScores)
-    expect(h.response).toHaveBeenCalledWith(errorMessage)
-    expect(code).toHaveBeenCalledWith(400)
+    expect(mockH.response).toHaveBeenCalledWith(errorMessage)
+    expect(mockH.code).toHaveBeenCalledWith(400)
   })
 })

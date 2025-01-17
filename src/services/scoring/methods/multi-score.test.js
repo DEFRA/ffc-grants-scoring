@@ -1,4 +1,4 @@
-import { ScoreBands } from '~/src/config/scoring-config.js'
+import { ScoreBands } from '../../../config/score-bands.js'
 import multiScore from './multi-score.js' // adjust path as needed
 
 /**
