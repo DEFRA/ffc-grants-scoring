@@ -19,9 +19,7 @@ const scoring = {
                 .items(
                   Joi.object({
                     questionId: Joi.string().required(),
-                    answer: Joi.alternatives()
-                      .try(Joi.string(), Joi.number())
-                      .required()
+                    answers: Joi.array().items(Joi.string()).required()
                   })
                 )
                 .required()
