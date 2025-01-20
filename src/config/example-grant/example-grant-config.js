@@ -1,7 +1,7 @@
 import singleScore from '~/src/services/scoring/methods/single-score.js'
 import multiScore from '~/src/services/scoring/methods/multi-score.js'
 import { ScoreBands } from '../score-bands.js'
-import { scoringDataSchema } from '../scoring-data-schema.js'
+import { scoringConfigSchema } from '../scoring-config-schema.js'
 
 /**
  * Scoring configuration data.
@@ -52,7 +52,7 @@ const exampleGrantConfig = {
   eligibilityPercentageThreshold: 60
 }
 
-const { error, value } = scoringDataSchema.validate(exampleGrantConfig)
+const { error, value } = scoringConfigSchema.validate(exampleGrantConfig)
 
 if (error) {
   throw new Error(`Validation failed: ${error.message}`)
