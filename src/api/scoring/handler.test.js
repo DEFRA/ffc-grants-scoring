@@ -1,11 +1,11 @@
 import { jest, describe, it, expect, afterEach } from '@jest/globals'
 import { handler } from './handler.js'
 import { getScoringConfig } from '../../config/scoring-config.js'
-import mapToFinalResult from '../../../src/services/scoring/scoring-mapper.js'
+import mapToFinalResult from './mapper/map-to-final-result.js'
 import score from '../../../src/services/scoring/score.js'
 
 jest.mock('../../config/scoring-config.js')
-jest.mock('../../../src/services/scoring/scoring-mapper.js', () => ({
+jest.mock('./mapper/map-to-final-result.js', () => ({
   __esModule: true,
   default: jest.fn()
 }))

@@ -25,7 +25,7 @@ function multiScore(questionScoringConfig, userAnswers) {
   const value = scores.reduce((total, score) => total + score, 0)
   const band =
     questionScoringConfig.scoreBand.find(
-      (band) => value >= band.minValue && value <= band.maxValue
+      (scoreBand) => value >= scoreBand.minValue && value <= scoreBand.maxValue
     ).name ?? null
   return { value, band }
 }

@@ -7,20 +7,24 @@
  * The returned function accepts a predicate function to process and evaluate the scoring.
  */
 function score(scoringConfig) {
-  return (answers) => {
-    const scoredAnswers = answers.map(({ questionId, answers }) => {
-      const question = scoringConfig.questions.find((q) => q.id === questionId)
-      if (!question) {
-        throw new Error(
-          `Question with id ${questionId} not found in scoringData.`
+  return (userAnswers) => {
+    const scoredAnswers = userAnswers.map(
+      ({ questionId, answers: responses }) => {
+        const question = scoringConfig.questions.find(
+          (q) => q.id === questionId
         )
+        if (!question) {
+          throw new Error(
+            `Question with id ${questionId} not found in scoringData.`
+          )
+        }
+
+        const predicate = question.scoreMethod
+        const calculatedScore = predicate(question, responses)
+
+        return { questionId, score: calculatedScore }
       }
-
-      const predicate = question.scoreMethod
-      const score = predicate(question, answers)
-
-      return { questionId, score }
-    })
+    )
     return scoredAnswers
   }
 }
