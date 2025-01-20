@@ -1,8 +1,8 @@
 /**
  * Maps raw scoring results to the final formatted response.
  * @param {import("~/src/config/scoring-types.js").ScoringConfig} scoringConfig - The configuration data for scoring.
- * @param {Array<import("~/src/services/scoring/scoring-mapper-types.js").RawScore>} rawScores - The array of raw scoring results.
- * @returns {import("~/src/services/scoring/scoring-mapper-types.js").FormattedScoringResponse} The formatted scoring response.
+ * @param {Array<import("~/src/api/scoring/mapper/scoring-mapper-types.js").RawScore>} rawScores - The array of raw scoring results.
+ * @returns {import("~/src/api/scoring/mapper/scoring-mapper-types.js").FormattedScoringResponse} The formatted scoring response.
  * @throws {TypeError} If `rawScores` is not an array.
  */
 function mapToFinalResult(scoringConfig, rawScores) {
