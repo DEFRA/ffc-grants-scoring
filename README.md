@@ -21,6 +21,11 @@ Core delivery platform Node.js Backend Template.
   - [Docker Compose](#docker-compose)
   - [Dependabot](#dependabot)
   - [SonarCloud](#sonarcloud)
+- [Postman Collection](#postman-collection)
+  - [Getting Started](#getting-started)
+  - [Usage](#usage)
+  - [Keeping the Collection Updated](#keeping-the-collection-updated)
+  - [Example Folder Structure](#example-folder-structure)
 - [Licence](#licence)
   - [About the licence](#about-the-licence)
 
@@ -104,10 +109,10 @@ git config --global core.autocrlf false
 
 ## API endpoints
 
-| Endpoint                | Description                    |
-| :---------------------- | :----------------------------- |
-| `GET: /health`          | Health                         |
-| `GET: /hello-world    ` | Example API (remove as needed) |
+| Endpoint                                        | Description                |
+| :---------------------------------------------- | :------------------------- |
+| `GET: /health`                                  | Health                     |
+| `POST: /scoring/api/v1/{{grantType}}/score    ` | Evaluate Grant Eligibility |
 
 ## Docker
 
@@ -148,6 +153,59 @@ A local environment with:
 
 ```bash
 docker compose up --build -d
+```
+
+## Postman Collection
+
+The project includes a Postman collection to make it easier to test and interact with the API. This collection contains pre-configured requests for various endpoints and an environment file to manage variables like API URLs.
+
+### Getting Started
+
+1. **Install Postman**
+   If you don’t already have Postman installed, download it from [Postman’s official site](https://www.postman.com/).
+
+2. **Import the Collection**
+
+   - Open Postman.
+   - Go to **File > Import**.
+   - Select the file `postman/ffc-grants-scoring.postman_collection.json`.
+
+3. **Import the Environment (Optional)**
+   If the project includes an environment file:
+
+   - Go to **File > Import**.
+   - Select the file `postman/ffc-grants-scoring.dev.postman_environment.json`.
+   - Update variables like `base_url`, `api_key` or `grant_type` as needed.
+
+4. **Set the Active Environment**
+   - In Postman, click on the environment dropdown in the top right corner.
+   - Select the imported environment (e.g., `dev`).
+
+### Usage
+
+- **Send Requests**:
+  Once imported, you can navigate through the requests in the collection and send them directly to the API.
+
+- **Customize Variables**:
+  If using an environment file, adjust variables like `base_url` to match your local or deployed API instance.
+
+- **Add Authorization**:
+  If the API requires authentication (e.g., API keys or tokens), configure it under the **Authorization** tab for each request or in the environment variables.
+
+### Keeping the Collection Updated
+
+The Postman collection is maintained in the repository under the `/postman/` directory. If the API changes, the collection will be updated accordingly. Pull the latest changes from the repository to ensure you have the most up-to-date collection.
+
+### Example Folder Structure
+
+```
+
+project-root/
+├── postman/
+│ ├── ffc-grants-scoring.postman_collection.json
+│ ├── ffc-grants-scoring.local.postman_environment.json
+│ └── ffc-grants-scoring.dev.postman_environment.json
+
 ```
 
 ### Dependabot
