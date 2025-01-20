@@ -36,8 +36,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://{{base_url}}/scoring/api/v1/{{grantType}}/score",
-					"protocol": "http",
+					"raw": "{{base_url}}/scoring/api/v1/{{grantType}}/score",
 					"host": [
 						"{{base_url}}"
 					],
@@ -47,6 +46,39 @@
 						"v1",
 						"{{grantType}}",
 						"score"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Health",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "\"application/json, text/plain, */*\"",
+						"type": "default",
+						"disabled": true
+					},
+					{
+						"key": "Content-Type",
+						"value": "\"application/json\"",
+						"type": "default",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/health",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"health"
 					]
 				}
 			},
