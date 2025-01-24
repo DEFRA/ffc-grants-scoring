@@ -25,9 +25,9 @@ const questionConfig = {
 
 describe('multiScore', () => {
   it('should return Strong for max score', () => {
-    const result = multiScore(questionConfig, ['A', 'B'])
-    expect(result.value).toBe(8) // Sum of 4 + 4
-    expect(result.band).toBe(ScoreBands.MEDIUM) // Falls between 5 and 8
+    const result = multiScore(questionConfig, ['A', 'B', 'C', 'D'])
+    expect(result.value).toBe(12) // Sum of 4 + 4 + 2 + 2
+    expect(result.band).toBe(ScoreBands.STRONG) // Falls between 9 and 12
   })
 
   it('should return Medium for mid-range score', () => {
