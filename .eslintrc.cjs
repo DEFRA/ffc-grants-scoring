@@ -54,16 +54,16 @@ module.exports = {
         'jsdoc/require-jsdoc': 'off',
 
         // JSDoc @param types are mandatory for JavaScript
-        'jsdoc/require-param-description': 'off',
+        'jsdoc/require-param-description': 'warn',
         'jsdoc/require-param-type': 'error',
-        'jsdoc/require-param': 'off',
+        'jsdoc/require-param': 'warn',
 
         // JSDoc @property description is optional
-        'jsdoc/require-property-description': 'off',
+        'jsdoc/require-property-description': 'warn',
 
         // JSDoc @returns is optional
         'jsdoc/require-returns-description': 'off',
-        'jsdoc/require-returns-type': 'off',
+        'jsdoc/require-returns-type': 'error',
         'jsdoc/require-returns': 'off',
 
         // Check for mandatory file extensions
