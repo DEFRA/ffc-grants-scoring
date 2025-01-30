@@ -8,10 +8,10 @@ import { createLogger } from '~/src/api/common/helpers/logging/logger.js'
 const logger = createLogger()
 /**
  * @typedef Proxy
- * @property {URL} url
- * @property {number} port
- * @property {ProxyAgent} proxyAgent
- * @property {HttpsProxyAgent<string>} httpAndHttpsProxyAgent
+ * @property {URL} url URL of the proxy
+ * @property {number} port Port of the proxy
+ * @property {ProxyAgent} proxyAgent ProxyAgent
+ * @property {HttpsProxyAgent<string>} httpAndHttpsProxyAgent HttpsProxyAgent
  */
 
 /**
@@ -47,8 +47,8 @@ function provideProxy() {
 
 /**
  * Provide fetch with dispatcher ProxyAgent when http/s proxy url config has been set
- * @param {string | URL } url
- * @param {RequestInit} options
+ * @param {string | URL } url URL to fetch
+ * @param {RequestInit} options RequestInit
  * @returns {Promise}
  */
 function proxyFetch(url, options) {
