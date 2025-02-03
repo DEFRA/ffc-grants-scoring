@@ -1,5 +1,5 @@
-import { exampleGrantConfig } from './example-grant/example-grant-config.js'
-import { addingValueGrantConfig } from './adding-value-grant/adding-value-grant-config.js'
+import { exampleGrantConfig } from './grants/example-grant-config.js'
+import { addingValueGrantConfig } from './grants/adding-value-grant-config.js'
 
 const scoringConfigs = {
   'adding-value': addingValueGrantConfig,
