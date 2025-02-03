@@ -3,6 +3,10 @@ import multiScore from '~/src/services/scoring/methods/multi-score.js'
 import { ScoreBands } from '../score-bands.js'
 import { scoringConfigSchema } from '../scoring-config-schema.js'
 
+const IMPROVE_PROCESSING_AND_SUPPLY_CHAINS =
+  'Improve processing and supply chains'
+const GROW_YOUR_BUSINESS = 'Grow your business'
+
 /**
  * Scoring configuration data.
  * @type {import("./scoring-types.js").ScoringConfig}
@@ -36,8 +40,8 @@ const addingValueGrantConfig = {
       id: '/adding-value',
       category: 'Adding value',
       fundingPriorities: [
-        'Improve processing and supply chains',
-        'Grow your business'
+        IMPROVE_PROCESSING_AND_SUPPLY_CHAINS,
+        GROW_YOUR_BUSINESS
       ],
       scoreMethod: singleScore,
       answers: [
@@ -57,8 +61,8 @@ const addingValueGrantConfig = {
       id: '/project-impact',
       category: 'Project impact',
       fundingPriorities: [
-        'Improve processing and supply chains',
-        'Grow your business'
+        IMPROVE_PROCESSING_AND_SUPPLY_CHAINS,
+        GROW_YOUR_BUSINESS
       ],
       scoreMethod: singleScore,
       answers: [
@@ -78,8 +82,8 @@ const addingValueGrantConfig = {
       id: '/future-customers',
       category: 'Future customers',
       fundingPriorities: [
-        'Improve processing and supply chains',
-        'Grow your business'
+        IMPROVE_PROCESSING_AND_SUPPLY_CHAINS,
+        GROW_YOUR_BUSINESS
       ],
       scoreMethod: singleScore,
       answers: [
@@ -99,8 +103,8 @@ const addingValueGrantConfig = {
       id: '/collaboration',
       category: 'Future customers',
       fundingPriorities: [
-        'Improve processing and supply chains',
-        'Grow your business'
+        IMPROVE_PROCESSING_AND_SUPPLY_CHAINS,
+        'Encourage collaboration and partnerships'
       ],
       scoreMethod: singleScore,
       answers: [
