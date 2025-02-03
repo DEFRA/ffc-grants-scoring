@@ -45,15 +45,15 @@ const addingValueGrantConfig = {
       ],
       scoreMethod: singleScore,
       answers: [
-        { answer: 'adding-value-A1', score: 8 },
-        { answer: 'adding-value-A2', score: 6 },
-        { answer: 'adding-value-A3', score: 4 },
-        { answer: 'adding-value-A4', score: 2 }
+        { answer: 'adding-value-A1', score: 9 },
+        { answer: 'adding-value-A2', score: 7 },
+        { answer: 'adding-value-A3', score: 5 },
+        { answer: 'adding-value-A4', score: 3 }
       ],
       scoreBand: [
-        { name: ScoreBands.WEAK, minValue: 0, maxValue: 3 },
-        { name: ScoreBands.MEDIUM, minValue: 5, maxValue: 6 },
-        { name: ScoreBands.STRONG, minValue: 7, maxValue: 8 }
+        { name: ScoreBands.WEAK, minValue: 0, maxValue: 5 },
+        { name: ScoreBands.MEDIUM, minValue: 6, maxValue: 7 },
+        { name: ScoreBands.STRONG, minValue: 8, maxValue: 9 }
       ],
       maxScore: 8
     },
@@ -66,15 +66,15 @@ const addingValueGrantConfig = {
       ],
       scoreMethod: singleScore,
       answers: [
-        { answer: 'project-impact-A1', score: 8 },
+        { answer: 'project-impact-A1', score: 7 },
         { answer: 'project-impact-A2', score: 6 },
-        { answer: 'project-impact-A3', score: 4 },
-        { answer: 'project-impact-A4', score: 2 }
+        { answer: 'project-impact-A3', score: 5 },
+        { answer: 'project-impact-A4', score: 4 }
       ],
       scoreBand: [
         { name: ScoreBands.WEAK, minValue: 0, maxValue: 3 },
-        { name: ScoreBands.MEDIUM, minValue: 5, maxValue: 6 },
-        { name: ScoreBands.STRONG, minValue: 7, maxValue: 8 }
+        { name: ScoreBands.MEDIUM, minValue: 4, maxValue: 5 },
+        { name: ScoreBands.STRONG, minValue: 6, maxValue: 7 }
       ],
       maxScore: 8
     },
@@ -87,15 +87,15 @@ const addingValueGrantConfig = {
       ],
       scoreMethod: singleScore,
       answers: [
-        { answer: 'future-customers-A1', score: 8 },
-        { answer: 'future-customers-A2', score: 6 },
-        { answer: 'future-customers-A3', score: 4 },
-        { answer: 'future-customers-A4', score: 2 }
+        { answer: 'future-customers-A1', score: 11 },
+        { answer: 'future-customers-A2', score: 9 },
+        { answer: 'future-customers-A3', score: 7 },
+        { answer: 'future-customers-A4', score: 5 }
       ],
       scoreBand: [
-        { name: ScoreBands.WEAK, minValue: 0, maxValue: 3 },
-        { name: ScoreBands.MEDIUM, minValue: 5, maxValue: 6 },
-        { name: ScoreBands.STRONG, minValue: 7, maxValue: 8 }
+        { name: ScoreBands.WEAK, minValue: 0, maxValue: 6 },
+        { name: ScoreBands.MEDIUM, minValue: 7, maxValue: 8 },
+        { name: ScoreBands.STRONG, minValue: 9, maxValue: 11 }
       ],
       maxScore: 8
     },
