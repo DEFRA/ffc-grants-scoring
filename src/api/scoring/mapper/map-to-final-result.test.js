@@ -54,7 +54,7 @@ describe('mapToFinalResult', () => {
     const expectedResult = {
       answers: rawScores,
       score: 4,
-      status: 'ineligible',
+      status: 'Ineligible',
       scoreBand: ScoreBands.WEAK
     }
 
@@ -63,7 +63,7 @@ describe('mapToFinalResult', () => {
     expect(result).toEqual(expectedResult)
   })
 
-  it('should calculate the percentage correctly and return "eligible" if the score is above the threshold', () => {
+  it('should calculate the percentage correctly and return "Eligible" if the score is above the threshold', () => {
     const rawScores = [
       { questionId: 'q1', score: { value: 3, band: ScoreBands.STRONG } },
       { questionId: 'q2', score: { value: 11, band: ScoreBands.STRONG } }
@@ -71,7 +71,7 @@ describe('mapToFinalResult', () => {
 
     const result = mapToFinalResult(scoringConfig, rawScores)
 
-    expect(result.status).toBe('eligible')
+    expect(result.status).toBe('Eligible')
     expect(result.score).toBe(14)
   })
 
@@ -81,7 +81,7 @@ describe('mapToFinalResult', () => {
     const result = mapToFinalResult(scoringConfig, rawScores)
 
     expect(result.score).toBe(0)
-    expect(result.status).toBe('ineligible')
+    expect(result.status).toBe('Ineligible')
   })
 
   it('should handle cases where max score is zero', () => {
@@ -108,7 +108,7 @@ describe('mapToFinalResult', () => {
     const result = mapToFinalResult(scoringConfig, rawScores)
 
     expect(result.score).toBe(0)
-    expect(result.status).toBe('ineligible')
+    expect(result.status).toBe('Ineligible')
   })
 
   it('should throw an error if rawScores is not an array', () => {
