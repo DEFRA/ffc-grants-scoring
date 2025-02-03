@@ -28,7 +28,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n  \"answers\": [\n    { \"questionId\": \"singleAnswer\", \"answers\": [\"B\"] },\n    { \"questionId\": \"multiAnswer\", \"answers\": [\"A\", \"B\"] }\n  ]\n}\n",
+					"raw": "{{dynamic_body}}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -49,7 +49,100 @@
 					]
 				}
 			},
-			"response": []
+			"response": [
+				{
+					"name": "Evaluate Grant Eligibility - example grant",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "\"application/json, text/plain, */*\"",
+								"type": "default",
+								"disabled": true
+							},
+							{
+								"key": "Content-Type",
+								"value": "\"application/json\"",
+								"type": "default",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"answers\": [\n    { \"questionId\": \"singleAnswer\", \"answers\": [\"B\"] },\n    { \"questionId\": \"multiAnswer\", \"answers\": [\"A\", \"B\"] }\n  ]\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/scoring/api/v1/{{grantType}}/score",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"scoring",
+								"api",
+								"v1",
+								"{{grantType}}",
+								"score"
+							]
+						}
+					},
+					"_postman_previewlanguage": null,
+					"header": null,
+					"cookie": [],
+					"body": null
+				},
+				{
+					"name": "Evaluate Grant Eligibility - adding value",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "\"application/json, text/plain, */*\"",
+								"type": "default",
+								"disabled": true
+							},
+							{
+								"key": "Content-Type",
+								"value": "\"application/json\"",
+								"type": "default",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"answers\": [\n    { \"questionId\": \"singleAnswer\", \"answers\": [\"B\"] },\n    { \"questionId\": \"multiAnswer\", \"answers\": [\"A\", \"B\"] }\n  ]\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/scoring/api/v1/{{grantType}}/score",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"scoring",
+								"api",
+								"v1",
+								"{{grantType}}",
+								"score"
+							]
+						}
+					},
+					"_postman_previewlanguage": null,
+					"header": null,
+					"cookie": [],
+					"body": null
+				}
+			]
 		},
 		{
 			"name": "Health",
@@ -83,6 +176,29 @@
 				}
 			},
 			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"const grantType = pm.environment.get(\"grantType\");",
+					"const body = pm.environment.get(`grant_${grantType}_body`);",
+					"pm.variables.set(\"dynamic_body\", body);",
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
 		}
 	]
 }
