@@ -73,6 +73,7 @@ describe('mapToFinalResult', () => {
 
     expect(result.status).toBe('Eligible')
     expect(result.score).toBe(14)
+    expect(result.scoreBand).toBe(ScoreBands.STRONG)
   })
 
   it('should handle empty rawScores array', () => {
@@ -82,6 +83,7 @@ describe('mapToFinalResult', () => {
 
     expect(result.score).toBe(0)
     expect(result.status).toBe('Ineligible')
+    expect(result.scoreBand).toBe(ScoreBands.WEAK)
   })
 
   it('should handle cases where max score is zero', () => {
@@ -97,7 +99,7 @@ describe('mapToFinalResult', () => {
         { name: ScoreBands.STRONG, minValue: 0, maxValue: 0 }
       ],
       maxScore: 0,
-      percentageThreshold: 80
+      eligibilityPercentageThreshold: 80
     }
 
     const rawScores = [
@@ -112,12 +114,14 @@ describe('mapToFinalResult', () => {
   })
 
   it('should throw an error if rawScores is not an array', () => {
-    expect(() => {
-      mapToFinalResult(null, {})
-    }).toThrow('rawScores must be an array')
-
-    expect(() => {
-      mapToFinalResult('invalid', {})
-    }).toThrow('rawScores must be an array')
+    expect(() => mapToFinalResult(scoringConfig, null)).toThrow(
+      'rawScores must be an array'
+    )
+    expect(() => mapToFinalResult(scoringConfig, {})).toThrow(
+      'rawScores must be an array'
+    )
+    expect(() => mapToFinalResult(scoringConfig, 'invalid')).toThrow(
+      'rawScores must be an array'
+    )
   })
 })

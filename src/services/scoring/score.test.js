@@ -9,6 +9,8 @@ describe('score function', () => {
       {
         id: 'singleAnswer',
         scoreMethod: singleScore,
+        category: 'Category 1',
+        fundingPriorities: ['Priority A'],
         answers: [
           { answer: 'A', score: 4 },
           { answer: 'B', score: 8 },
@@ -24,6 +26,8 @@ describe('score function', () => {
       {
         id: 'multiAnswer',
         scoreMethod: multiScore,
+        category: 'Category 2',
+        fundingPriorities: ['Priority B', 'Priority C'],
         answers: [
           { answer: 'A', score: 4 },
           { answer: 'B', score: 4 },
@@ -48,6 +52,8 @@ describe('score function', () => {
     expect(result).toEqual([
       {
         questionId: 'singleAnswer',
+        category: 'Category 1',
+        fundingPriorities: ['Priority A'],
         score: { value: 4, band: ScoreBands.MEDIUM }
       }
     ])
@@ -59,6 +65,8 @@ describe('score function', () => {
     expect(result).toEqual([
       {
         questionId: 'multiAnswer',
+        category: 'Category 2',
+        fundingPriorities: ['Priority B', 'Priority C'],
         score: { value: 10, band: ScoreBands.STRONG }
       }
     ])
@@ -72,6 +80,8 @@ describe('score function', () => {
     expect(result).toEqual([
       {
         questionId: 'singleAnswer',
+        category: 'Category 1',
+        fundingPriorities: ['Priority A'],
         score: { value: null, band: ScoreBands.WEAK }
       }
     ])
@@ -85,6 +95,8 @@ describe('score function', () => {
     expect(result).toEqual([
       {
         questionId: 'multiAnswer',
+        category: 'Category 2',
+        fundingPriorities: ['Priority B', 'Priority C'],
         score: { value: 0, band: ScoreBands.WEAK }
       }
     ])
@@ -106,10 +118,14 @@ describe('score function', () => {
     expect(result).toEqual([
       {
         questionId: 'singleAnswer',
+        category: 'Category 1',
+        fundingPriorities: ['Priority A'],
         score: { value: 8, band: ScoreBands.STRONG }
       },
       {
         questionId: 'multiAnswer',
+        category: 'Category 2',
+        fundingPriorities: ['Priority B', 'Priority C'],
         score: { value: 6, band: ScoreBands.MEDIUM }
       }
     ])

@@ -13,6 +13,8 @@
 /**
  * @typedef {object} Question
  * @property {string} id - The unique identifier for the question.
+ * @property {string} category - The category of the question.
+ * @property {string[]} fundingPriorities - An optional array of funding priorities related to the question.
  * @property {Function} scoreMethod - The scoring function to calculate the score for the question.
  * @property {Answer[]} answers - An array of possible answers for the question.
  * @property {number} maxScore - Max score
