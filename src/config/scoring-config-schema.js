@@ -26,6 +26,8 @@ const questionsSchema = Joi.array()
   .items(
     Joi.object({
       id: Joi.string().required(),
+      category: Joi.string().required(),
+      fundingPriorities: Joi.array().items(Joi.string()).optional(),
       scoreMethod: Joi.function().required(),
       answers: answersSchema,
       scoreBand: scoreBandSchema,

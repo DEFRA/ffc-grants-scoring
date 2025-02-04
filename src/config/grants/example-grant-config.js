@@ -11,6 +11,11 @@ const exampleGrantConfig = {
   questions: [
     {
       id: 'singleAnswer',
+      category: 'Single answer',
+      fundingPriorities: [
+        'This question is a single answer question',
+        `It's funding priorities are undefined`
+      ],
       scoreMethod: singleScore,
       answers: [
         { answer: 'A', score: 4 },
@@ -26,6 +31,11 @@ const exampleGrantConfig = {
     },
     {
       id: 'multiAnswer',
+      category: 'Multi answer',
+      fundingPriorities: [
+        'This question is a multi answer question',
+        `It's funding priorities are well defined`
+      ],
       scoreMethod: multiScore,
       answers: [
         { answer: 'A', score: 4 },

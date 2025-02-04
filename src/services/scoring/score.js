@@ -21,8 +21,15 @@ function score(scoringConfig) {
 
         const predicate = question.scoreMethod
         const calculatedScore = predicate(question, responses)
+        const category = question.category
+        const fundingPriorities = question.fundingPriorities
 
-        return { questionId, score: calculatedScore }
+        return {
+          questionId,
+          category,
+          fundingPriorities,
+          score: calculatedScore
+        }
       }
     )
     return scoredAnswers

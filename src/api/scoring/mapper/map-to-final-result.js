@@ -25,8 +25,8 @@ function mapToFinalResult(scoringConfig, rawScores) {
     score,
     status:
       percentage >= scoringConfig.eligibilityPercentageThreshold
-        ? 'eligible'
-        : 'ineligible',
+        ? 'Eligible'
+        : 'Ineligible',
     scoreBand
   }
 }
