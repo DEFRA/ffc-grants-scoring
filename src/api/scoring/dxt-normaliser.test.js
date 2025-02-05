@@ -45,7 +45,7 @@ describe('normalizePayload', () => {
     }
     const response = normalizePayload(request, h)
     expect(request.payload.answers).toEqual([
-      { questionId: 'component1Name', answers: 'component1Value' }
+      { questionId: 'component1Name', answers: ['component1Value'] }
     ])
     expect(response).toBe(h.continue)
   })
@@ -62,7 +62,7 @@ describe('normalizePayload', () => {
     }
     const response = normalizePayload(request, h)
     expect(request.payload.answers).toEqual([
-      { questionId: 'component1Name', answers: 42 }
+      { questionId: 'component1Name', answers: [42] }
     ])
     expect(response).toBe(h.continue)
   })
@@ -113,8 +113,38 @@ describe('normalizePayload', () => {
     }
     const response = normalizePayload(request, h)
     expect(request.payload.answers).toEqual([
-      { questionId: 'component1Name', answers: null }
+      { questionId: 'component1Name', answers: [] }
     ])
+    expect(response).toBe(h.continue)
+  })
+
+  it('should handle undefined values inside data.main', () => {
+    const request = {
+      payload: {
+        data: {
+          main: {
+            component1Name: undefined
+          }
+        }
+      }
+    }
+    const response = normalizePayload(request, h)
+    expect(request.payload.answers).toEqual([
+      { questionId: 'component1Name', answers: [] }
+    ])
+    expect(response).toBe(h.continue)
+  })
+
+  it('should handle empty data.main', () => {
+    const request = {
+      payload: {
+        data: {
+          main: {}
+        }
+      }
+    }
+    const response = normalizePayload(request, h)
+    expect(request.payload.answers).toEqual([])
     expect(response).toBe(h.continue)
   })
 
