@@ -6,6 +6,10 @@
  * @throws {Error} Throws if the `userAnswer` is not found in the scoring rules.
  */
 function singleScore(questionScoringConfig, userAnswers) {
+  if (!Array.isArray(userAnswers) || userAnswers.length === 0) {
+    throw new Error("Answer not provided and can't be scored.")
+  }
+
   if (userAnswers.length > 1) {
     throw new Error(
       `Multiple answers provided for single-answer question: ${questionScoringConfig.id}`

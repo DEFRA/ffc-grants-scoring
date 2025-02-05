@@ -7,6 +7,12 @@
  * @throws {Error} Throws if none of the `userAnswers` are found in the scoring rules.
  */
 function multiScore(questionScoringConfig, userAnswers) {
+  if (!Array.isArray(userAnswers) || userAnswers.length === 0) {
+    throw new Error(
+      `Answers not provided for question: ${questionScoringConfig.id}.`
+    )
+  }
+
   const scores = userAnswers.map((userAnswer) => {
     const matchingAnswer = questionScoringConfig.answers.find(
       (answer) => answer.answer === userAnswer

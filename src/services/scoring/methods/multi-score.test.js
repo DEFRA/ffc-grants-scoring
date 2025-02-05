@@ -59,4 +59,10 @@ describe('multiScore', () => {
       multiScore(questionConfig, ['F']) // Invalid answer
     }).toThrow('Answer "F" not found in question: multiAnswer.')
   })
+
+  it('should throw an error when answer is not provided', () => {
+    expect(() => {
+      multiScore(questionConfig, []) // No answer provided
+    }).toThrow('Answers not provided for question: multiAnswer.')
+  })
 })

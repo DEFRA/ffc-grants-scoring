@@ -47,6 +47,16 @@ describe('singleScore', () => {
     )
   })
 
+  it('should throw an error when an answer is not provided', () => {
+    const illegalAnswers = [[], undefined, null]
+
+    illegalAnswers.forEach((answers) => {
+      expect(() => singleScore(questionConfig, answers)).toThrow(
+        `Answer not provided and can't be scored.`
+      )
+    })
+  })
+
   it('should throw an error when answer is not found', () => {
     expect(() => {
       singleScore(questionConfig, ['C'])
