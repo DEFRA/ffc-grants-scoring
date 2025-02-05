@@ -75,10 +75,10 @@ describe('Handler Function', () => {
     expect(mockH.code).toHaveBeenCalledWith(200)
   })
 
-  it('should return 400 response with the error message when scoring fails', async () => {
+  it('should return 400 with an error response when the `score` function throws an error', async () => {
     const errorMessage = {
       error: 'Bad Request',
-      message: 'Question with id invalidQuestion not found in scoringData.',
+      message: 'The score function threw an error.',
       statusCode: 400
     }
 
@@ -93,10 +93,10 @@ describe('Handler Function', () => {
     expect(mockH.code).toHaveBeenCalledWith(400)
   })
 
-  it('should return a 400 response with the error message when mapping fails', async () => {
+  it('should return a 400 with an error response when the `mapToFinalResult` function throws an error', async () => {
     const errorMessage = {
       error: 'Bad Request',
-      message: 'Mapping error occurred.',
+      message: 'mapToFinalResult threw an error.',
       statusCode: 400
     }
 
