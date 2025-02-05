@@ -51,6 +51,9 @@ export const normalizePayload = (request, h) => {
         answers = value
       } else if (value != null) {
         answers = [value] // Wrap string, number, or boolean in an array
+      } else {
+        // This handles cases where value is null or undefined.
+        answers = []
       }
 
       return { questionId: key, answers }
