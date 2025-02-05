@@ -76,10 +76,14 @@ describe('Handler Function', () => {
   })
 
   it('should return 400 response with the error message when scoring fails', async () => {
-    const errorMessage =
-      'Question with id invalidQuestion not found in scoringData.'
+    const errorMessage = {
+      error: 'Bad Request',
+      message: 'Question with id invalidQuestion not found in scoringData.',
+      statusCode: 400
+    }
+
     score.mockImplementation(() => {
-      throw new Error(errorMessage)
+      throw new Error(errorMessage.message)
     })
     getScoringConfig.mockReturnValue(mockScoringConfig)
 
@@ -90,9 +94,14 @@ describe('Handler Function', () => {
   })
 
   it('should return a 400 response with the error message when mapping fails', async () => {
-    const errorMessage = 'Mapping error occurred.'
+    const errorMessage = {
+      error: 'Bad Request',
+      message: 'Mapping error occurred.',
+      statusCode: 400
+    }
+
     mapToFinalResult.mockImplementation(() => {
-      throw new Error(errorMessage)
+      throw new Error(errorMessage.message)
     })
     score.mockReturnValue(jest.fn().mockReturnValue(mockRawScores))
     getScoringConfig.mockReturnValue(mockScoringConfig)
