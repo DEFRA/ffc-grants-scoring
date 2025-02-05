@@ -24,6 +24,7 @@ Core delivery platform Node.js Backend Template.
 - [Postman Collection](#postman-collection)
   - [Getting Started](#getting-started)
   - [Usage](#usage)
+    - [Dynamic Request Body Handling](#dynamic-request-body-handling)
   - [Keeping the Collection Updated](#keeping-the-collection-updated)
   - [Example Folder Structure](#example-folder-structure)
 - [Licence](#licence)
@@ -191,6 +192,93 @@ The project includes a Postman collection to make it easier to test and interact
 
 - **Add Authorization**:
   If the API requires authentication (e.g., API keys or tokens), configure it under the **Authorization** tab for each request or in the environment variables.
+
+### Dynamic Request Body Handling
+
+This script dynamically selects the appropriate request body based on the **grant type** and whether the **DXT Normalizer** is enabled. It helps simplify testing different request payloads without manually switching them.
+
+#### 📦 **Script Logic**
+
+```javascript
+const grantType = pm.environment.get('grantType')
+const isDxtNormaliserEnabled =
+  pm.environment.get('isDxtNormaliserEnabled') === 'true'
+
+// Determine which body to use
+const bodyKey = isDxtNormaliserEnabled
+  ? `grant_${grantType}_body_dxt`
+  : `grant_${grantType}_body`
+
+// Fetch the body from environment variables
+const body = pm.environment.get(bodyKey)
+
+// Set dynamic_body or show an error if missing
+if (!body) {
+  console.error(`Error: ${bodyKey} is not defined in the environment.`)
+} else {
+  pm.variables.set('dynamic_body', body)
+  console.log(`Dynamic body set for ${bodyKey}`)
+}
+```
+
+#### ⚙️ **Environment Variable Setup**
+
+| Variable                     | Example Value     | Description                       |
+| ---------------------------- | ----------------- | --------------------------------- |
+| `grantType`                  | `agriculture`     | The grant type you're testing.    |
+| `isDxtNormaliserEnabled`     | `true` or `false` | Enables DXT format when `true`.   |
+| `grant_agriculture_body`     | `{...}`           | Standard body for the grant.      |
+| `grant_agriculture_body_dxt` | `{...}`           | DXT-formatted body for the grant. |
+
+1. Go to **Manage Environments (⚙️)** → **Edit Environment**.
+2. Add the above key-value pairs.
+3. Make sure `isDxtNormaliserEnabled` is a **string** (`"true"` or `"false"`) rather than a boolean.
+
+#### 📝 **Using the Dynamic Body in Requests**
+
+In the request body:
+
+```json
+{{dynamic_body}}
+```
+
+#### ✅ **Example**
+
+**Environment Setup:**
+
+```bash
+grantType = agriculture
+isDxtNormaliserEnabled = true
+grant_agriculture_body = { "answers": [{"key": "value"}] }
+grant_agriculture_body_dxt = { "data": { "main": { "key": "value" } } }
+```
+
+**When `isDxtNormaliserEnabled = true`:**
+
+```json
+{
+  "data": {
+    "main": {
+      "key": "value"
+    }
+  }
+}
+```
+
+**When `isDxtNormaliserEnabled = false`:**
+
+```json
+{
+  "answers": [{ "key": "value" }]
+}
+```
+
+#### 🚩 **Troubleshooting**
+
+- **Error:** `Error: grant_agriculture_body_dxt is not defined in the environment.`
+  - **Fix:** Ensure the `grant_agriculture_body_dxt` variable is set in the environment.
+- **Incorrect Body?**
+  - Confirm that `isDxtNormaliserEnabled` is a **string**, not a boolean.
 
 ### Keeping the Collection Updated
 
