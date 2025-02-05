@@ -44,14 +44,17 @@ export const normalizePayload = (request, h) => {
   const { data } = request.payload
 
   if (data?.main) {
-    request.payload.answers = Object.entries(data.main).map(([key, value]) => ({
-      questionId: key,
-      answers: Array.isArray(value)
-        ? value
-        : value != null
-          ? [value] // Wrap string, number, or boolean in an array
-          : [] // Fallback to an empty array if value is null/undefined
-    }))
+    request.payload.answers = Object.entries(data.main).map(([key, value]) => {
+      let answers = []
+
+      if (Array.isArray(value)) {
+        answers = value
+      } else if (value != null) {
+        answers = [value] // Wrap string, number, or boolean in an array
+      }
+
+      return { questionId: key, answers }
+    })
     delete request.payload.data
   }
 
