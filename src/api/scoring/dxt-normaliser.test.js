@@ -31,6 +31,81 @@ describe('normalizePayload', () => {
     expect(result).toBe(h.continue)
   })
 
+  it('should handle string values', () => {
+    const request = {
+      payload: {
+        data: {
+          component1Name: 'component1Value'
+        }
+      }
+    }
+    const response = normalizePayload(request, h)
+    expect(request.payload.answers).toEqual([
+      { questionId: 'component1Name', answers: 'component1Value' }
+    ])
+    expect(response).toBe(h.continue)
+  })
+
+  it('should handle number values', () => {
+    const request = {
+      payload: {
+        data: {
+          component1Name: 42
+        }
+      }
+    }
+    const response = normalizePayload(request, h)
+    expect(request.payload.answers).toEqual([
+      { questionId: 'component1Name', answers: 42 }
+    ])
+    expect(response).toBe(h.continue)
+  })
+
+  it('should handle string array values', () => {
+    const request = {
+      payload: {
+        data: {
+          component1Name: ['value1', 'value2']
+        }
+      }
+    }
+    const response = normalizePayload(request, h)
+    expect(request.payload.answers).toEqual([
+      { questionId: 'component1Name', answers: ['value1', 'value2'] }
+    ])
+    expect(response).toBe(h.continue)
+  })
+
+  it('should handle number array values', () => {
+    const request = {
+      payload: {
+        data: {
+          component1Name: [1, 2, 3]
+        }
+      }
+    }
+    const response = normalizePayload(request, h)
+    expect(request.payload.answers).toEqual([
+      { questionId: 'component1Name', answers: [1, 2, 3] }
+    ])
+    expect(response).toBe(h.continue)
+  })
+
+  it('should handle null values', () => {
+    const request = {
+      payload: {
+        data: {
+          component1Name: null
+        }
+      }
+    }
+    const response = normalizePayload(request, h)
+    expect(request.payload.answers).toEqual([
+      { questionId: 'component1Name', answers: null }
+    ])
+    expect(response).toBe(h.continue)
+  })
+
   it('should leave answers format unchanged if it is already in answers format', () => {
     const request = {
       payload: {
