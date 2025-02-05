@@ -10,8 +10,10 @@ describe('normalizePayload', () => {
     const request = {
       payload: {
         data: {
-          component1Name: ['component1Value'],
-          component2Name: ['component2Value']
+          main: {
+            component1Name: ['component1Value'],
+            component2Name: ['component2Value']
+          }
         }
       }
     }
@@ -31,11 +33,13 @@ describe('normalizePayload', () => {
     expect(result).toBe(h.continue)
   })
 
-  it('should handle string values', () => {
+  it('should handle string values inside data.main', () => {
     const request = {
       payload: {
         data: {
-          component1Name: 'component1Value'
+          main: {
+            component1Name: 'component1Value'
+          }
         }
       }
     }
@@ -46,11 +50,13 @@ describe('normalizePayload', () => {
     expect(response).toBe(h.continue)
   })
 
-  it('should handle number values', () => {
+  it('should handle number values inside data.main', () => {
     const request = {
       payload: {
         data: {
-          component1Name: 42
+          main: {
+            component1Name: 42
+          }
         }
       }
     }
@@ -61,11 +67,13 @@ describe('normalizePayload', () => {
     expect(response).toBe(h.continue)
   })
 
-  it('should handle string array values', () => {
+  it('should handle string array values inside data.main', () => {
     const request = {
       payload: {
         data: {
-          component1Name: ['value1', 'value2']
+          main: {
+            component1Name: ['value1', 'value2']
+          }
         }
       }
     }
@@ -76,11 +84,13 @@ describe('normalizePayload', () => {
     expect(response).toBe(h.continue)
   })
 
-  it('should handle number array values', () => {
+  it('should handle number array values inside data.main', () => {
     const request = {
       payload: {
         data: {
-          component1Name: [1, 2, 3]
+          main: {
+            component1Name: [1, 2, 3]
+          }
         }
       }
     }
@@ -91,11 +101,13 @@ describe('normalizePayload', () => {
     expect(response).toBe(h.continue)
   })
 
-  it('should handle null values', () => {
+  it('should handle null values inside data.main', () => {
     const request = {
       payload: {
         data: {
-          component1Name: null
+          main: {
+            component1Name: null
+          }
         }
       }
     }
@@ -148,7 +160,9 @@ describe('normalizePayload', () => {
     const request = {
       payload: {
         data: {
-          component1Name: ['component1Value']
+          main: {
+            component1Name: ['component1Value']
+          }
         },
         answers: [
           { questionId: 'component2Name', answers: ['component2Value'] }
@@ -164,6 +178,25 @@ describe('normalizePayload', () => {
     ])
 
     expect(request.payload.data).toBeUndefined()
+
+    // Check that the function proceeds with the lifecycle
+    expect(result).toBe(h.continue)
+  })
+
+  it('should ignore payloads without data.main', () => {
+    const request = {
+      payload: {
+        data: {
+          other: { component1Name: 'value1' }
+        }
+      }
+    }
+    const result = normalizePayload(request, h)
+    expect(request.payload).toEqual({
+      data: {
+        other: { component1Name: 'value1' }
+      }
+    })
 
     // Check that the function proceeds with the lifecycle
     expect(result).toBe(h.continue)

@@ -2,15 +2,17 @@
  * Pre-handler to normalize incoming request payloads to a unified `answers` format.
  *
  * This function supports two payload formats:
- * 1. **Key-Value Format** (`data`): Transforms `{ data: { key: value } }` into the `answers` array format.
+ * 1. **Key-Value Format** (`data.main`): Transforms `{ data: { main: { key: value } } }` into the `answers` array format.
  * 2. **Answers Format** (`answers`): If the payload already has `answers`, it remains unchanged.
  *
  * **Before (Key-Value Format):**
  * ```json
  * {
  *   "data": {
- *     "component1Name": "component1Value",
- *     "component2Name": "component2Value"
+ *     "main": {
+ *       "component1Name": "component1Value",
+ *       "component2Name": "component2Value"
+ *     }
  *   }
  * }
  * ```
@@ -41,13 +43,12 @@
 export const normalizePayload = (request, h) => {
   const { data } = request.payload
 
-  // If data exists, translate it to the "answers" format
-  if (data) {
-    request.payload.answers = Object.entries(data).map(([key, value]) => ({
+  if (data?.main) {
+    request.payload.answers = Object.entries(data.main).map(([key, value]) => ({
       questionId: key,
       answers: value
     }))
-    delete request.payload.data // Remove the original data property
+    delete request.payload.data
   }
 
   return h.continue
