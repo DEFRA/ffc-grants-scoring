@@ -26,6 +26,12 @@ export const handler = (request, h) => {
     return h.response(finalResult).code(statusCodes.ok)
   } catch (error) {
     log(LogCodes.SCORING.CONVERSION_ERROR, { grantType, error })
-    return h.response(error.message).code(statusCodes.badRequest)
+    return h
+      .response({
+        statusCode: statusCodes.badRequest,
+        error: 'Bad Request',
+        message: error.message
+      })
+      .code(statusCodes.badRequest)
   }
 }
