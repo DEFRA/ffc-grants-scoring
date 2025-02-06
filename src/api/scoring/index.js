@@ -19,7 +19,10 @@ const scoring = {
             payload: Joi.alternatives().try(
               // For DXT request with data.main
               Joi.object({
+                meta: Joi.any(),
                 data: Joi.object({
+                  files: Joi.object(),
+                  repeaters: Joi.object(),
                   main: Joi.object()
                     .pattern(
                       Joi.string(),
