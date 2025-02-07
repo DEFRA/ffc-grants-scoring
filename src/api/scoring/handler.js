@@ -5,7 +5,7 @@ import { statusCodes } from '../common/constants/status-codes.js'
 import { log, LogCodes } from '../logging/log.js'
 
 export const handler = (request, h) => {
-  const { answers } = request.payload
+  const answers = request.payload
   const { grantType } = request.params
   log(LogCodes.SCORING.REQUEST_RECEIVED, { grantType, answers })
   const scoringConfig = getScoringConfig(grantType)
@@ -25,7 +25,10 @@ export const handler = (request, h) => {
     log(LogCodes.SCORING.FINAL_RESULT, { grantType, rawScores, finalResult })
     return h.response(finalResult).code(statusCodes.ok)
   } catch (error) {
-    log(LogCodes.SCORING.CONVERSION_ERROR, { grantType, error })
+    log(LogCodes.SCORING.CONVERSION_ERROR, {
+      grantType,
+      message: error.message
+    })
     return h
       .response({
         statusCode: statusCodes.badRequest,

@@ -44,7 +44,7 @@ export const normalizePayload = (request, h) => {
   const { data } = request.payload
 
   if (data?.main) {
-    request.payload.answers = Object.entries(data.main).map(([key, value]) => {
+    request.payload = Object.entries(data.main).map(([key, value]) => {
       let answers = []
 
       if (Array.isArray(value)) {

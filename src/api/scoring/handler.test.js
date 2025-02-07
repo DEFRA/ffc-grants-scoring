@@ -37,7 +37,7 @@ describe('Handler Function', () => {
   ]
 
   const mockRequest = (grantType = 'example-grant', answers = mockAnswers) => ({
-    payload: { answers },
+    payload: answers,
     params: { grantType }
   })
 
