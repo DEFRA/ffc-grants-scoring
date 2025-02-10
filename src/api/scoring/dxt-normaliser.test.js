@@ -21,7 +21,7 @@ describe('normalizePayload', () => {
     const result = normalizePayload(request, h)
 
     // Check if the transformation took place
-    expect(request.payload.answers).toEqual([
+    expect(request.payload).toEqual([
       { questionId: 'component1Name', answers: ['component1Value'] },
       { questionId: 'component2Name', answers: ['component2Value'] }
     ])
@@ -44,7 +44,7 @@ describe('normalizePayload', () => {
       }
     }
     const response = normalizePayload(request, h)
-    expect(request.payload.answers).toEqual([
+    expect(request.payload).toEqual([
       { questionId: 'component1Name', answers: ['component1Value'] }
     ])
     expect(response).toBe(h.continue)
@@ -61,7 +61,7 @@ describe('normalizePayload', () => {
       }
     }
     const response = normalizePayload(request, h)
-    expect(request.payload.answers).toEqual([
+    expect(request.payload).toEqual([
       { questionId: 'component1Name', answers: [42] }
     ])
     expect(response).toBe(h.continue)
@@ -78,7 +78,7 @@ describe('normalizePayload', () => {
       }
     }
     const response = normalizePayload(request, h)
-    expect(request.payload.answers).toEqual([
+    expect(request.payload).toEqual([
       { questionId: 'component1Name', answers: ['value1', 'value2'] }
     ])
     expect(response).toBe(h.continue)
@@ -95,7 +95,7 @@ describe('normalizePayload', () => {
       }
     }
     const response = normalizePayload(request, h)
-    expect(request.payload.answers).toEqual([
+    expect(request.payload).toEqual([
       { questionId: 'component1Name', answers: [1, 2, 3] }
     ])
     expect(response).toBe(h.continue)
@@ -112,7 +112,7 @@ describe('normalizePayload', () => {
       }
     }
     const response = normalizePayload(request, h)
-    expect(request.payload.answers).toEqual([
+    expect(request.payload).toEqual([
       { questionId: 'component1Name', answers: [] }
     ])
     expect(response).toBe(h.continue)
@@ -129,7 +129,7 @@ describe('normalizePayload', () => {
       }
     }
     const response = normalizePayload(request, h)
-    expect(request.payload.answers).toEqual([
+    expect(request.payload).toEqual([
       { questionId: 'component1Name', answers: [] }
     ])
     expect(response).toBe(h.continue)
@@ -144,23 +144,19 @@ describe('normalizePayload', () => {
       }
     }
     const response = normalizePayload(request, h)
-    expect(request.payload.answers).toEqual([])
+    expect(request.payload).toEqual([])
     expect(response).toBe(h.continue)
   })
 
   it('should leave answers format unchanged if it is already in answers format', () => {
     const request = {
-      payload: {
-        answers: [
-          { questionId: 'component1Name', answers: ['component1Value'] }
-        ]
-      }
+      payload: [{ questionId: 'component1Name', answers: ['component1Value'] }]
     }
 
     const result = normalizePayload(request, h)
 
     // Check that answers remain unchanged
-    expect(request.payload.answers).toEqual([
+    expect(request.payload).toEqual([
       { questionId: 'component1Name', answers: ['component1Value'] }
     ])
 
@@ -180,33 +176,6 @@ describe('normalizePayload', () => {
 
     // Ensure no changes to the payload
     expect(request.payload.answers).toBeUndefined()
-    expect(request.payload.data).toBeUndefined()
-
-    // Check that the function proceeds with the lifecycle
-    expect(result).toBe(h.continue)
-  })
-
-  it('should prioritize data over existing answers', () => {
-    const request = {
-      payload: {
-        data: {
-          main: {
-            component1Name: ['component1Value']
-          }
-        },
-        answers: [
-          { questionId: 'component2Name', answers: ['component2Value'] }
-        ]
-      }
-    }
-
-    const result = normalizePayload(request, h)
-
-    // Check that data is transformed and answers are removed
-    expect(request.payload.answers).toEqual([
-      { questionId: 'component1Name', answers: ['component1Value'] }
-    ])
-
     expect(request.payload.data).toBeUndefined()
 
     // Check that the function proceeds with the lifecycle
