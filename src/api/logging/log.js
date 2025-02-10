@@ -62,11 +62,9 @@ const validateLogParams = ({ level, event }, context) => {
     context: typeof context !== 'object' || Array.isArray(context)
   }
 
-  const invalidField = Object.keys({
-    level: !level,
-    event: !event,
-    context: typeof context !== 'object'
-  }).find((key) => validationErrors[key])
+  const invalidField = Object.keys(validationErrors).find(
+    (key) => validationErrors[key]
+  )
 
   if (invalidField) {
     throw new Error(
