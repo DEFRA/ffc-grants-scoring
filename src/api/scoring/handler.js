@@ -7,22 +7,34 @@ import { log, LogCodes } from '../logging/log.js'
 export const handler = (request, h) => {
   const answers = request.payload
   const { grantType } = request.params
-  log(LogCodes.SCORING.REQUEST_RECEIVED, { grantType, answers })
+  log(LogCodes.SCORING.REQUEST_RECEIVED, {
+    grantType,
+    message: `Request received for grantType=${grantType}`
+  })
   const scoringConfig = getScoringConfig(grantType)
 
   if (!scoringConfig) {
-    log(LogCodes.SCORING.CONFIG_MISSING, { grantType })
+    log(LogCodes.SCORING.CONFIG_MISSING, {
+      grantType,
+      message: `Scoring config missing for grantType=${grantType}`
+    })
     return h
       .response({ error: 'Invalid grant type' })
       .code(statusCodes.badRequest)
   }
-  log(LogCodes.SCORING.CONFIG_FOUND, { grantType, scoringConfig })
+  log(LogCodes.SCORING.CONFIG_FOUND, {
+    grantType,
+    message: `Scoring config found for grantType=${grantType}`
+  })
 
   try {
     // Find matching scoring data for the provided questionIds
     const rawScores = score(scoringConfig)(answers)
     const finalResult = mapToFinalResult(scoringConfig, rawScores)
-    log(LogCodes.SCORING.FINAL_RESULT, { grantType, rawScores, finalResult })
+    log(LogCodes.SCORING.FINAL_RESULT, {
+      grantType,
+      message: `Scoring final result for grantType=${grantType}. Score=${finalResult.score}. Band=${finalResult.scoreBand}. Eligibility=${finalResult.status}`
+    })
     return h.response(finalResult).code(statusCodes.ok)
   } catch (error) {
     log(LogCodes.SCORING.CONVERSION_ERROR, {
