@@ -19,6 +19,10 @@ export const LogCodes = {
     CONVERSION_ERROR: {
       level: 'error',
       event: 'scoring_conversion_error'
+    },
+    VALIDATION_ERROR: {
+      level: 'error',
+      event: 'scoring_validation_error'
     }
   }
 }
