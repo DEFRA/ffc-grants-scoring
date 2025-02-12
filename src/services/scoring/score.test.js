@@ -22,8 +22,8 @@ describe('score function', () => {
       ],
       maxScore: 8
     },
-    multiScore: {
-      id: 'multiScore',
+    multiAnswer: {
+      id: 'multiAnswer',
       scoreMethod: multiScore,
       category: 'Category 2',
       fundingPriorities: ['Priority B', 'Priority C'],
@@ -44,7 +44,16 @@ describe('score function', () => {
     }
   }
 
-  // const mockScoringConfig = { questions }
+  /**
+   * Generates a mock scoring configuration object based on provided page IDs.
+   * This function creates a scoring configuration object containing
+   * a list of questions associated with the provided page IDs. It
+   * looks up each page's corresponding questions and appends them
+   * to the `questions` property of the scoring configuration object.
+   * @function
+   * @param {...string} pageId - A list of page identifiers used to retrieve associated questions.
+   * @returns {object} A scoring configuration object containing a `questions` array populated based on the provided page IDs.
+   */
   const mockScoringConfig = (...pageId) => {
     const scoringConfig = { questions: [] }
     pageId.forEach((page) => {
@@ -87,13 +96,13 @@ describe('score function', () => {
     ])
   })
 
-  it('returns correct scores for valid multiScore question', () => {
-    const answers = [{ questionId: 'multiScore', answers: ['A', 'B', 'C'] }]
-    const mockConfig = mockScoringConfig('multiScore')
+  it('returns correct scores for valid multiAnswer question', () => {
+    const answers = [{ questionId: 'multiAnswer', answers: ['A', 'B', 'C'] }]
+    const mockConfig = mockScoringConfig('multiAnswer')
     const result = score(mockConfig)(answers)
     expect(result).toEqual([
       {
-        questionId: 'multiScore',
+        questionId: 'multiAnswer',
         category: 'Category 2',
         fundingPriorities: ['Priority B', 'Priority C'],
         score: { value: 10, band: ScoreBands.STRONG }
@@ -119,13 +128,13 @@ describe('score function', () => {
 
   it('handles None of the above correctly for multiAnswer', () => {
     const answers = [
-      { questionId: 'multiScore', answers: ['None of the above'] }
+      { questionId: 'multiAnswer', answers: ['None of the above'] }
     ]
-    const mockConfig = mockScoringConfig('multiScore')
+    const mockConfig = mockScoringConfig('multiAnswer')
     const result = score(mockConfig)(answers)
     expect(result).toEqual([
       {
-        questionId: 'multiScore',
+        questionId: 'multiAnswer',
         category: 'Category 2',
         fundingPriorities: ['Priority B', 'Priority C'],
         score: { value: 0, band: ScoreBands.WEAK }
@@ -135,18 +144,18 @@ describe('score function', () => {
 
   it('throws an error if question ID is not found', () => {
     const answers = [{ questionId: 'invalidQuestion', answers: ['A'] }]
-    const mockConfig = mockScoringConfig('multiScore', 'singleAnswer')
+    const mockConfig = mockScoringConfig('multiAnswer', 'singleAnswer')
     expect(() => score(mockConfig)(answers)).toThrow(
-      'Questions with id(s) multiScore, singleAnswer not found in users answers.'
+      'Questions with id(s) multiAnswer, singleAnswer not found in users answers.'
     )
   })
 
   it('handles multiple answers correctly', () => {
     const answers = [
       { questionId: 'singleAnswer', answers: ['B'] },
-      { questionId: 'multiScore', answers: ['A', 'C'] }
+      { questionId: 'multiAnswer', answers: ['A', 'C'] }
     ]
-    const mockConfig = mockScoringConfig('multiScore', 'singleAnswer')
+    const mockConfig = mockScoringConfig('multiAnswer', 'singleAnswer')
     const result = score(mockConfig)(answers)
     expect(result).toEqual([
       {
@@ -156,7 +165,7 @@ describe('score function', () => {
         score: { value: 8, band: ScoreBands.STRONG }
       },
       {
-        questionId: 'multiScore',
+        questionId: 'multiAnswer',
         category: 'Category 2',
         fundingPriorities: ['Priority B', 'Priority C'],
         score: { value: 6, band: ScoreBands.MEDIUM }
