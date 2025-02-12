@@ -64,7 +64,7 @@ const addingValueGrantConfig = {
         IMPROVE_PROCESSING_AND_SUPPLY_CHAINS,
         GROW_YOUR_BUSINESS
       ],
-      scoreMethod: singleScore,
+      scoreMethod: multiScore,
       answers: [
         { answer: 'project-impact-A1', score: 7 },
         { answer: 'project-impact-A2', score: 6 },
@@ -72,11 +72,11 @@ const addingValueGrantConfig = {
         { answer: 'project-impact-A4', score: 4 }
       ],
       scoreBand: [
-        { name: ScoreBands.WEAK, minValue: 0, maxValue: 3 },
-        { name: ScoreBands.MEDIUM, minValue: 4, maxValue: 5 },
-        { name: ScoreBands.STRONG, minValue: 6, maxValue: 7 }
+        { name: ScoreBands.WEAK, minValue: 0, maxValue: 10 },
+        { name: ScoreBands.MEDIUM, minValue: 11, maxValue: 16 },
+        { name: ScoreBands.STRONG, minValue: 17, maxValue: 22 }
       ],
-      maxScore: 8
+      maxScore: 22
     },
     {
       id: '/future-customers',
