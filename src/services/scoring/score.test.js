@@ -44,16 +44,6 @@ describe('score function', () => {
     }
   }
 
-  /**
-   * Generates a mock scoring configuration object based on provided page IDs.
-   * This function creates a scoring configuration object containing
-   * a list of questions associated with the provided page IDs. It
-   * looks up each page's corresponding questions and appends them
-   * to the `questions` property of the scoring configuration object.
-   * @function
-   * @param {...string} pageId - A list of page identifiers used to retrieve associated questions.
-   * @returns {object} A scoring configuration object containing a `questions` array populated based on the provided page IDs.
-   */
   const mockScoringConfig = (...pageId) => {
     const scoringConfig = { questions: [] }
     pageId.forEach((page) => {
@@ -63,19 +53,19 @@ describe('score function', () => {
   }
 
   it('should error when user answers does not include a required question', () => {
-    const answers = [{ questionId: 'not singleAnswer', answers: ['A'] }]
+    const answers = { 'not singleAnswer': ['A'] }
     const mockConfig = mockScoringConfig('singleAnswer')
 
     expect(() => score(mockConfig)(answers)).toThrow(
-      'Questions with id(s) singleAnswer not found in users answers.'
+      `Questions with id(s) singleAnswer not found in user's answers.`
     )
   })
 
   it('should ignore questions that are not in the scoring data', () => {
-    const answers = [
-      { questionId: 'singleAnswer', answers: ['A'] },
-      { questionId: 'noScoringQuestion', answers: ['B'] }
-    ]
+    const answers = {
+      singleAnswer: ['A'],
+      noScoringQuestion: ['B']
+    }
     const mockConfig = mockScoringConfig('singleAnswer')
 
     const result = score(mockConfig)(answers)
@@ -84,7 +74,8 @@ describe('score function', () => {
 
   it('returns correct scores for valid singleAnswer question', () => {
     const answers = { singleAnswer: ['A'] }
-    const result = score(mockScoringConfig)(answers)
+    const mockConfig = mockScoringConfig('singleAnswer')
+    const result = score(mockConfig)(answers)
     expect(result).toEqual([
       {
         questionId: 'singleAnswer',
@@ -97,7 +88,8 @@ describe('score function', () => {
 
   it('returns correct scores for valid multiAnswer question', () => {
     const answers = { multiAnswer: ['A', 'B', 'C'] }
-    const result = score(mockScoringConfig)(answers)
+    const mockConfig = mockScoringConfig('multiAnswer')
+    const result = score(mockConfig)(answers)
     expect(result).toEqual([
       {
         questionId: 'multiAnswer',
@@ -110,7 +102,8 @@ describe('score function', () => {
 
   it('handles None of the above correctly for singleAnswer', () => {
     const answers = { singleAnswer: ['None of the above'] }
-    const result = score(mockScoringConfig)(answers)
+    const mockConfig = mockScoringConfig('singleAnswer')
+    const result = score(mockConfig)(answers)
     expect(result).toEqual([
       {
         questionId: 'singleAnswer',
@@ -123,7 +116,8 @@ describe('score function', () => {
 
   it('handles None of the above correctly for multiAnswer', () => {
     const answers = { multiAnswer: ['None of the above'] }
-    const result = score(mockScoringConfig)(answers)
+    const mockConfig = mockScoringConfig('multiAnswer')
+    const result = score(mockConfig)(answers)
     expect(result).toEqual([
       {
         questionId: 'multiAnswer',
@@ -134,19 +128,13 @@ describe('score function', () => {
     ])
   })
 
-  it('throws an error if question ID is not found', () => {
-    const answers = { invalidQuestion: ['A'] }
-    expect(() => score(mockScoringConfig)(answers)).toThrow(
-      'Question with id invalidQuestion not found in scoringData.'
-    )
-  })
-
   it('handles multiple answers correctly', () => {
     const answers = {
       singleAnswer: ['B'],
       multiAnswer: ['A', 'C']
     }
-    const result = score(mockScoringConfig)(answers)
+    const mockConfig = mockScoringConfig('singleAnswer', 'multiAnswer')
+    const result = score(mockConfig)(answers)
     expect(result).toEqual([
       {
         questionId: 'singleAnswer',
