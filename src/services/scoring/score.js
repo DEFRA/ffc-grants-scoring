@@ -39,9 +39,6 @@ function score(scoringConfig) {
         const question = scoringConfig.questions.find(
           (q) => q.id === questionId
         )
-        if (!question) {
-          return undefined
-        }
 
         const predicate = question.scoreMethod
         const calculatedScore = predicate(question, responses)
