@@ -1,4 +1,4 @@
-import { scoringFailAction } from './failAction.js'
+import { scoringFailAction } from './fail-action.js'
 import { statusCodes } from '../common/constants/status-codes.js'
 import { log } from '../logging/log.js'
 
@@ -44,7 +44,7 @@ describe('scoringFailAction', () => {
     expect(h.response).toHaveBeenCalledWith({
       statusCode: statusCodes.badRequest,
       error: 'Bad Request',
-      message: 'Validation failed: [field1] : "field1" is required'
+      message: 'Validation failed: [field1]: "field1" is required'
     })
     expect(response).toBe(h)
     expect(h.code).toHaveBeenCalledWith(statusCodes.badRequest)
@@ -56,7 +56,7 @@ describe('scoringFailAction', () => {
       },
       {
         grantType: 'testGrant',
-        message: 'Validation failed: [field1] : "field1" is required'
+        message: 'Validation failed: [field1]: "field1" is required'
       }
     )
   })
@@ -87,7 +87,7 @@ describe('scoringFailAction', () => {
       statusCode: statusCodes.badRequest,
       error: 'Bad Request',
       message:
-        'Validation failed: [field1] : "field1" is required | [field2] : "field2" must be a number'
+        'Validation failed: [field1]: "field1" is required | [field2]: "field2" must be a number'
     })
     expect(response).toBe(h)
     expect(h.code).toHaveBeenCalledWith(statusCodes.badRequest)
@@ -100,7 +100,7 @@ describe('scoringFailAction', () => {
       {
         grantType: 'testGrant',
         message:
-          'Validation failed: [field1] : "field1" is required | [field2] : "field2" must be a number'
+          'Validation failed: [field1]: "field1" is required | [field2]: "field2" must be a number'
       }
     )
   })
@@ -125,7 +125,7 @@ describe('scoringFailAction', () => {
     expect(h.response).toHaveBeenCalledWith({
       statusCode: statusCodes.badRequest,
       error: 'Bad Request',
-      message: 'Validation failed: [field1] : "field1" is required'
+      message: 'Validation failed: [field1]: "field1" is required'
     })
     expect(response).toBe(h)
     expect(h.code).toHaveBeenCalledWith(statusCodes.badRequest)
@@ -137,7 +137,57 @@ describe('scoringFailAction', () => {
       },
       {
         grantType: 'testGrant',
-        message: 'Validation failed: [field1] : "field1" is required'
+        message: 'Validation failed: [field1]: "field1" is required'
+      }
+    )
+  })
+
+  test('should handle context.details and return formatted message', () => {
+    const err = {
+      isJoi: true,
+      details: [
+        {
+          message: '"field1" is required',
+          path: ['field1'],
+          context: {
+            details: [
+              {
+                path: ['field1', 'subfield1'],
+                message: '"subfield1" is required'
+              },
+              {
+                path: ['field1', 'subfield2'],
+                message: '"subfield2" must be a number'
+              }
+            ]
+          }
+        }
+      ]
+    }
+
+    const request = { params: { grantType: 'testGrant' } }
+
+    // Call the scoringFailAction with mock request and error
+    const response = scoringFailAction(request, h, err)
+
+    expect(h.response).toHaveBeenCalledWith({
+      statusCode: statusCodes.badRequest,
+      error: 'Bad Request',
+      message:
+        'Validation failed: [field1.subfield1]: "subfield1" is required, [field1.subfield2]: "subfield2" must be a number'
+    })
+    expect(response).toBe(h)
+    expect(h.code).toHaveBeenCalledWith(statusCodes.badRequest)
+    expect(h.takeover).toHaveBeenCalled()
+    expect(log).toHaveBeenCalledWith(
+      {
+        event: 'scoring_validation_error',
+        level: 'error'
+      },
+      {
+        grantType: 'testGrant',
+        message:
+          'Validation failed: [field1.subfield1]: "subfield1" is required, [field1.subfield2]: "subfield2" must be a number'
       }
     )
   })

@@ -1,7 +1,7 @@
 import { scoringPayloadSchema } from './validation.js'
 import { scoringController } from '~/src/api/scoring/controller.js'
 import { normalizePayload } from './dxt-normaliser.js'
-import { scoringFailAction } from './failAction.js'
+import { scoringFailAction } from './fail-action.js'
 
 /**
  * @satisfies {ServerRegisterPluginObject<void>}
