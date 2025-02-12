@@ -8,15 +8,39 @@
  */
 function score(scoringConfig) {
   return (userAnswers) => {
-    const scoredAnswers = userAnswers.map(
+    const scoringConfigQuestionIds = scoringConfig.questions.map(
+      (value) => value.id
+    )
+
+    // filter out all userAnswers that are not in the scoring data
+    const filteredAnswers = userAnswers.filter(({ questionId }) =>
+      scoringConfigQuestionIds.includes(questionId)
+    )
+
+    const userAnswerQuestionIds = filteredAnswers.map(
+      ({ questionId }) => questionId
+    )
+
+    const questionsDiff = scoringConfigQuestionIds.reduce((acc, questionId) => {
+      if (!userAnswerQuestionIds.includes(questionId)) {
+        acc.push(questionId)
+      }
+      return acc
+    }, [])
+
+    if (questionsDiff.length > 0) {
+      throw new Error(
+        `Questions with id(s) ${questionsDiff.join(', ')} not found in users answers.`
+      )
+    }
+
+    const scoredAnswers = filteredAnswers.map(
       ({ questionId, answers: responses }) => {
         const question = scoringConfig.questions.find(
           (q) => q.id === questionId
         )
         if (!question) {
-          throw new Error(
-            `Question with id ${questionId} not found in scoringData.`
-          )
+          return undefined
         }
 
         const predicate = question.scoreMethod
@@ -32,6 +56,7 @@ function score(scoringConfig) {
         }
       }
     )
+
     return scoredAnswers
   }
 }

@@ -16,7 +16,7 @@ export const handler = (request, h) => {
       .response({ error: 'Invalid grant type' })
       .code(statusCodes.badRequest)
   }
-  log(LogCodes.SCORING.CONFIG_FOUND, { grantType, scoringConfig })
+  log(LogCodes.SCORING.CONFIG_FOUND, { grantType })
 
   try {
     // Find matching scoring data for the provided questionIds
