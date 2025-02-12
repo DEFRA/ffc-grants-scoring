@@ -3,6 +3,7 @@ import { handler } from './handler.js'
 import { getScoringConfig } from '../../config/scoring-config.js'
 import mapToFinalResult from './mapper/map-to-final-result.js'
 import score from '../../../src/services/scoring/score.js'
+import { log, LogCodes } from '../logging/log.js'
 
 jest.mock('../../config/scoring-config.js')
 jest.mock('./mapper/map-to-final-result.js', () => ({
@@ -13,6 +14,7 @@ jest.mock('../../../src/services/scoring/score.js', () => ({
   __esModule: true,
   default: jest.fn()
 }))
+jest.mock('../logging/log.js')
 
 describe('Handler Function', () => {
   afterEach(() => {
@@ -37,7 +39,7 @@ describe('Handler Function', () => {
   ]
 
   const mockRequest = (grantType = 'example-grant', answers = mockAnswers) => ({
-    payload: answers,
+    payload: { data: { main: answers } },
     params: { grantType }
   })
 
@@ -46,12 +48,30 @@ describe('Handler Function', () => {
     { questionId: 'multiAnswer', score: { value: 6, band: 'Medium' } }
   ]
 
-  const mockFinalResult = { eligibility: 'eligible', score: 8 }
+  const mockFinalResult = {
+    score: 8,
+    scoreBand: 'Medium',
+    status: 'eligible'
+  }
 
   it('should return 400 for invalid grant type', async () => {
     getScoringConfig.mockReturnValue(null)
 
     await handler(mockRequest('invalid-grant'), mockH)
+
+    expect(log).toHaveBeenCalledWith(
+      LogCodes.SCORING.REQUEST_RECEIVED,
+      expect.objectContaining({
+        grantType: 'invalid-grant'
+      })
+    )
+
+    expect(log).toHaveBeenCalledWith(
+      LogCodes.SCORING.CONFIG_MISSING,
+      expect.objectContaining({
+        grantType: 'invalid-grant'
+      })
+    )
 
     expect(mockH.response).toHaveBeenCalledWith({ error: 'Invalid grant type' })
     expect(mockH.code).toHaveBeenCalledWith(400)
@@ -59,56 +79,99 @@ describe('Handler Function', () => {
 
   it('should process valid grant type and return final result', async () => {
     getScoringConfig.mockReturnValue(mockScoringConfig)
-    score.mockReturnValue(jest.fn().mockReturnValue(mockRawScores))
+    score.mockImplementation(() => (_answers) => mockRawScores)
     mapToFinalResult.mockReturnValue(mockFinalResult)
 
     await handler(mockRequest('example-grant'), mockH)
 
+    expect(log).toHaveBeenCalledWith(
+      LogCodes.SCORING.REQUEST_RECEIVED,
+      expect.objectContaining({
+        grantType: 'example-grant'
+      })
+    )
+
+    expect(log).toHaveBeenCalledWith(
+      LogCodes.SCORING.CONFIG_FOUND,
+      expect.objectContaining({
+        grantType: 'example-grant'
+      })
+    )
+
     expect(getScoringConfig).toHaveBeenCalledWith('example-grant')
     expect(score).toHaveBeenCalledWith(mockScoringConfig)
-    expect(score(mockScoringConfig)).toHaveBeenCalledWith(mockAnswers)
+    expect(score(mockScoringConfig)).toBeInstanceOf(Function)
+    expect(score(mockScoringConfig)(mockAnswers)).toEqual(mockRawScores)
+
     expect(mapToFinalResult).toHaveBeenCalledWith(
       mockScoringConfig,
       mockRawScores
     )
+
+    expect(log).toHaveBeenCalledWith(
+      LogCodes.SCORING.FINAL_RESULT,
+      expect.objectContaining({
+        grantType: 'example-grant',
+        message: expect.stringContaining(
+          'Score=8. Band=Medium. Eligibility=eligible'
+        )
+      })
+    )
+
     expect(mockH.response).toHaveBeenCalledWith(mockFinalResult)
     expect(mockH.code).toHaveBeenCalledWith(200)
   })
 
   it('should return 400 with an error response when the `score` function throws an error', async () => {
-    const errorMessage = {
-      error: 'Bad Request',
-      message: 'The score function threw an error.',
-      statusCode: 400
-    }
+    const errorMessage = 'The score function threw an error.'
 
     score.mockImplementation(() => {
-      throw new Error(errorMessage.message)
+      throw new Error(errorMessage)
     })
     getScoringConfig.mockReturnValue(mockScoringConfig)
 
     await handler(mockRequest('example-grant'), mockH)
 
-    expect(mockH.response).toHaveBeenCalledWith(errorMessage)
+    expect(log).toHaveBeenCalledWith(
+      LogCodes.SCORING.CONVERSION_ERROR,
+      expect.objectContaining({
+        grantType: 'example-grant',
+        message: errorMessage
+      })
+    )
+
+    expect(mockH.response).toHaveBeenCalledWith({
+      statusCode: 400,
+      error: 'Bad Request',
+      message: errorMessage
+    })
     expect(mockH.code).toHaveBeenCalledWith(400)
   })
 
   it('should return a 400 with an error response when the `mapToFinalResult` function throws an error', async () => {
-    const errorMessage = {
-      error: 'Bad Request',
-      message: 'mapToFinalResult threw an error.',
-      statusCode: 400
-    }
+    const errorMessage = 'mapToFinalResult threw an error.'
 
     mapToFinalResult.mockImplementation(() => {
-      throw new Error(errorMessage.message)
+      throw new Error(errorMessage)
     })
-    score.mockReturnValue(jest.fn().mockReturnValue(mockRawScores))
+    score.mockReturnValue(() => mockRawScores)
     getScoringConfig.mockReturnValue(mockScoringConfig)
 
     await handler(mockRequest('example-grant'), mockH)
 
-    expect(mockH.response).toHaveBeenCalledWith(errorMessage)
+    expect(log).toHaveBeenCalledWith(
+      LogCodes.SCORING.CONVERSION_ERROR,
+      expect.objectContaining({
+        grantType: 'example-grant',
+        message: errorMessage
+      })
+    )
+
+    expect(mockH.response).toHaveBeenCalledWith({
+      statusCode: 400,
+      error: 'Bad Request',
+      message: errorMessage
+    })
     expect(mockH.code).toHaveBeenCalledWith(400)
   })
 })
