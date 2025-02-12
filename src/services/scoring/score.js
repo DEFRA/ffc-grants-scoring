@@ -12,6 +12,7 @@ function score(scoringConfig) {
       (value) => value.id
     )
 
+    // @todo - This code is not optimised and can be improved
     // filter out all userAnswers that are not in the scoring data
     const filteredAnswers = userAnswers.filter(({ questionId }) =>
       scoringConfigQuestionIds.includes(questionId)
