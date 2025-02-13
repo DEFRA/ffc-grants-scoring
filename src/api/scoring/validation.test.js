@@ -19,6 +19,19 @@ describe('Scoring Payload Validation', () => {
       const { error } = scoringPayloadSchema.validate(validPayload)
       expect(error).toBeUndefined()
     })
+
+    it('should allow meta, files, and repeaters to be any object', () => {
+      const validPayload = {
+        meta: { extra: 'info' },
+        data: {
+          files: { file1: 'content' },
+          repeaters: { repeater1: 'someValue' },
+          main: { someKey: 'someValue' }
+        }
+      }
+      const { error } = scoringPayloadSchema.validate(validPayload)
+      expect(error).toBeUndefined()
+    })
   })
 
   describe('errors', () => {
@@ -93,17 +106,17 @@ describe('Scoring Payload Validation', () => {
         )
       })
 
-      it('should allow meta, files, and repeaters to be any object', () => {
-        const validPayload = {
-          meta: { extra: 'info' },
-          data: {
-            files: { file1: 'content' },
-            repeaters: { repeater1: 'someValue' },
-            main: { someKey: 'someValue' }
-          }
+      it('should return an error if an array inside "main" contains duplicate values', () => {
+        const invalidPayload = {
+          data: { main: { someKey: ['duplicate', 'duplicate', 123] } }
         }
-        const { error } = scoringPayloadSchema.validate(validPayload)
-        expect(error).toBeUndefined()
+
+        const { error } = scoringPayloadSchema.validate(invalidPayload)
+
+        expect(error).toBeDefined()
+        expect(error.details[0].message).toMatch(
+          /"data.main.someKey\[1\]" contains a duplicate value/
+        )
       })
     })
 
