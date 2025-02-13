@@ -12,7 +12,7 @@ export const handler = (request, h) => {
   })
   const scoringConfig = getScoringConfig(grantType)
 
-  const options = {
+  const scoringOptions = {
     allowPartialScoring:
       request.query && Object.hasOwn(request.query, 'allowPartialScoring')
         ? Boolean(request.query.allowPartialScoring)
@@ -37,7 +37,7 @@ export const handler = (request, h) => {
     // Extract user answers directly
     const answers = request.payload.data.main
     // Find matching scoring data for the provided questionIds
-    const rawScores = score(scoringConfig, options)(answers)
+    const rawScores = score(scoringConfig, scoringOptions)(answers)
     const finalResult = mapToFinalResult(scoringConfig, rawScores)
     log(LogCodes.SCORING.FINAL_RESULT, {
       grantType,

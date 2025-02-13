@@ -48,7 +48,7 @@ function scoreAnswers(filteredAnswers, questionMap) {
 /**
  * Calculates and evaluates the score based on provided scoring data and answers.
  * @param {import("~/src/config/scoring-types.js").ScoringConfig} scoringConfig - The scoring data.
- * @param {{ allowPartialScoring: Boolean } [Object]} - Scoring options
+ * @param {{ allowPartialScoring: boolean }} [options] - Optional configuration.
  * @returns {Function} A function that takes user answers and returns an array of scored results.
  * @throws {Error} If required questions are missing from user answers.
  */
