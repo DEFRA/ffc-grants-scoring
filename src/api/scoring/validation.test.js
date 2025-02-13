@@ -3,16 +3,20 @@ import { scoringPayloadSchema } from './validation.js'
 describe('Scoring Payload Validation', () => {
   describe('valid', () => {
     it('should validate a correct payload with data.main', () => {
-      const validPayload = {
-        data: {
-          main: {
-            someKey: 'someValue'
-          }
-        }
-      }
-
+      const validPayload = { data: { main: { someKey: 'someValue' } } }
       const { error } = scoringPayloadSchema.validate(validPayload)
+      expect(error).toBeUndefined()
+    })
 
+    it('should validate when "main" contains a number', () => {
+      const validPayload = { data: { main: { someKey: 123 } } }
+      const { error } = scoringPayloadSchema.validate(validPayload)
+      expect(error).toBeUndefined()
+    })
+
+    it('should validate when "main" contains an array of valid types', () => {
+      const validPayload = { data: { main: { someKey: ['string', 456] } } }
+      const { error } = scoringPayloadSchema.validate(validPayload)
       expect(error).toBeUndefined()
     })
   })
@@ -43,6 +47,63 @@ describe('Scoring Payload Validation', () => {
 
         expect(error).toBeDefined()
         expect(error.details[0].message).toBe('"main" must be an object')
+      })
+
+      it('should return error if "main" is null', () => {
+        const invalidPayload = { data: { main: null } }
+
+        const { error } = scoringPayloadSchema.validate(invalidPayload)
+
+        expect(error).toBeDefined()
+        expect(error.details[0].message).toBe('"main" must be an object')
+      })
+
+      it('should return error if a key inside "main" is null', () => {
+        const invalidPayload = { data: { main: { someKey: null } } }
+
+        const { error } = scoringPayloadSchema.validate(invalidPayload)
+
+        expect(error).toBeDefined()
+        expect(error.details[0].message).toMatch(
+          /must be one of \[string, number, array\]/
+        )
+      })
+
+      it('should return error if an array inside "main" contains null', () => {
+        const invalidPayload = {
+          data: { main: { someKey: ['valid', null, 123] } }
+        }
+
+        const { error } = scoringPayloadSchema.validate(invalidPayload)
+
+        expect(error).toBeDefined()
+        expect(error.details[0].message).toMatch(
+          /"data.main.someKey\[1\]" does not match any of the allowed types/
+        )
+      })
+
+      it('should return an error if "main" contains an invalid type (e.g., object)', () => {
+        const invalidPayload = {
+          data: { main: { someKey: { nested: 'invalid' } } }
+        }
+        const { error } = scoringPayloadSchema.validate(invalidPayload)
+        expect(error).toBeDefined()
+        expect(error.details[0].message).toMatch(
+          /must be one of \[string, number, array\]/
+        )
+      })
+
+      it('should allow meta, files, and repeaters to be any object', () => {
+        const validPayload = {
+          meta: { extra: 'info' },
+          data: {
+            files: { file1: 'content' },
+            repeaters: { repeater1: 'someValue' },
+            main: { someKey: 'someValue' }
+          }
+        }
+        const { error } = scoringPayloadSchema.validate(validPayload)
+        expect(error).toBeUndefined()
       })
     })
 
