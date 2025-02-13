@@ -6,7 +6,7 @@
 	},
 	"item": [
 		{
-			"name": "Evaluate Grant Eligibility",
+			"name": "Evaluate Grant Eligibility DXT",
 			"request": {
 				"auth": {
 					"type": "noauth"
@@ -28,7 +28,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{{dynamic_body}}",
+					"raw": "{\n  \"data\": {\n    \"main\": {\n      \"/products-processed\": \"products-processed-A1\",\n      \"/adding-value\": \"adding-value-A1\",\n      \"/project-impact\": [\"project-impact-A1\",\"project-impact-A2\",\"project-impact-A4\"],\n      \"/future-customers\": \"future-customers-A1\",\n      \"/collaboration\": \"collaboration-A1\",\n      \"/environmental-impact\": [\"environmental-impact-A1\",\"environmental-impact-A2\",\"environmental-impact-A3\"]\n    }\n  }\n}\n",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -91,24 +91,6 @@
 			"script": {
 				"type": "text/javascript",
 				"exec": [
-					"const grantType = pm.environment.get(\"grantType\");",
-					"console.log(`Boolean(pm.environment.get(\"isDxtNormaliserEnabled\"))=${pm.environment.get(\"isDxtNormaliserEnabled\")}`)",
-					"console.log(`Boolean(pm.environment.get(\"isDxtNormaliserEnabled\"))===\"true\" = ${pm.environment.get(\"isDxtNormaliserEnabled\")===\"true\"}`)",
-					"const isDxtNormaliserEnabled = pm.environment.get(\"isDxtNormaliserEnabled\") === \"true\";",
-					"console.log(`isDxtNormaliserEnabled=${isDxtNormaliserEnabled}`)",
-					"",
-					"// Retrieve the dynamic body based on grantType and hasDxtNormaliser flag",
-					"const bodyKey = isDxtNormaliserEnabled ? `grant_${grantType}_body_dxt` : `grant_${grantType}_body`;",
-					"",
-					"// Ensure the environment variable exists",
-					"const body = pm.environment.get(bodyKey);",
-					"",
-					"if (!body) {",
-					"    console.error(`Error: ${bodyKey} is not defined in the environment.`);",
-					"} else {",
-					"    pm.variables.set(\"dynamic_body\", body);",
-					"    console.log(`Dynamic body set for ${bodyKey}`);",
-					"}",
 					""
 				]
 			}
