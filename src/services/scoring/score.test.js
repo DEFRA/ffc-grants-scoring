@@ -56,18 +56,16 @@ describe('score function', () => {
     const answers = { 'not singleAnswer': ['A'] }
     const mockConfig = mockScoringConfig('singleAnswer')
 
-    expect(() =>
-      score(mockConfig, { allowPartialScoring: false })(answers)
-    ).toThrow(`Questions with id(s) singleAnswer not found in user's answers.`)
+    expect(() => score(mockConfig, false)(answers)).toThrow(
+      `Questions with id(s) singleAnswer not found in user's answers.`
+    )
   })
 
   it('should not error when user answers do not include required questions and allowPartialScoring is enabled', () => {
     const answers = { singleAnswer: ['A'] }
     const mockConfig = mockScoringConfig('singleAnswer', 'multiAnswer')
 
-    expect(() =>
-      score(mockConfig, { allowPartialScoring: true })(answers)
-    ).not.toThrow()
+    expect(() => score(mockConfig, true)(answers)).not.toThrow()
   })
 
   it('should ignore questions that are not in the scoring data', () => {

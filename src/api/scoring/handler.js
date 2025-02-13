@@ -10,14 +10,8 @@ export const handler = (request, h) => {
     grantType,
     message: `Request received for grantType=${grantType}`
   })
-  const scoringConfig = getScoringConfig(grantType)
 
-  const scoringOptions = {
-    allowPartialScoring:
-      request.query && Object.hasOwn(request.query, 'allowPartialScoring')
-        ? toBool(request.query.allowPartialScoring)
-        : false
-  }
+  const scoringConfig = getScoringConfig(grantType)
 
   if (!scoringConfig) {
     log(LogCodes.SCORING.CONFIG_MISSING, {
@@ -37,12 +31,18 @@ export const handler = (request, h) => {
     // Extract user answers directly
     const answers = request.payload.data.main
     // Find matching scoring data for the provided questionIds
-    const rawScores = score(scoringConfig, scoringOptions)(answers)
+    const rawScores = score(
+      scoringConfig,
+      request.query.allowPartialScoring
+    )(answers)
+
     const finalResult = mapToFinalResult(scoringConfig, rawScores)
+
     log(LogCodes.SCORING.FINAL_RESULT, {
       grantType,
       message: `Scoring final result for grantType=${grantType}. Score=${finalResult.score}. Band=${finalResult.scoreBand}. Eligibility=${finalResult.status}`
     })
+
     return h.response(finalResult).code(statusCodes.ok)
   } catch (error) {
     log(LogCodes.SCORING.CONVERSION_ERROR, {
@@ -57,18 +57,4 @@ export const handler = (request, h) => {
       })
       .code(statusCodes.badRequest)
   }
-}
-
-const toBool = (value) => {
-  const checkForStrings =
-    typeof value === 'string' &&
-    (value.toLowerCase() === 'true' ||
-      value !== 'false' ||
-      parseInt(value) >= 1)
-
-  return (
-    checkForStrings ||
-    (typeof value === 'number' && value >= 1) ||
-    (typeof value === 'boolean' && value === true)
-  )
 }
