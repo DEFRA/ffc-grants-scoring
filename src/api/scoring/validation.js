@@ -1,5 +1,9 @@
 import Joi from 'joi'
 
+export const scoringQueryParamsSchema = Joi.object({
+  allowPartialScoring: Joi.boolean().default(false)
+})
+
 export const scoringPayloadSchema = Joi.object({
   meta: Joi.any(),
   data: Joi.object({

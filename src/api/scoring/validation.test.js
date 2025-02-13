@@ -1,4 +1,18 @@
-import { scoringPayloadSchema } from './validation.js'
+import { scoringPayloadSchema, scoringQueryParamsSchema } from './validation.js'
+
+describe('Scoring query params validation', () => {
+  it('should default to false if query is not provided', () => {
+    const request = {}
+    const result = scoringQueryParamsSchema.validate(request)
+    expect(result.value.allowPartialScoring).toBe(false)
+  })
+
+  it('should allow partial scoring if query is true', () => {
+    const query = { allowPartialScoring: true }
+    const result = scoringQueryParamsSchema.validate(query)
+    expect(result.value.allowPartialScoring).toBe(true)
+  })
+})
 
 describe('Scoring Payload Validation', () => {
   describe('valid', () => {

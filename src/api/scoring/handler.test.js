@@ -40,7 +40,8 @@ describe('Handler Function', () => {
 
   const mockRequest = (grantType = 'example-grant', answers = mockAnswers) => ({
     payload: { data: { main: answers } },
-    params: { grantType }
+    params: { grantType },
+    query: { allowPartialScoring: false }
   })
 
   const mockRawScores = [
@@ -77,9 +78,27 @@ describe('Handler Function', () => {
     expect(mockH.code).toHaveBeenCalledWith(400)
   })
 
+  it.each([
+    { test: true, expected: true },
+    { test: false, expected: false }
+  ])(
+    `with queryParam of $test it should pass { allowPartialScoring: $expected } to the score function`,
+    async ({ test, expected }) => {
+      getScoringConfig.mockReturnValue(mockScoringConfig)
+      score.mockImplementation(() => (_answers) => mockRawScores)
+      mapToFinalResult.mockReturnValue(mockFinalResult)
+
+      const request = mockRequest('example-grant')
+      request.query = { allowPartialScoring: test }
+      await handler(request, mockH)
+
+      expect(score).toHaveBeenCalledWith(mockScoringConfig, expected)
+    }
+  )
+
   it('should process valid grant type and return final result', async () => {
     getScoringConfig.mockReturnValue(mockScoringConfig)
-    score.mockImplementation(() => (_answers) => mockRawScores)
+    score.mockImplementation(() => (_answers, _partial) => mockRawScores)
     mapToFinalResult.mockReturnValue(mockFinalResult)
 
     await handler(mockRequest('example-grant'), mockH)
@@ -99,7 +118,7 @@ describe('Handler Function', () => {
     )
 
     expect(getScoringConfig).toHaveBeenCalledWith('example-grant')
-    expect(score).toHaveBeenCalledWith(mockScoringConfig)
+    expect(score).toHaveBeenCalledWith(mockScoringConfig, false)
     expect(score(mockScoringConfig)).toBeInstanceOf(Function)
     expect(score(mockScoringConfig)(mockAnswers)).toEqual(mockRawScores)
 
