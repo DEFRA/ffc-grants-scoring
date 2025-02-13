@@ -34,7 +34,7 @@ function scoreAnswers(filteredAnswers, questionMap) {
     const question = questionMap.get(questionId)
 
     // Ensure responses are always an array
-    const responses = Array.isArray(answers) ? answers : ([answers] ?? [])
+    const responses = Array.isArray(answers) ? answers : [answers]
 
     return {
       questionId,

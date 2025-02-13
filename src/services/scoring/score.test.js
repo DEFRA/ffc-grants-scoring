@@ -150,4 +150,18 @@ describe('score function', () => {
       }
     ])
   })
+
+  it('handles a single non-array answer gracefully', () => {
+    const answers = { singleAnswer: 'A' }
+    const mockConfig = mockScoringConfig('singleAnswer')
+    const result = score(mockConfig)(answers) // Ensure it's wrapped in an array
+    expect(result).toEqual([
+      {
+        questionId: 'singleAnswer',
+        category: 'Category 1',
+        fundingPriorities: ['Priority A'],
+        score: { value: 4, band: ScoreBands.MEDIUM }
+      }
+    ])
+  })
 })
