@@ -99,7 +99,9 @@ describe('Handler Function', () => {
     )
 
     expect(getScoringConfig).toHaveBeenCalledWith('example-grant')
-    expect(score).toHaveBeenCalledWith(mockScoringConfig)
+    expect(score).toHaveBeenCalledWith(mockScoringConfig, {
+      allowPartialScoring: false
+    })
     expect(score(mockScoringConfig)).toBeInstanceOf(Function)
     expect(score(mockScoringConfig)(mockAnswers)).toEqual(mockRawScores)
 

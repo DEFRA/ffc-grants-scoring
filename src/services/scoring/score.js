@@ -48,10 +48,11 @@ function scoreAnswers(filteredAnswers, questionMap) {
 /**
  * Calculates and evaluates the score based on provided scoring data and answers.
  * @param {import("~/src/config/scoring-types.js").ScoringConfig} scoringConfig - The scoring data.
+ * @param {{ allowPartialScoring: Boolean } [Object]} - Scoring options
  * @returns {Function} A function that takes user answers and returns an array of scored results.
  * @throws {Error} If required questions are missing from user answers.
  */
-function score(scoringConfig) {
+function score(scoringConfig, options = {}) {
   const questionMap = new Map(scoringConfig.questions.map((q) => [q.id, q]))
   const scoringConfigQuestionIds = new Set(questionMap.keys())
 
@@ -60,15 +61,18 @@ function score(scoringConfig) {
       userAnswers,
       scoringConfigQuestionIds
     )
-    const missingQuestions = findMissingQuestions(
-      filteredAnswers,
-      scoringConfigQuestionIds
-    )
 
-    if (missingQuestions.length > 0) {
-      throw new Error(
-        `Questions with id(s) ${missingQuestions.join(', ')} not found in user's answers.`
+    if (!options.allowPartialScoring) {
+      const missingQuestions = findMissingQuestions(
+        filteredAnswers,
+        scoringConfigQuestionIds
       )
+
+      if (missingQuestions.length > 0) {
+        throw new Error(
+          `Questions with id(s) ${missingQuestions.join(', ')} not found in user's answers.`
+        )
+      }
     }
 
     return scoreAnswers(filteredAnswers, questionMap)

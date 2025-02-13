@@ -7,6 +7,10 @@
  * @throws {Error} Throws if none of the `userAnswers` are found in the scoring rules.
  */
 function multiScore(questionScoringConfig, userAnswers) {
+  if (userAnswers.length === 1) {
+    userAnswers = userAnswers[0].split(',')
+  }
+
   const scores = userAnswers.map((userAnswer) => {
     const matchingAnswer = questionScoringConfig.answers.find(
       (answer) => answer.answer === userAnswer
