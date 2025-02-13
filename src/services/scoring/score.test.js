@@ -44,16 +44,6 @@ describe('score function', () => {
     }
   }
 
-  /**
-   * Generates a mock scoring configuration object based on provided page IDs.
-   * This function creates a scoring configuration object containing
-   * a list of questions associated with the provided page IDs. It
-   * looks up each page's corresponding questions and appends them
-   * to the `questions` property of the scoring configuration object.
-   * @function
-   * @param {...string} pageId - A list of page identifiers used to retrieve associated questions.
-   * @returns {object} A scoring configuration object containing a `questions` array populated based on the provided page IDs.
-   */
   const mockScoringConfig = (...pageId) => {
     const scoringConfig = { questions: [] }
     pageId.forEach((page) => {
@@ -63,19 +53,19 @@ describe('score function', () => {
   }
 
   it('should error when user answers does not include a required question', () => {
-    const answers = [{ questionId: 'not singleAnswer', answers: ['A'] }]
+    const answers = { 'not singleAnswer': ['A'] }
     const mockConfig = mockScoringConfig('singleAnswer')
 
     expect(() => score(mockConfig)(answers)).toThrow(
-      'Questions with id(s) singleAnswer not found in users answers.'
+      `Questions with id(s) singleAnswer not found in user's answers.`
     )
   })
 
   it('should ignore questions that are not in the scoring data', () => {
-    const answers = [
-      { questionId: 'singleAnswer', answers: ['A'] },
-      { questionId: 'noScoringQuestion', answers: ['B'] }
-    ]
+    const answers = {
+      singleAnswer: ['A'],
+      noScoringQuestion: ['B']
+    }
     const mockConfig = mockScoringConfig('singleAnswer')
 
     const result = score(mockConfig)(answers)
@@ -83,7 +73,7 @@ describe('score function', () => {
   })
 
   it('returns correct scores for valid singleAnswer question', () => {
-    const answers = [{ questionId: 'singleAnswer', answers: ['A'] }]
+    const answers = { singleAnswer: ['A'] }
     const mockConfig = mockScoringConfig('singleAnswer')
     const result = score(mockConfig)(answers)
     expect(result).toEqual([
@@ -97,7 +87,7 @@ describe('score function', () => {
   })
 
   it('returns correct scores for valid multiAnswer question', () => {
-    const answers = [{ questionId: 'multiAnswer', answers: ['A', 'B', 'C'] }]
+    const answers = { multiAnswer: ['A', 'B', 'C'] }
     const mockConfig = mockScoringConfig('multiAnswer')
     const result = score(mockConfig)(answers)
     expect(result).toEqual([
@@ -111,9 +101,7 @@ describe('score function', () => {
   })
 
   it('handles None of the above correctly for singleAnswer', () => {
-    const answers = [
-      { questionId: 'singleAnswer', answers: ['None of the above'] }
-    ]
+    const answers = { singleAnswer: ['None of the above'] }
     const mockConfig = mockScoringConfig('singleAnswer')
     const result = score(mockConfig)(answers)
     expect(result).toEqual([
@@ -127,9 +115,7 @@ describe('score function', () => {
   })
 
   it('handles None of the above correctly for multiAnswer', () => {
-    const answers = [
-      { questionId: 'multiAnswer', answers: ['None of the above'] }
-    ]
+    const answers = { multiAnswer: ['None of the above'] }
     const mockConfig = mockScoringConfig('multiAnswer')
     const result = score(mockConfig)(answers)
     expect(result).toEqual([
@@ -142,20 +128,12 @@ describe('score function', () => {
     ])
   })
 
-  it('throws an error if question ID is not found', () => {
-    const answers = [{ questionId: 'invalidQuestion', answers: ['A'] }]
-    const mockConfig = mockScoringConfig('multiAnswer', 'singleAnswer')
-    expect(() => score(mockConfig)(answers)).toThrow(
-      'Questions with id(s) multiAnswer, singleAnswer not found in users answers.'
-    )
-  })
-
   it('handles multiple answers correctly', () => {
-    const answers = [
-      { questionId: 'singleAnswer', answers: ['B'] },
-      { questionId: 'multiAnswer', answers: ['A', 'C'] }
-    ]
-    const mockConfig = mockScoringConfig('multiAnswer', 'singleAnswer')
+    const answers = {
+      singleAnswer: ['B'],
+      multiAnswer: ['A', 'C']
+    }
+    const mockConfig = mockScoringConfig('singleAnswer', 'multiAnswer')
     const result = score(mockConfig)(answers)
     expect(result).toEqual([
       {
@@ -169,6 +147,20 @@ describe('score function', () => {
         category: 'Category 2',
         fundingPriorities: ['Priority B', 'Priority C'],
         score: { value: 6, band: ScoreBands.MEDIUM }
+      }
+    ])
+  })
+
+  it('handles a single non-array answer gracefully', () => {
+    const answers = { singleAnswer: 'A' }
+    const mockConfig = mockScoringConfig('singleAnswer')
+    const result = score(mockConfig)(answers) // Ensure it's wrapped in an array
+    expect(result).toEqual([
+      {
+        questionId: 'singleAnswer',
+        category: 'Category 1',
+        fundingPriorities: ['Priority A'],
+        score: { value: 4, band: ScoreBands.MEDIUM }
       }
     ])
   })

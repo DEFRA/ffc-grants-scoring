@@ -76,7 +76,12 @@ module.exports = {
         'n/no-extraneous-require': 'off',
         'n/no-extraneous-import': 'off',
         'n/no-missing-require': 'off',
-        'n/no-missing-import': 'off'
+        'n/no-missing-import': 'off',
+
+        '@typescript-eslint/no-unused-vars': [
+          'warn',
+          { argsIgnorePattern: '^_' }
+        ]
       },
       settings: {
         'import/parsers': {

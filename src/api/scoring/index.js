@@ -1,6 +1,5 @@
 import { scoringPayloadSchema } from './validation.js'
 import { scoringController } from '~/src/api/scoring/controller.js'
-import { normalizePayload } from './dxt-normaliser.js'
 import { scoringFailAction } from './fail-action.js'
 
 /**
@@ -15,7 +14,6 @@ const scoring = {
         path: '/scoring/api/v1/{grantType}/score',
         ...scoringController,
         options: {
-          pre: [{ method: normalizePayload }],
           validate: {
             payload: scoringPayloadSchema,
             failAction: scoringFailAction

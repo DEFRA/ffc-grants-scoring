@@ -5,7 +5,6 @@ import { statusCodes } from '../common/constants/status-codes.js'
 import { log, LogCodes } from '../logging/log.js'
 
 export const handler = (request, h) => {
-  const answers = request.payload
   const { grantType } = request.params
   log(LogCodes.SCORING.REQUEST_RECEIVED, {
     grantType,
@@ -28,6 +27,8 @@ export const handler = (request, h) => {
   })
 
   try {
+    // Extract user answers directly
+    const answers = request.payload.data.main
     // Find matching scoring data for the provided questionIds
     const rawScores = score(scoringConfig)(answers)
     const finalResult = mapToFinalResult(scoringConfig, rawScores)
