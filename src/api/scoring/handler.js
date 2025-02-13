@@ -60,11 +60,14 @@ export const handler = (request, h) => {
 }
 
 const toBool = (value) => {
+  const checkForStrings =
+    typeof value === 'string' &&
+    (value.toLowerCase() === 'true' ||
+      value !== 'false' ||
+      parseInt(value) >= 1)
+
   return (
-    (typeof value === 'string' &&
-      (value.toLowerCase() === 'true' ||
-        value !== 'false' ||
-        parseInt(value) < 1)) ||
+    checkForStrings ||
     (typeof value === 'number' && value >= 1) ||
     (typeof value === 'boolean' && value === true)
   )
