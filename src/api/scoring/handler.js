@@ -15,7 +15,7 @@ export const handler = (request, h) => {
   const scoringOptions = {
     allowPartialScoring:
       request.query && Object.hasOwn(request.query, 'allowPartialScoring')
-        ? Boolean(request.query.allowPartialScoring)
+        ? toBool(request.query.allowPartialScoring)
         : false
   }
 
@@ -57,4 +57,15 @@ export const handler = (request, h) => {
       })
       .code(statusCodes.badRequest)
   }
+}
+
+const toBool = (value) => {
+  return (
+    (typeof value === 'string' &&
+      (value.toLowerCase() === 'true' ||
+        value !== 'false' ||
+        parseInt(value) < 1)) ||
+    (typeof value === 'number' && value >= 1) ||
+    (typeof value === 'boolean' && value === true)
+  )
 }
