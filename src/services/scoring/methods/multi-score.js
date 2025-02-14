@@ -7,6 +7,11 @@
  * @throws {Error} Throws if none of the `userAnswers` are found in the scoring rules.
  */
 function multiScore(questionScoringConfig, userAnswers) {
+  // @todo this code is nasty, if it remains in the repo it needs to be moved to middleware. Ideally we should never need this once DXT has completed their work.
+  if (userAnswers.length === 1) {
+    userAnswers = [...new Set(userAnswers[0].split(','))]
+  }
+
   const scores = userAnswers.map((userAnswer) => {
     const matchingAnswer = questionScoringConfig.answers.find(
       (answer) => answer.answer === userAnswer

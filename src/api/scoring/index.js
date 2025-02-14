@@ -1,4 +1,4 @@
-import { scoringPayloadSchema } from './validation.js'
+import { scoringPayloadSchema, scoringQueryParamsSchema } from './validation.js'
 import { scoringController } from '~/src/api/scoring/controller.js'
 import { scoringFailAction } from './fail-action.js'
 
@@ -15,6 +15,7 @@ const scoring = {
         ...scoringController,
         options: {
           validate: {
+            query: scoringQueryParamsSchema,
             payload: scoringPayloadSchema,
             failAction: scoringFailAction
           }
