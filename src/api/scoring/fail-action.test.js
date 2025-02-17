@@ -55,7 +55,6 @@ describe('scoringFailAction', () => {
         level: 'error'
       },
       {
-        grantType: 'testGrant',
         message: 'Validation failed: [field1]: "field1" is required'
       }
     )
@@ -98,7 +97,6 @@ describe('scoringFailAction', () => {
         level: 'error'
       },
       {
-        grantType: 'testGrant',
         message:
           'Validation failed: [field1]: "field1" is required | [field2]: "field2" must be a number'
       }
@@ -136,7 +134,6 @@ describe('scoringFailAction', () => {
         level: 'error'
       },
       {
-        grantType: 'testGrant',
         message: 'Validation failed: [field1]: "field1" is required'
       }
     )
@@ -185,7 +182,6 @@ describe('scoringFailAction', () => {
         level: 'error'
       },
       {
-        grantType: 'testGrant',
         message:
           'Validation failed: [field1.subfield1]: "subfield1" is required, [field1.subfield2]: "subfield2" must be a number'
       }

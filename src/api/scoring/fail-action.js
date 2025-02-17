@@ -23,7 +23,6 @@ export const scoringFailAction = (request, h, err) => {
     const message = `Validation failed: ${messages.join(' | ')}`
 
     log(LogCodes.SCORING.VALIDATION_ERROR, {
-      grantType: request.params.grantType,
       message
     })
     return h

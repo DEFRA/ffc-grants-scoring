@@ -7,7 +7,6 @@ import { log, LogCodes } from '../logging/log.js'
 export const handler = (request, h) => {
   const { grantType } = request.params
   log(LogCodes.SCORING.REQUEST_RECEIVED, {
-    grantType,
     message: `Request received for grantType=${grantType}`
   })
 
@@ -15,7 +14,6 @@ export const handler = (request, h) => {
 
   if (!scoringConfig) {
     log(LogCodes.SCORING.CONFIG_MISSING, {
-      grantType,
       message: `Scoring config missing for grantType=${grantType}`
     })
     return h
@@ -23,7 +21,6 @@ export const handler = (request, h) => {
       .code(statusCodes.badRequest)
   }
   log(LogCodes.SCORING.CONFIG_FOUND, {
-    grantType,
     message: `Scoring config found for grantType=${grantType}`
   })
 
@@ -39,14 +36,12 @@ export const handler = (request, h) => {
     const finalResult = mapToFinalResult(scoringConfig, rawScores)
 
     log(LogCodes.SCORING.FINAL_RESULT, {
-      grantType,
       message: `Scoring final result for grantType=${grantType}. Score=${finalResult.score}. Band=${finalResult.scoreBand}. Eligibility=${finalResult.status}`
     })
 
     return h.response(finalResult).code(statusCodes.ok)
   } catch (error) {
     log(LogCodes.SCORING.CONVERSION_ERROR, {
-      grantType,
       message: error.message
     })
     return h

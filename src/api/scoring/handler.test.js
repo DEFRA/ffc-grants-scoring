@@ -63,14 +63,14 @@ describe('Handler Function', () => {
     expect(log).toHaveBeenCalledWith(
       LogCodes.SCORING.REQUEST_RECEIVED,
       expect.objectContaining({
-        grantType: 'invalid-grant'
+        message: `Request received for grantType=invalid-grant`
       })
     )
 
     expect(log).toHaveBeenCalledWith(
       LogCodes.SCORING.CONFIG_MISSING,
       expect.objectContaining({
-        grantType: 'invalid-grant'
+        message: `Scoring config missing for grantType=invalid-grant`
       })
     )
 
@@ -106,14 +106,14 @@ describe('Handler Function', () => {
     expect(log).toHaveBeenCalledWith(
       LogCodes.SCORING.REQUEST_RECEIVED,
       expect.objectContaining({
-        grantType: 'example-grant'
+        message: `Request received for grantType=example-grant`
       })
     )
 
     expect(log).toHaveBeenCalledWith(
       LogCodes.SCORING.CONFIG_FOUND,
       expect.objectContaining({
-        grantType: 'example-grant'
+        message: `Scoring config found for grantType=example-grant`
       })
     )
 
@@ -130,7 +130,6 @@ describe('Handler Function', () => {
     expect(log).toHaveBeenCalledWith(
       LogCodes.SCORING.FINAL_RESULT,
       expect.objectContaining({
-        grantType: 'example-grant',
         message: expect.stringContaining(
           'Score=8. Band=Medium. Eligibility=eligible'
         )
@@ -154,7 +153,6 @@ describe('Handler Function', () => {
     expect(log).toHaveBeenCalledWith(
       LogCodes.SCORING.CONVERSION_ERROR,
       expect.objectContaining({
-        grantType: 'example-grant',
         message: errorMessage
       })
     )
@@ -181,7 +179,6 @@ describe('Handler Function', () => {
     expect(log).toHaveBeenCalledWith(
       LogCodes.SCORING.CONVERSION_ERROR,
       expect.objectContaining({
-        grantType: 'example-grant',
         message: errorMessage
       })
     )
