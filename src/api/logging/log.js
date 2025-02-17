@@ -73,4 +73,4 @@ const validateLogParams = ({ level, event }, context) => {
   }
 }
 
-export { log, LogCodes }
+export { log, LogCodes, logger }

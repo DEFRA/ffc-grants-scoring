@@ -1,6 +1,5 @@
 import { statusCodes } from '../common/constants/status-codes.js'
-import { LogCodes } from '../logging/log-codes.js'
-import { log } from '../logging/log.js'
+import { logger } from '../logging/log.js'
 
 export const scoringFailAction = (_request, h, err) => {
   if (err.isJoi) {
@@ -22,9 +21,7 @@ export const scoringFailAction = (_request, h, err) => {
 
     const message = `Validation failed: ${messages.join(' | ')}`
 
-    log(LogCodes.SCORING.VALIDATION_ERROR, {
-      message
-    })
+    logger.error(message)
     return h
       .response({
         statusCode: statusCodes.badRequest,
