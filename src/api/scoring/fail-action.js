@@ -2,7 +2,7 @@ import { statusCodes } from '../common/constants/status-codes.js'
 import { LogCodes } from '../logging/log-codes.js'
 import { log } from '../logging/log.js'
 
-export const scoringFailAction = (request, h, err) => {
+export const scoringFailAction = (_request, h, err) => {
   if (err.isJoi) {
     const messages = err.details.map((detail) => {
       // Check if context.details exists
