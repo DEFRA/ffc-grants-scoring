@@ -2,30 +2,21 @@ import { getScoringConfig } from '~/src/config/scoring-config.js'
 import score from '~/src/services/scoring/score.js'
 import mapToFinalResult from '~/src/api/scoring/mapper/map-to-final-result.js'
 import { statusCodes } from '../common/constants/status-codes.js'
-import { log, LogCodes } from '../logging/log.js'
+import { logger } from '../logging/log.js'
 
 export const handler = (request, h) => {
   const { grantType } = request.params
-  log(LogCodes.SCORING.REQUEST_RECEIVED, {
-    grantType,
-    message: `Request received for grantType=${grantType}`
-  })
+  logger.info(`Request received for grantType=${grantType}`)
 
   const scoringConfig = getScoringConfig(grantType)
 
   if (!scoringConfig) {
-    log(LogCodes.SCORING.CONFIG_MISSING, {
-      grantType,
-      message: `Scoring config missing for grantType=${grantType}`
-    })
+    logger.error(`Scoring config missing for grantType=${grantType}`)
     return h
       .response({ error: 'Invalid grant type' })
       .code(statusCodes.badRequest)
   }
-  log(LogCodes.SCORING.CONFIG_FOUND, {
-    grantType,
-    message: `Scoring config found for grantType=${grantType}`
-  })
+  logger.info(`Scoring config found for grantType=${grantType}`)
 
   try {
     // Extract user answers directly
@@ -38,17 +29,13 @@ export const handler = (request, h) => {
 
     const finalResult = mapToFinalResult(scoringConfig, rawScores)
 
-    log(LogCodes.SCORING.FINAL_RESULT, {
-      grantType,
-      message: `Scoring final result for grantType=${grantType}. Score=${finalResult.score}. Band=${finalResult.scoreBand}. Eligibility=${finalResult.status}`
-    })
+    logger.info(
+      `Scoring final result for grantType=${grantType}. Score=${finalResult.score}. Band=${finalResult.scoreBand}. Eligibility=${finalResult.status}`
+    )
 
     return h.response(finalResult).code(statusCodes.ok)
   } catch (error) {
-    log(LogCodes.SCORING.CONVERSION_ERROR, {
-      grantType,
-      message: error.message
-    })
+    logger.error(error.message)
     return h
       .response({
         statusCode: statusCodes.badRequest,
