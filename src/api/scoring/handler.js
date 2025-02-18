@@ -2,21 +2,22 @@ import { getScoringConfig } from '~/src/config/scoring-config.js'
 import score from '~/src/services/scoring/score.js'
 import mapToFinalResult from '~/src/api/scoring/mapper/map-to-final-result.js'
 import { statusCodes } from '../common/constants/status-codes.js'
-import { logger } from '../logging/log.js'
+import { log, LogCodes } from '../logging/log.js'
 
 export const handler = (request, h) => {
   const { grantType } = request.params
-  logger.info(`Request received for grantType=${grantType}`)
+  log(LogCodes.SCORING.REQUEST_RECEIVED, { grantType })
 
   const scoringConfig = getScoringConfig(grantType)
 
   if (!scoringConfig) {
-    logger.error(`Scoring config missing for grantType=${grantType}`)
+    log(LogCodes.SCORING.CONFIG_MISSING, { grantType })
+
     return h
       .response({ error: 'Invalid grant type' })
       .code(statusCodes.badRequest)
   }
-  logger.info(`Scoring config found for grantType=${grantType}`)
+  log(LogCodes.SCORING.CONFIG_FOUND, { grantType })
 
   try {
     // Extract user answers directly
@@ -29,13 +30,14 @@ export const handler = (request, h) => {
 
     const finalResult = mapToFinalResult(scoringConfig, rawScores)
 
-    logger.info(
-      `Scoring final result for grantType=${grantType}. Score=${finalResult.score}. Band=${finalResult.scoreBand}. Eligibility=${finalResult.status}`
-    )
+    log(LogCodes.SCORING.FINAL_RESULT, { grantType, finalResult })
 
     return h.response(finalResult).code(statusCodes.ok)
   } catch (error) {
-    logger.error(error.message)
+    log(LogCodes.SCORING.CONVERSION_ERROR, {
+      grantType,
+      error: error.message
+    })
     return h
       .response({
         statusCode: statusCodes.badRequest,

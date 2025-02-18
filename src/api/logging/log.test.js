@@ -21,208 +21,144 @@ jest.mock('../common/helpers/logging/logger.js', () => {
 })
 
 describe('Logger Functionality', () => {
-  const mockLogCodeInfo = {
-    level: 'info',
-    event: 'mock-info-event'
-  }
-  const mockLogCodeError = {
-    level: 'error',
-    event: 'mock-error-event'
-  }
-  const mockLogCodeDebug = {
-    level: 'debug',
-    event: 'mock-debug-event'
-  }
-
-  const mockParams = {
-    param1: 'mock-param1',
-    param2: 'mock-param2'
-  }
+  const messageOptions = { mock: 'mock' }
 
   beforeEach(() => {
-    jest.clearAllMocks() // Reset mocks before each test
+    jest.clearAllMocks()
   })
 
   describe('Valid Logging Scenarios', () => {
-    it('Should call the info logger with the correct parameters', () => {
-      log(mockLogCodeInfo, mockParams)
-
-      expect(mockInfoLogger).toHaveBeenCalledWith({
-        event: mockLogCodeInfo.event,
-        ...mockParams
-      })
-      expect(mockErrorLogger).not.toHaveBeenCalled()
-      expect(mockDebugLogger).not.toHaveBeenCalled()
-    })
-
-    it('Should call the error logger with the correct parameters', () => {
-      log(mockLogCodeError, mockParams)
-
-      expect(mockErrorLogger).toHaveBeenCalledWith({
-        event: mockLogCodeError.event,
-        ...mockParams
-      })
-      expect(mockInfoLogger).not.toHaveBeenCalled()
-      expect(mockDebugLogger).not.toHaveBeenCalled()
-    })
-
-    it('Should call the debug logger with the correct parameters', () => {
-      log(mockLogCodeDebug, mockParams)
-
-      expect(mockDebugLogger).toHaveBeenCalledWith({
-        event: mockLogCodeDebug.event,
-        ...mockParams
-      })
-      expect(mockInfoLogger).not.toHaveBeenCalled()
-      expect(mockErrorLogger).not.toHaveBeenCalled()
-    })
-
-    it('Should handle logging with an empty context object', () => {
-      log(mockLogCodeInfo, {})
-      expect(mockInfoLogger).toHaveBeenCalledWith({
-        event: mockLogCodeInfo.event
-      })
-    })
-
-    it('Should correctly handle deeply nested parameters', () => {
-      const nestedParams = {
-        param1: {
-          subParam1: 'sub-value1',
-          subParam2: 'sub-value2'
-        },
-        param2: 'value2'
+    it('Should call a named logger with the correct interpolated message', () => {
+      const mockLogCode = {
+        level: 'info',
+        messageFunc: (messageOptions) => `Mock info log. ${messageOptions.mock}`
       }
 
-      log(mockLogCodeInfo, nestedParams)
+      log(mockLogCode, messageOptions)
 
-      expect(mockInfoLogger).toHaveBeenCalledWith({
-        event: mockLogCodeInfo.event,
-        ...nestedParams
-      })
-    })
-
-    it('Should log multiple parameters correctly for debug level', () => {
-      const additionalParam = 'additional-param'
-      log(mockLogCodeDebug, { ...mockParams, additionalParam })
-
-      expect(mockDebugLogger).toHaveBeenCalledWith({
-        event: mockLogCodeDebug.event,
-        ...mockParams,
-        additionalParam
-      })
-    })
-
-    it('Should handle logging with functions in the context object', () => {
-      const functionParam = () => 0
-      log(mockLogCodeInfo, { param1: functionParam })
-
-      expect(mockInfoLogger).toHaveBeenCalledWith({
-        event: mockLogCodeInfo.event,
-        param1: functionParam
-      })
-    })
-
-    it('Should call the logger for a minimal valid logCode object', () => {
-      const minimalLogCode = { level: 'info', event: 'minimal-event' }
-      log(minimalLogCode)
-
-      expect(mockInfoLogger).toHaveBeenCalledWith({
-        event: minimalLogCode.event
-      })
+      expect(mockInfoLogger).toHaveBeenCalledWith('Mock info log. mock')
       expect(mockErrorLogger).not.toHaveBeenCalled()
       expect(mockDebugLogger).not.toHaveBeenCalled()
+    })
+
+    it('Should call a named logger with multiple interpolated values', () => {
+      const mockLogCode = {
+        level: 'info',
+        messageFunc: () =>
+          `interpolated-string ${messageOptions.mock} with two values ${messageOptions.mockAnother}`
+      }
+      const messageOptions = { mock: 'mockOne', mockAnother: 'mockTwo' }
+
+      log(mockLogCode, messageOptions)
+
+      expect(mockInfoLogger).toHaveBeenCalledWith(
+        'interpolated-string mockOne with two values mockTwo'
+      )
+    })
+
+    it('Should call a named logger with nested interpolated values', () => {
+      const mockLogCode = {
+        level: 'info',
+        messageFunc: () => {
+          return `interpolated-string ${messageOptions.mock.subMockOne}, and ${messageOptions.mock.subMockTwo}, and ${messageOptions.mockAnother}`
+        }
+      }
+      const messageOptions = {
+        mock: { subMockOne: 'mockOne', subMockTwo: 'mockTwo' },
+        mockAnother: 'mockThree'
+      }
+
+      log(mockLogCode, messageOptions)
+
+      expect(mockInfoLogger).toHaveBeenCalledWith(
+        'interpolated-string mockOne, and mockTwo, and mockThree'
+      )
+    })
+
+    it('Should call a named logger with the correct non-interpolated message', () => {
+      const mockLogCode = {
+        level: 'info',
+        messageFunc: () => 'Mock info log'
+      }
+
+      log(mockLogCode)
+
+      expect(mockInfoLogger).toHaveBeenCalledWith('Mock info log')
     })
   })
 
   describe('Validation Errors', () => {
-    it('Should throw if logCode is null', () => {
-      expect(() => log()).toThrow(
-        'Invalid log configuration: Missing or invalid logCode'
-      )
-    })
-
-    it('Should throw if logCode event is null', () => {
-      expect(() =>
-        log(
-          {
-            level: 'info',
-            event: null
-          },
-          mockParams
-        )
-      ).toThrow('Invalid log configuration: Missing or invalid event')
-    })
-
     it('Should throw if logCode level is invalid', () => {
       expect(() =>
         log(
           {
-            level: 'not-a-level',
-            event: 'mock-event'
+            level: 'not-valid',
+            messageFunc: () => 'Mock log.'
           },
-          mockParams
+          messageOptions
         )
-      ).toThrow('Invalid log configuration: Invalid logCode level')
-    })
-
-    it('Should throw an error for unsupported log levels', () => {
-      const mockInvalidLogCode = {
-        level: 'invalid',
-        event: 'mock-invalid-event'
-      }
-
-      expect(() => log(mockInvalidLogCode, mockParams)).toThrow()
-      expect(mockInfoLogger).not.toHaveBeenCalled()
-      expect(mockErrorLogger).not.toHaveBeenCalled()
-      expect(mockDebugLogger).not.toHaveBeenCalled()
+      ).toThrow('"level" must be one of [info, error, debug]')
     })
 
     it('Should throw an error if logCode is not an object', () => {
-      expect(() => log('string logCode', mockParams)).toThrow(
-        'Invalid log configuration: Missing or invalid logCode'
-      )
-
-      expect(() => log(123, mockParams)).toThrow(
-        'Invalid log configuration: Missing or invalid logCode'
-      )
-
-      expect(() => log([], mockParams)).toThrow(
-        'Invalid log configuration: Missing or invalid logCode'
+      expect(() => log(undefined, messageOptions)).toThrow(
+        'logCode must be a non-empty object'
       )
     })
 
     it('Should throw an error if logCode is an empty object', () => {
-      expect(() => log({}, mockParams)).toThrow(
-        'Invalid log configuration: Missing or invalid logCode'
+      expect(() => log({}, messageOptions)).toThrow(
+        'logCode must be a non-empty object'
       )
     })
 
-    it('Should throw an error if context is an array', () => {
-      expect(() => log(mockLogCodeInfo, ['array-param'])).toThrow(
-        'Invalid log configuration: Missing or invalid context'
-      )
-    })
-
-    it('Should handle logging with incorrect context types', () => {
-      expect(() => log(mockLogCodeInfo, 'string param')).toThrow(
-        'Invalid log configuration: Missing or invalid context'
-      )
-
-      expect(() => log(mockLogCodeInfo, 123)).toThrow(
-        'Invalid log configuration: Missing or invalid context'
-      )
+    it('Should throw an error if messageFunc is not an function', () => {
+      expect(() =>
+        log(
+          {
+            level: 'info',
+            messageFunc: 'not-a-function'
+          },
+          messageOptions
+        )
+      ).toThrow('"messageFunc" must be of type function')
     })
   })
 
-  describe('Edge Cases', () => {
-    it('Should handle undefined parameters', () => {
-      log(mockLogCodeInfo)
+  describe('Validation Interpolation Errors', () => {
+    it('Should throw if messageOptions are passed with a non-interpolated string', () => {
+      const logCode = {
+        level: 'info',
+        messageFunc: () => 'not-interpolated'
+      }
 
-      expect(mockInfoLogger).toHaveBeenCalledWith({
-        event: mockLogCodeInfo.event
-      })
-      expect(mockErrorLogger).not.toHaveBeenCalled()
-      expect(mockDebugLogger).not.toHaveBeenCalled()
+      expect(() => log(logCode, messageOptions)).toThrow(
+        'If you have message options you must have an interpolated string'
+      )
+    })
+
+    it('Should throw if a string with interpolation values is passed with no message options', () => {
+      const logCode = {
+        level: 'info',
+        messageFunc: () => `interpolated-string ${messageOptions.mock}`
+      }
+
+      expect(() => log(logCode)).toThrow(
+        'If you have interpolated string values you must have message options'
+      )
+    })
+
+    it('Should throw if interpolation values do not match messageOptions', () => {
+      const logCode = {
+        level: 'info',
+        messageFunc: () =>
+          `interpolated-string ${messageOptions.mock} with two values ${messageOptions.mockAnother}`
+      }
+      const messageOptions = { mock: 'mockOne', mockAnotherThird: 'mockTwo' }
+
+      expect(() => log(logCode, messageOptions)).toThrow(
+        'String interpolation values must match messageOptions'
+      )
     })
   })
 })
