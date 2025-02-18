@@ -3,7 +3,7 @@ import { handler } from './handler.js'
 import { getScoringConfig } from '../../config/scoring-config.js'
 import mapToFinalResult from './mapper/map-to-final-result.js'
 import score from '../../../src/services/scoring/score.js'
-// import { log, LogCodes } from '../logging/log.js'
+import { log, LogCodes } from '../logging/log.js'
 
 jest.mock('../../config/scoring-config.js')
 jest.mock('./mapper/map-to-final-result.js', () => ({
@@ -103,12 +103,9 @@ describe('Handler Function', () => {
 
     await handler(mockRequest('example-grant'), mockH)
 
-    // expect(log).toHaveBeenCalledWith(
-    //   LogCodes.SCORING.REQUEST_RECEIVED,
-    //   expect.objectContaining({
-    //     message: `Request received for grantType=example-grant`
-    //   })
-    // )
+    expect(log).toHaveBeenCalledWith(LogCodes.SCORING.REQUEST_RECEIVED, {
+      grantType: 'example-grant'
+    })
 
     // expect(log).toHaveBeenCalledWith(
     //   LogCodes.SCORING.CONFIG_FOUND,
@@ -127,14 +124,10 @@ describe('Handler Function', () => {
       mockRawScores
     )
 
-    // expect(log).toHaveBeenCalledWith(
-    //   LogCodes.SCORING.FINAL_RESULT,
-    //   expect.objectContaining({
-    //     message: expect.stringContaining(
-    //       'Score=8. Band=Medium. Eligibility=eligible'
-    //     )
-    //   })
-    // )
+    expect(log).toHaveBeenCalledWith(LogCodes.SCORING.FINAL_RESULT, {
+      finalResult: { score: 8, scoreBand: 'Medium', status: 'eligible' },
+      grantType: 'example-grant'
+    })
 
     expect(mockH.response).toHaveBeenCalledWith(mockFinalResult)
     expect(mockH.code).toHaveBeenCalledWith(200)
@@ -150,12 +143,18 @@ describe('Handler Function', () => {
 
     await handler(mockRequest('example-grant'), mockH)
 
-    // expect(log).toHaveBeenCalledWith(
-    //   LogCodes.SCORING.CONVERSION_ERROR,
-    //   expect.objectContaining({
-    //     message: errorMessage
-    //   })
-    // )
+    expect(log).toHaveBeenCalledWith(LogCodes.SCORING.REQUEST_RECEIVED, {
+      grantType: 'example-grant'
+    })
+
+    expect(log).toHaveBeenCalledWith(LogCodes.SCORING.CONFIG_FOUND, {
+      grantType: 'example-grant'
+    })
+
+    expect(log).toHaveBeenCalledWith(LogCodes.SCORING.CONVERSION_ERROR, {
+      grantType: 'example-grant',
+      error: 'The score function threw an error.'
+    })
 
     expect(mockH.response).toHaveBeenCalledWith({
       statusCode: 400,
@@ -176,12 +175,18 @@ describe('Handler Function', () => {
 
     await handler(mockRequest('example-grant'), mockH)
 
-    // expect(log).toHaveBeenCalledWith(
-    //   LogCodes.SCORING.CONVERSION_ERROR,
-    //   expect.objectContaining({
-    //     message: errorMessage
-    //   })
-    // )
+    expect(log).toHaveBeenCalledWith(LogCodes.SCORING.REQUEST_RECEIVED, {
+      grantType: 'example-grant'
+    })
+
+    expect(log).toHaveBeenCalledWith(LogCodes.SCORING.CONFIG_FOUND, {
+      grantType: 'example-grant'
+    })
+
+    expect(log).toHaveBeenCalledWith(LogCodes.SCORING.CONVERSION_ERROR, {
+      grantType: 'example-grant',
+      error: 'mapToFinalResult threw an error.'
+    })
 
     expect(mockH.response).toHaveBeenCalledWith({
       statusCode: 400,
