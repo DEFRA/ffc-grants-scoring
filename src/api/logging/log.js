@@ -5,8 +5,7 @@ import { validateLogCode } from './log-code-validator.js'
 const logger = createLogger()
 
 /**
- * @typedef {'info' | 'debug' | 'error' | undefined} LogLevel
- * @typedef {string | undefined} LogEvent
+ * @typedef {'info' | 'debug' | 'error'} LogLevel
  */
 
 /**
@@ -18,7 +17,7 @@ const logger = createLogger()
  * @throws {Error} If log parameters are invalid.
  */
 const log = (logCode, messageOptions) => {
-  validateLogCode(logCode, messageOptions)
+  validateLogCode(logCode)
   getLoggerOfType(logCode.level)(logCode.messageFunc(messageOptions))
 }
 

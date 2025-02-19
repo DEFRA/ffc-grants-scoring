@@ -1,3 +1,5 @@
+// istanbul ignore file
+
 export const LogCodes = {
   SCORING: {
     REQUEST_RECEIVED: {

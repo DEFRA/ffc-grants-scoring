@@ -21,6 +21,10 @@ jest.mock('../common/helpers/logging/logger.js', () => {
 })
 
 describe('Logger Functionality', () => {
+  const mockLogCode = {
+    level: 'info',
+    messageFunc: (messageOptions) => `Mock log. ${messageOptions.mock}`
+  }
   const messageOptions = { mock: 'mock' }
 
   beforeEach(() => {
@@ -28,20 +32,27 @@ describe('Logger Functionality', () => {
   })
 
   describe('Valid Logging Scenarios', () => {
-    it('Should call a named logger with the correct interpolated message', () => {
-      const mockLogCode = {
-        level: 'info',
-        messageFunc: (messageOptions) => `Mock info log. ${messageOptions.mock}`
-      }
-
+    it('Should call the info logger with the correct interpolated message', () => {
       log(mockLogCode, messageOptions)
 
-      expect(mockInfoLogger).toHaveBeenCalledWith('Mock info log. mock')
+      expect(mockInfoLogger).toHaveBeenCalledWith('Mock log. mock')
       expect(mockErrorLogger).not.toHaveBeenCalled()
       expect(mockDebugLogger).not.toHaveBeenCalled()
     })
 
-    it('Should call a named logger with multiple interpolated values', () => {
+    it('Should call the error logger with the correct interpolated message', () => {
+      mockLogCode.level = 'error'
+      log(mockLogCode, messageOptions)
+      expect(mockErrorLogger).toHaveBeenCalledWith('Mock log. mock')
+    })
+
+    it('Should call the debug logger with the correct interpolated message', () => {
+      mockLogCode.level = 'debug'
+      log(mockLogCode, messageOptions)
+      expect(mockDebugLogger).toHaveBeenCalledWith('Mock log. mock')
+    })
+
+    it('Should call the debug logger with multiple interpolated values', () => {
       const mockLogCode = {
         level: 'info',
         messageFunc: () =>
@@ -88,16 +99,18 @@ describe('Logger Functionality', () => {
   })
 
   describe('Validation Errors', () => {
+    const messageFunc = () => 'Mock log.'
+
     it('Should throw if logCode level is invalid', () => {
       expect(() =>
         log(
           {
             level: 'not-valid',
-            messageFunc: () => 'Mock log.'
+            messageFunc
           },
           messageOptions
         )
-      ).toThrow('"level" must be one of [info, error, debug]')
+      ).toThrow('Invalid log level')
     })
 
     it('Should throw an error if logCode is not an object', () => {
@@ -121,44 +134,7 @@ describe('Logger Functionality', () => {
           },
           messageOptions
         )
-      ).toThrow('"messageFunc" must be of type function')
-    })
-  })
-
-  describe('Validation Interpolation Errors', () => {
-    it('Should throw if messageOptions are passed with a non-interpolated string', () => {
-      const logCode = {
-        level: 'info',
-        messageFunc: () => 'not-interpolated'
-      }
-
-      expect(() => log(logCode, messageOptions)).toThrow(
-        'If you have message options you must have an interpolated string'
-      )
-    })
-
-    it('Should throw if a string with interpolation values is passed with no message options', () => {
-      const logCode = {
-        level: 'info',
-        messageFunc: () => `interpolated-string ${messageOptions.mock}`
-      }
-
-      expect(() => log(logCode)).toThrow(
-        'If you have interpolated string values you must have message options'
-      )
-    })
-
-    it('Should throw if interpolation values do not match messageOptions', () => {
-      const logCode = {
-        level: 'info',
-        messageFunc: () =>
-          `interpolated-string ${messageOptions.mock} with two values ${messageOptions.mockAnother}`
-      }
-      const messageOptions = { mock: 'mockOne', mockAnotherThird: 'mockTwo' }
-
-      expect(() => log(logCode, messageOptions)).toThrow(
-        'String interpolation values must match messageOptions'
-      )
+      ).toThrow('logCode.messageFunc must be a function')
     })
   })
 })
