@@ -1,76 +1,37 @@
 import { createLogger } from '../common/helpers/logging/logger.js'
-import { LogCodes, LogCodeLevels } from './log-codes.js'
+import { LogCodes } from './log-codes.js'
+import { validateLogCode } from './log-code-validator.js'
 
 const logger = createLogger()
 
 /**
- * @typedef {'info' | 'debug' | 'error' | undefined} LogLevel
- * @typedef {string | undefined} LogEvent
+ * @typedef {'info' | 'debug' | 'error'} LogLevel
  */
 
 /**
  * Logs an event with the specified level and context.
- * @param {object} options - Logging options.
- * @param {LogLevel} options.level - The log level.
- * @param {LogEvent} options.event - The log event.
- * @param {object} [context] - Additional context for the log.
+ * @param {object} logCode - Logging options.
+ * @param {string} logCode.level - The log level.
+ * @param {Function} logCode.messageFunc - A function that creates an interpolated message string
+ * @param {object} messageOptions - Values for message interpolation
  * @throws {Error} If log parameters are invalid.
  */
-const log = ({ level, event } = {}, context = {}) => {
-  validateLogParams({ level, event }, context)
-
-  // Call the appropriate logger function with the provided context
-  getLoggerOfType(level)({
-    event,
-    ...context
-  })
+const log = (logCode, messageOptions) => {
+  validateLogCode(logCode)
+  getLoggerOfType(logCode.level)(logCode.messageFunc(messageOptions))
 }
 
 /**
  * Returns the logger function corresponding to the given log level.
- * @param {LogLevel} type - The log level.
+ * @param {string} level - The log level.
  * @returns {(context: object) => void} Logger function.
  */
-const getLoggerOfType = (type) => {
+const getLoggerOfType = (level) => {
   return {
-    info: (context) => logger.info(context),
-    debug: (context) => logger.debug(context),
-    error: (context) => logger.error(context)
-  }[type]
-}
-
-/**
- * Validates logging parameters.
- * @param {object} params - The log parameters.
- * @param {LogLevel} params.level - The log level.
- * @param {LogEvent} params.event - The log event.
- * @param {object} context - Additional context.
- * @throws {Error} If parameters are invalid.
- */
-const validateLogParams = ({ level, event }, context) => {
-  if (level === undefined && event === undefined) {
-    throw new Error('Invalid log configuration: Missing or invalid logCode')
-  }
-
-  if (!LogCodeLevels.includes(level)) {
-    throw new Error('Invalid log configuration: Invalid logCode level')
-  }
-
-  const validationErrors = {
-    level: !level,
-    event: !event,
-    context: typeof context !== 'object' || Array.isArray(context)
-  }
-
-  const invalidField = Object.keys(validationErrors).find(
-    (key) => validationErrors[key]
-  )
-
-  if (invalidField) {
-    throw new Error(
-      `Invalid log configuration: Missing or invalid ${invalidField}`
-    )
-  }
+    info: (message) => logger.info(message),
+    debug: (message) => logger.debug(message),
+    error: (message) => logger.error(message)
+  }[level]
 }
 
 export { log, LogCodes, logger }
