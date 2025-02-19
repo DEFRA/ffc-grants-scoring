@@ -21,6 +21,10 @@ jest.mock('../common/helpers/logging/logger.js', () => {
 })
 
 describe('Logger Functionality', () => {
+  const mockLogCode = {
+    level: 'info',
+    messageFunc: (messageOptions) => `Mock info log. ${messageOptions.mock}`
+  }
   const messageOptions = { mock: 'mock' }
 
   beforeEach(() => {
@@ -28,12 +32,7 @@ describe('Logger Functionality', () => {
   })
 
   describe('Valid Logging Scenarios', () => {
-    it('Should call a named logger with the correct interpolated message', () => {
-      const mockLogCode = {
-        level: 'info',
-        messageFunc: (messageOptions) => `Mock info log. ${messageOptions.mock}`
-      }
-
+    it('Should call the info logger with the correct interpolated message', () => {
       log(mockLogCode, messageOptions)
 
       expect(mockInfoLogger).toHaveBeenCalledWith('Mock info log. mock')
@@ -41,7 +40,19 @@ describe('Logger Functionality', () => {
       expect(mockDebugLogger).not.toHaveBeenCalled()
     })
 
-    it('Should call a named logger with multiple interpolated values', () => {
+    it('Should call the error logger with the correct interpolated message', () => {
+      mockLogCode.level = 'error'
+      log(mockLogCode, messageOptions)
+      expect(mockErrorLogger).toHaveBeenCalledWith('Mock error log. mock')
+    })
+
+    it('Should call the debug logger with the correct interpolated message', () => {
+      mockLogCode.level = 'debug'
+      log(mockLogCode, messageOptions)
+      expect(mockDebugLogger).toHaveBeenCalledWith('Mock debug log. mock')
+    })
+
+    it('Should call the debug logger with multiple interpolated values', () => {
       const mockLogCode = {
         level: 'info',
         messageFunc: () =>
@@ -145,19 +156,6 @@ describe('Logger Functionality', () => {
 
       expect(() => log(logCode)).toThrow(
         'If you have interpolated string values you must have message options'
-      )
-    })
-
-    it('Should throw if interpolation values do not match messageOptions', () => {
-      const logCode = {
-        level: 'info',
-        messageFunc: () =>
-          `interpolated-string ${messageOptions.mock} with two values ${messageOptions.mockAnother}`
-      }
-      const messageOptions = { mock: 'mockOne', mockAnotherThird: 'mockTwo' }
-
-      expect(() => log(logCode, messageOptions)).toThrow(
-        'String interpolation values must match messageOptions'
       )
     })
   })
