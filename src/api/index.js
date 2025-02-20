@@ -8,6 +8,7 @@ import { failAction } from '~/src/api/common/helpers/fail-action.js'
 import { secureContext } from '~/src/api/common/helpers/secure-context/index.js'
 import { pulse } from '~/src/api/common/helpers/pulse.js'
 import { requestTracing } from '~/src/api/common/helpers/request-tracing.js'
+import { openApi } from '~/src/api/openapi/index.js'
 
 async function createServer() {
   const server = hapi.server({
@@ -49,7 +50,8 @@ async function createServer() {
     requestTracing,
     secureContext,
     pulse,
-    router
+    router,
+    openApi
   ])
 
   return server

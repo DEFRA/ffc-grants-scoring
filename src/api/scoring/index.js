@@ -18,7 +18,11 @@ const scoring = {
             query: scoringQueryParamsSchema,
             payload: scoringPayloadSchema,
             failAction: scoringFailAction
-          }
+          },
+          tags: ['api'],
+          description: 'Evaluate grant eligibility based on scoring criteria',
+          notes:
+            'Provide answers in the request body to receive a score and eligibility status'
         }
       })
     }
