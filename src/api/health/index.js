@@ -10,7 +10,13 @@ const health = {
       server.route({
         method: 'GET',
         path: '/health',
-        ...healthController
+        ...healthController,
+        options: {
+          tags: ['api'],
+          description: 'Health check endpoint',
+          notes:
+            'Returns a success message to indicate that the service is running'
+        }
       })
     }
   }

@@ -1,10 +1,26 @@
 import { scoringFailAction } from './fail-action.js'
 import { statusCodes } from '../common/constants/status-codes.js'
 
-// Mock the logger to avoid actual logging during tests
-jest.mock('../logging/log.js')
+let mockLog
+
+jest.mock('../logging/log', () => {
+  mockLog = jest.fn()
+
+  return {
+    log: mockLog,
+    LogCodes: {
+      SCORING: {
+        VALIDATION_ERROR: {
+          level: 'error',
+          mockReturn: `mock-return`
+        }
+      }
+    }
+  }
+})
 
 describe('scoringFailAction', () => {
+  const grantType = 'testGrant'
   let h
 
   beforeEach(() => {
@@ -28,7 +44,7 @@ describe('scoringFailAction', () => {
       ]
     }
 
-    const request = { params: { grantType: 'testGrant' } }
+    const request = { params: { grantType } }
 
     // Call the scoringFailAction with mock request and error
     const response = scoringFailAction(request, h, err)
@@ -41,6 +57,13 @@ describe('scoringFailAction', () => {
     expect(response).toBe(h)
     expect(h.code).toHaveBeenCalledWith(statusCodes.badRequest)
     expect(h.takeover).toHaveBeenCalled()
+    expect(mockLog).toHaveBeenCalledWith(
+      { level: 'error', mockReturn: 'mock-return' },
+      {
+        grantType: 'testGrant',
+        message: 'Validation failed: [field1]: "field1" is required'
+      }
+    )
   })
 
   test('should return bad request response with multiple validation errors', () => {
@@ -60,7 +83,7 @@ describe('scoringFailAction', () => {
       ]
     }
 
-    const request = { params: { grantType: 'testGrant' } }
+    const request = { params: { grantType } }
 
     // Call the scoringFailAction with mock request and error
     const response = scoringFailAction(request, h, err)
@@ -88,7 +111,7 @@ describe('scoringFailAction', () => {
       ]
     }
 
-    const request = { params: { grantType: 'testGrant' } }
+    const request = { params: { grantType } }
 
     // Call the scoringFailAction with mock request and error
     const response = scoringFailAction(request, h, err)
@@ -126,7 +149,7 @@ describe('scoringFailAction', () => {
       ]
     }
 
-    const request = { params: { grantType: 'testGrant' } }
+    const request = { params: { grantType } }
 
     // Call the scoringFailAction with mock request and error
     const response = scoringFailAction(request, h, err)
@@ -144,7 +167,7 @@ describe('scoringFailAction', () => {
 
   test('should re-throw error if not Joi validation error', () => {
     const err = new Error('Some unexpected error')
-    const request = { params: { grantType: 'testGrant' } }
+    const request = { params: { grantType } }
 
     // Call the scoringFailAction with mock request and error
     expect(() => scoringFailAction(request, h, err)).toThrow(
