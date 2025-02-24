@@ -14,7 +14,11 @@ export const handler = (request, h) => {
     log(LogCodes.SCORING.CONFIG_MISSING, { grantType })
 
     return h
-      .response({ error: 'Invalid grant type' })
+      .response({
+        statusCode: statusCodes.badRequest,
+        error: 'Bad Request',
+        message: 'Invalid grant type'
+      })
       .code(statusCodes.badRequest)
   }
   log(LogCodes.SCORING.CONFIG_FOUND, { grantType })
