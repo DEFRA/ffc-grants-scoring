@@ -16,6 +16,7 @@ export const openApi = {
         {
           plugin: HapiSwagger,
           options: {
+            documentationPath: '/scoring/api/v1/documentation',
             info: {
               title: 'Scoring API Documentation'
             }
