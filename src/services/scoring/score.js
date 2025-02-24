@@ -70,7 +70,7 @@ function score(scoringConfig, allowPartialScoring) {
 
       if (missingQuestions.length > 0) {
         throw new Error(
-          `Questions with id(s) ${missingQuestions.join(', ')} not found in user's answers.`
+          `Questions with id(s): ${missingQuestions.join(', ')} not found in user's answers.`
         )
       }
     }

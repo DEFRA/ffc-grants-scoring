@@ -57,7 +57,7 @@ describe('score function', () => {
     const mockConfig = mockScoringConfig('singleAnswer')
 
     expect(() => score(mockConfig, false)(answers)).toThrow(
-      `Questions with id(s) singleAnswer not found in user's answers.`
+      `Questions with id(s): singleAnswer not found in user's answers.`
     )
   })
 

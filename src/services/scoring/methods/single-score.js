@@ -17,7 +17,9 @@ function singleScore(questionScoringConfig, userAnswers) {
   )
 
   if (!matchingAnswer) {
-    throw new Error(`Answer "${userAnswers[0]}" not found in question scores.`)
+    throw new Error(
+      `Answer "${userAnswers[0]}" not found in question: ${questionScoringConfig.id}.`
+    )
   }
 
   const value = matchingAnswer.score
