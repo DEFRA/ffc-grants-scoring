@@ -1,6 +1,5 @@
 import { createLogger } from '../common/helpers/logging/logger.js'
 import { LogCodes } from './log-codes.js'
-import { validateLogCode } from './log-code-validator.js'
 
 const logger = createLogger()
 
@@ -17,7 +16,6 @@ const logger = createLogger()
  * @throws {Error} If log parameters are invalid.
  */
 const log = (logCode, messageOptions) => {
-  validateLogCode(logCode)
   getLoggerOfType(logCode.level)(logCode.messageFunc(messageOptions))
 }
 
