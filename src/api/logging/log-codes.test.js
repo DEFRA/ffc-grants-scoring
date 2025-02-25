@@ -46,7 +46,7 @@ describe('LogCodes', () => {
   })
 
   it('SCORING.VALIDATION_ERROR generates correct message', () => {
-    const messageOptions = { grantType, messages: 'Field is required' }
+    const messageOptions = { grantType, message: 'Field is required' }
     expect(LogCodes.SCORING.VALIDATION_ERROR.messageFunc(messageOptions)).toBe(
       `Validation Error for grantType=${grantType} with message(s): Field is required`
     )
