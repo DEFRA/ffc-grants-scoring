@@ -1,4 +1,4 @@
-import { LogCodes } from './log-codes.js'
+import { LogCodes, validateLogCodes } from './log-codes.js'
 
 describe('LogCodes', () => {
   const grantType = 'testGrant'
@@ -50,5 +50,78 @@ describe('LogCodes', () => {
     expect(LogCodes.SCORING.VALIDATION_ERROR.messageFunc(messageOptions)).toBe(
       `Validation Error for grantType=${grantType} with message(s): Field is required`
     )
+  })
+
+  describe('validateLogCodes', () => {
+    it('should validate all log codes without error for valid log codes', () => {
+      expect(() => validateLogCodes(LogCodes)).not.toThrow()
+    })
+
+    it('should throw an error if a log code is missing "level"', () => {
+      const invalidLogCodes = {
+        SCORING: {
+          INVALID_LOG: {
+            messageFunc: () => 'This is an invalid log'
+          }
+        }
+      }
+
+      expect(() => validateLogCodes(invalidLogCodes)).toThrow(
+        `Invalid log code definition for "INVALID_LOG": Missing "level" or "messageFunc"`
+      )
+    })
+
+    it('should throw an error if a log code is missing "messageFunc"', () => {
+      const invalidLogCodes = {
+        SCORING: {
+          INVALID_LOG: {
+            level: 'error'
+          }
+        }
+      }
+
+      expect(() => validateLogCodes(invalidLogCodes)).toThrow(
+        'Invalid log code definition for "INVALID_LOG": Missing "level" or "messageFunc"'
+      )
+    })
+
+    it('should throw an error if logCode level is invalid', () => {
+      const invalidLogCodeLevel = {
+        SCORING: {
+          INVALID_LOG: {
+            level: 'invalidLogLevel',
+            messageFunc: () => 'This is a message func'
+          }
+        }
+      }
+      expect(() => validateLogCodes(invalidLogCodeLevel)).toThrow(
+        'Invalid log level'
+      )
+    })
+
+    it('should throw an error if logCode is not an object', () => {
+      const logCodeNotAnObject = {
+        SCORING: {
+          INVALID_LOG: null
+        }
+      }
+      expect(() => validateLogCodes(logCodeNotAnObject)).toThrow(
+        'logCode must be a non-empty object'
+      )
+    })
+
+    it('should throw an error if messageFunc is not a function', () => {
+      const logCodeNotAnObject = {
+        SCORING: {
+          INVALID_LOG: {
+            level: 'info',
+            messageFunc: 'not-a-function'
+          }
+        }
+      }
+      expect(() => validateLogCodes(logCodeNotAnObject)).toThrow(
+        'logCode.messageFunc must be a function'
+      )
+    })
   })
 })

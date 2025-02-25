@@ -1,5 +1,7 @@
 // istanbul ignore file
 
+import { validateLogCode } from './log-code-validator.js'
+
 export const LogCodes = {
   SCORING: {
     REQUEST_RECEIVED: {
@@ -34,3 +36,30 @@ export const LogCodes = {
     }
   }
 }
+
+// Validate all log codes once at startup
+export const validateLogCodes = (logCodes) => {
+  Object.values(logCodes).forEach((entry) => {
+    Object.entries(entry).forEach(([key, value]) => {
+      if (value === null || value === undefined) {
+        throw new Error('logCode must be a non-empty object')
+      }
+      if ('level' in value && 'messageFunc' in value) {
+        try {
+          validateLogCode(value)
+        } catch (e) {
+          throw new Error(
+            `Invalid log code definition for "${key}": ${e.message}`
+          )
+        }
+      } else {
+        throw new Error(
+          `Invalid log code definition for "${key}": Missing "level" or "messageFunc"`
+        )
+      }
+    })
+  })
+}
+
+// Run validation on all log codes
+validateLogCodes(LogCodes)
