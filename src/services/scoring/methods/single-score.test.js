@@ -50,6 +50,6 @@ describe('singleScore', () => {
   it('should throw an error when answer is not found', () => {
     expect(() => {
       singleScore(questionConfig, ['C'])
-    }).toThrow('Answer "C" not found in question scores.')
+    }).toThrow('Answer "C" not found in question: singleAnswer.')
   })
 })
