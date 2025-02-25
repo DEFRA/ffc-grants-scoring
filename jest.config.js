@@ -8,10 +8,10 @@ export default {
   clearMocks: true,
   silent: false,
   watchPathIgnorePatterns: ['globalConfig'],
-  testMatch: ['**/src/**/*.test.js'],
+  testMatch: ['**/src/**/*.test.js', '**/test/**/*.test.js'],
   reporters: ['default', ['github-actions', { silent: false }], 'summary'],
   setupFiles: ['<rootDir>/.jest/setup.js'],
-  collectCoverageFrom: ['src/**/*.js'],
+  collectCoverageFrom: ['src/**/*.js', 'test/**/*.js'],
   coveragePathIgnorePatterns: [
     '<rootDir>/node_modules/',
     '<rootDir>/.server',
