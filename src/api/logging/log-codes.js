@@ -30,7 +30,7 @@ export const LogCodes = {
     VALIDATION_ERROR: {
       level: 'error',
       messageFunc: (messageOptions) =>
-        `Validation Error for grantType=${messageOptions.grantType} with message(s): ${messageOptions.messages}`
+        `Validation Error for grantType=${messageOptions.grantType} with message(s): ${messageOptions.message}`
     }
   }
 }
