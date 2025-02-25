@@ -1,5 +1,3 @@
-// istanbul ignore file
-
 import { validateLogCode } from './log-code-validator.js'
 
 export const LogCodes = {
