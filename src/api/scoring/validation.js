@@ -15,8 +15,8 @@ export const scoringQueryParamsSchema = Joi.object({
 export const scoringPayloadSchema = Joi.object({
   meta: Joi.any(),
   data: Joi.object({
-    files: Joi.object(),
-    repeaters: Joi.object(),
+    files: Joi.object().forbidden().strip(), // Leftover from DXT
+    repeaters: Joi.object().forbidden().strip(), // Leftover from DXT
     main: Joi.object()
       .pattern(
         Joi.string(),
@@ -32,6 +32,7 @@ export const scoringPayloadSchema = Joi.object({
         'any.required': '"main" field is missing inside "data"'
       })
   })
+    .label('Data')
     .required()
     .messages({
       'object.base': '"data" must be an object when using this format',
@@ -55,7 +56,7 @@ export const scoringPayloadSchema = Joi.object({
       }
     }
   })
-  .label('ScoringPayload')
+  .label('Scoring Payload')
 
 const fundingPriorities = [
   'Improve processing and supply chains',
@@ -63,90 +64,98 @@ const fundingPriorities = [
 ]
 
 export const scoringResponseSchema = Joi.object({
-  answers: Joi.array().items(
-    Joi.object({
-      questionId: Joi.string(),
-      category: Joi.string(),
-      fundingPriorities: Joi.array().items(Joi.string()),
-      score: Joi.object({
-        value: Joi.number(),
-        band: Joi.string()
-      })
-    })
-  ),
+  answers: Joi.array()
+    .items(
+      Joi.object({
+        questionId: Joi.string(),
+        category: Joi.string(),
+        fundingPriorities: Joi.array()
+          .items(Joi.string())
+          .label('Funding Priorities'),
+        score: Joi.object({
+          value: Joi.number(),
+          band: Joi.string()
+        }).label('Score')
+      }).label('Answer Item')
+    )
+    .label('Answer Items'),
   score: Joi.number(),
   status: Joi.string(),
   scoreBand: Joi.string()
-}).example({
-  answers: [
-    {
-      questionId: '/products-processed',
-      category: 'Products processed',
-      fundingPriorities: [
-        'Create and expand processing capacity to provide more English-grown food for consumers to buy'
-      ],
-      score: {
-        value: 7,
-        band: 'Strong'
-      }
-    },
-    {
-      questionId: '/adding-value',
-      category: 'Adding value',
-      fundingPriorities,
-      score: {
-        value: 9,
-        band: 'Strong'
-      }
-    },
-    {
-      questionId: '/project-impact',
-      category: 'Project impact',
-      fundingPriorities,
-      score: {
-        value: 7,
-        band: 'Weak'
-      }
-    },
-    {
-      questionId: '/future-customers',
-      category: 'Future customers',
-      fundingPriorities,
-      score: {
-        value: 11,
-        band: 'Strong'
-      }
-    },
-    {
-      questionId: '/collaboration',
-      category: 'Future customers',
-      fundingPriorities,
-      score: {
-        value: 4,
-        band: 'Strong'
-      }
-    },
-    {
-      questionId: '/environmental-impact',
-      category: 'Collaboration',
-      fundingPriorities: ['Improve the environment'],
-      score: {
-        value: 36,
-        band: 'Strong'
-      }
-    }
-  ],
-  score: 74,
-  status: 'Eligible',
-  scoreBand: 'Medium'
 })
+  .label('Scoring Response')
+  .example({
+    answers: [
+      {
+        questionId: '/products-processed',
+        category: 'Products processed',
+        fundingPriorities: [
+          'Create and expand processing capacity to provide more English-grown food for consumers to buy'
+        ],
+        score: {
+          value: 7,
+          band: 'Strong'
+        }
+      },
+      {
+        questionId: '/adding-value',
+        category: 'Adding value',
+        fundingPriorities,
+        score: {
+          value: 9,
+          band: 'Strong'
+        }
+      },
+      {
+        questionId: '/project-impact',
+        category: 'Project impact',
+        fundingPriorities,
+        score: {
+          value: 7,
+          band: 'Weak'
+        }
+      },
+      {
+        questionId: '/future-customers',
+        category: 'Future customers',
+        fundingPriorities,
+        score: {
+          value: 11,
+          band: 'Strong'
+        }
+      },
+      {
+        questionId: '/collaboration',
+        category: 'Future customers',
+        fundingPriorities,
+        score: {
+          value: 4,
+          band: 'Strong'
+        }
+      },
+      {
+        questionId: '/environmental-impact',
+        category: 'Collaboration',
+        fundingPriorities: ['Improve the environment'],
+        score: {
+          value: 36,
+          band: 'Strong'
+        }
+      }
+    ],
+    score: 74,
+    status: 'Eligible',
+    scoreBand: 'Medium'
+  })
 
 export const errorResponseSchema = Joi.object({
   statusCode: Joi.number().required(),
   error: Joi.string().required(),
   message: Joi.string().required()
-}).example({
-  statusCode: 400,
-  error: 'Bad Request',
-  message: 'Validation failed: Validation Reason'
 })
+  .label('Error Response')
+  .example({
+    statusCode: 400,
+    error: 'Bad Request',
+    message: 'Validation failed: Validation Reason'
+  })
