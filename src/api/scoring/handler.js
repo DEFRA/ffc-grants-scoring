@@ -4,7 +4,17 @@ import mapToFinalResult from '~/src/api/scoring/mapper/map-to-final-result.js'
 import { statusCodes } from '../common/constants/status-codes.js'
 import { log, LogCodes } from '../logging/log.js'
 
-export const handler = (request, h) => {
+export const handler = async (request, h) => {
+  if (request.payload.data.main.test_action) {
+    if (request.payload.data.main.test_action[0] === 'throw_500') {
+      throw new Error('throwing unhandled error')
+    }
+    if (request.payload.data.main.test_action[0].startsWith('sleep_')) {
+      const millis = request.payload.data.main.test_action[0].split('_')[1]
+      await new Promise((resolve) => setTimeout(resolve, millis))
+    }
+  }
+
   const { grantType } = request.params
   log(LogCodes.SCORING.REQUEST_RECEIVED, { grantType })
 
