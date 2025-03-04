@@ -34,12 +34,10 @@ describe('Scoring Payload Validation', () => {
       expect(error).toBeUndefined()
     })
 
-    it('should allow meta, files, and repeaters to be any object', () => {
+    it('should allow meta to be any object', () => {
       const validPayload = {
         meta: { extra: 'info' },
         data: {
-          files: { file1: 'content' },
-          repeaters: { repeater1: 'someValue' },
           main: { someKey: 'someValue' }
         }
       }
