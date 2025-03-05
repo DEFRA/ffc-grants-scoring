@@ -15,8 +15,8 @@ export const scoringQueryParamsSchema = Joi.object({
 export const scoringPayloadSchema = Joi.object({
   meta: Joi.any(),
   data: Joi.object({
-    files: Joi.object().forbidden().strip(), // Leftover from DXT
-    repeaters: Joi.object().forbidden().strip(), // Leftover from DXT
+    files: Joi.object().optional().strip(), // Allows and strips the field
+    repeaters: Joi.object().optional().strip(), // Allows and strips the field
     main: Joi.object()
       .pattern(
         Joi.string(),
