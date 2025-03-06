@@ -90,7 +90,7 @@ describe('Scoring Payload Validation', () => {
 
         expect(error).toBeDefined()
         expect(error.details[0].message).toMatch(
-          /must be one of \[string, number, boolean, array\]/
+          /must be one of \[string, number, boolean, array]/
         )
       })
 
@@ -103,7 +103,7 @@ describe('Scoring Payload Validation', () => {
 
         expect(error).toBeDefined()
         expect(error.details[0].message).toMatch(
-          /"data.main.someKey\[1\]" does not match any of the allowed types/
+          /"data.main.someKey\[1]" does not match any of the allowed types/
         )
       })
 
@@ -114,7 +114,7 @@ describe('Scoring Payload Validation', () => {
         const { error } = scoringPayloadSchema.validate(invalidPayload)
         expect(error).toBeDefined()
         expect(error.details[0].message).toMatch(
-          /must be one of \[string, number, boolean, array\]/
+          /must be one of \[string, number, boolean, array]/
         )
       })
 
@@ -127,7 +127,7 @@ describe('Scoring Payload Validation', () => {
 
         expect(error).toBeDefined()
         expect(error.details[0].message).toMatch(
-          /"data.main.someKey\[1\]" contains a duplicate value/
+          /"data.main.someKey\[1]" contains a duplicate value/
         )
       })
     })
