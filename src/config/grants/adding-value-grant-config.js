@@ -15,7 +15,7 @@ const addingValueGrantConfig = {
   questions: [
     {
       id: '/products-processed',
-      category: 'Products processed',
+      category: 'Produce processed',
       fundingPriorities: [
         'Create and expand processing capacity to provide more English-grown food for consumers to buy'
       ],
@@ -141,11 +141,11 @@ const addingValueGrantConfig = {
     }
   ],
   scoreBand: [
-    { name: ScoreBands.WEAK, minValue: 0, maxValue: 51 },
-    { name: ScoreBands.MEDIUM, minValue: 52, maxValue: 80 },
-    { name: ScoreBands.STRONG, minValue: 81, maxValue: 93 }
+    { name: ScoreBands.WEAK, minValue: 0, maxValue: 17 },
+    { name: ScoreBands.MEDIUM, minValue: 17, maxValue: 28 },
+    { name: ScoreBands.STRONG, minValue: 28, maxValue: 37 }
   ],
-  maxScore: 93,
+  maxScore: 37,
   eligibilityPercentageThreshold: 60
 }
 

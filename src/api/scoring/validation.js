@@ -23,7 +23,8 @@ export const scoringPayloadSchema = Joi.object({
         Joi.alternatives().try(
           Joi.string(),
           Joi.number(),
-          Joi.array().items(Joi.string(), Joi.number()).unique()
+          Joi.boolean(),
+          Joi.array().items(Joi.string(), Joi.number(), Joi.boolean()).unique()
         )
       )
       .required()
