@@ -94,6 +94,16 @@ describe('Scoring Payload Validation', () => {
         )
       })
 
+      it('should return an error if an empty array is passed as a value', () => {
+        const invalidPayload = { data: { main: { someKey: [] } } }
+        const { error } = scoringPayloadSchema.validate(invalidPayload)
+
+        expect(error).toBeDefined()
+        expect(error.details[0].message).toMatch(
+          /"data.main.someKey" must contain at least 1 items/
+        )
+      })
+
       it('should return error if an array inside "main" contains null', () => {
         const invalidPayload = {
           data: { main: { someKey: ['valid', null, 123] } }
