@@ -100,7 +100,7 @@ describe('Scoring Payload Validation', () => {
 
         expect(error).toBeDefined()
         expect(error.details[0].message).toMatch(
-          /At least one answer is required for each question/
+          /"data.main.someKey" must contain at least 1 items/
         )
       })
 

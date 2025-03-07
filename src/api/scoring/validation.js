@@ -33,8 +33,7 @@ export const scoringPayloadSchema = Joi.object({
       .required()
       .messages({
         'object.base': '"main" must be an object',
-        'any.required': '"main" field is missing inside "data"',
-        'array.min': 'At least one answer is required for each question'
+        'any.required': '"main" field is missing inside "data"'
       })
   })
     .label('Data')
