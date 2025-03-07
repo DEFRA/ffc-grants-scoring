@@ -24,13 +24,17 @@ export const scoringPayloadSchema = Joi.object({
           Joi.string(),
           Joi.number(),
           Joi.boolean(),
-          Joi.array().items(Joi.string(), Joi.number(), Joi.boolean()).unique()
+          Joi.array()
+            .min(1)
+            .items(Joi.string(), Joi.number(), Joi.boolean())
+            .unique()
         )
       )
       .required()
       .messages({
         'object.base': '"main" must be an object',
-        'any.required': '"main" field is missing inside "data"'
+        'any.required': '"main" field is missing inside "data"',
+        'array.min': 'At least one answer is required for each question'
       })
   })
     .label('Data')
