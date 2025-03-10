@@ -64,6 +64,7 @@ const exampleGrantConfig = {
 
 const { error, value } = scoringConfigSchema.validate(exampleGrantConfig)
 
+// istanbul ignore next
 if (error) {
   throw new Error(`Validation failed: ${error.message}`)
 }

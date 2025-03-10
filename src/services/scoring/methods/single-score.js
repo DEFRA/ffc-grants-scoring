@@ -23,10 +23,10 @@ function singleScore(questionScoringConfig, userAnswers) {
   }
 
   const value = matchingAnswer.score
-  const band =
-    questionScoringConfig.scoreBand.find(
-      (band) => value >= band.minValue && value <= band.maxValue
-    ).name ?? null
+  const foundBand = questionScoringConfig.scoreBand.find(
+    (scoreBand) => value >= scoreBand.minValue && value <= scoreBand.maxValue
+  )
+  const band = foundBand ? foundBand.name : null
   return { value, band }
 }
 

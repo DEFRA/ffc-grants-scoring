@@ -124,4 +124,22 @@ describe('mapToFinalResult', () => {
       'rawScores must be an array'
     )
   })
+
+  it('should return null for scoreBand if no matching band is found', () => {
+    const scoringConfigWithNoMatchingBand = {
+      ...scoringConfig,
+      scoreBand: [
+        { name: ScoreBands.WEAK, minValue: 0, maxValue: 1 },
+        { name: ScoreBands.MEDIUM, minValue: 2, maxValue: 3 }
+      ]
+    }
+
+    const rawScores = [
+      { questionId: 'q1', score: { value: 5, band: ScoreBands.STRONG } }
+    ]
+
+    const result = mapToFinalResult(scoringConfigWithNoMatchingBand, rawScores)
+
+    expect(result.scoreBand).toBeNull()
+  })
 })
