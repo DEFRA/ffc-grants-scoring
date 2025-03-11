@@ -15,15 +15,19 @@ export const scoringQueryParamsSchema = Joi.object({
 export const scoringPayloadSchema = Joi.object({
   meta: Joi.any(),
   data: Joi.object({
-    files: Joi.object().forbidden().strip(), // Leftover from DXT
-    repeaters: Joi.object().forbidden().strip(), // Leftover from DXT
+    files: Joi.object().strip(), // Allows and strips the field
+    repeaters: Joi.object().strip(), // Allows and strips the field
     main: Joi.object()
       .pattern(
         Joi.string(),
         Joi.alternatives().try(
           Joi.string(),
           Joi.number(),
-          Joi.array().items(Joi.string(), Joi.number()).unique()
+          Joi.boolean(),
+          Joi.array()
+            .min(1)
+            .items(Joi.string(), Joi.number(), Joi.boolean())
+            .unique()
         )
       )
       .required()
