@@ -14,7 +14,7 @@ const GROW_YOUR_BUSINESS = 'Grow your business'
 const addingValueGrantConfig = {
   questions: [
     {
-      id: '/products-processed',
+      id: 'productsProcessed',
       category: 'Produce processed',
       fundingPriorities: [
         'Create and expand processing capacity to provide more English-grown food for consumers to buy'
@@ -37,7 +37,7 @@ const addingValueGrantConfig = {
       maxScore: 7
     },
     {
-      id: '/adding-value',
+      id: 'addingValue',
       category: 'Adding value',
       fundingPriorities: [
         IMPROVE_PROCESSING_AND_SUPPLY_CHAINS,
@@ -58,7 +58,7 @@ const addingValueGrantConfig = {
       maxScore: 8
     },
     {
-      id: '/project-impact',
+      id: 'projectImpact',
       category: 'Project impact',
       fundingPriorities: [
         IMPROVE_PROCESSING_AND_SUPPLY_CHAINS,
@@ -79,7 +79,7 @@ const addingValueGrantConfig = {
       maxScore: 22
     },
     {
-      id: '/future-customers',
+      id: 'futureCustomers',
       category: 'Future customers',
       fundingPriorities: [
         IMPROVE_PROCESSING_AND_SUPPLY_CHAINS,
@@ -100,7 +100,7 @@ const addingValueGrantConfig = {
       maxScore: 8
     },
     {
-      id: '/collaboration',
+      id: 'collaboration',
       category: 'Future customers',
       fundingPriorities: [
         IMPROVE_PROCESSING_AND_SUPPLY_CHAINS,
@@ -119,7 +119,7 @@ const addingValueGrantConfig = {
       maxScore: 4
     },
     {
-      id: '/environmental-impact',
+      id: 'environmentalImpact',
       category: 'Collaboration',
       fundingPriorities: ['Improve the environment'],
       scoreMethod: multiScore,
