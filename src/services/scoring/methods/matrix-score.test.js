@@ -1,6 +1,5 @@
 import { ScoreBands } from '../../../config/score-bands.js'
-import multiScore from './multi-score.js'
-import matrixScore from '~/src/services/scoring/methods/matrix-score.js' // adjust path as needed
+import matrixScore from './matrix-score.js' // adjust path as needed
 
 /**
  * Question config.

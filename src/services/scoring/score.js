@@ -25,9 +25,9 @@ function findMissingQuestions(filteredAnswers, requiredQuestionIds) {
 
 /**
  * Splits deferred answers from answers to score.
- * @param {Array} filteredAnswers
- * @param {Map<string, Object>} questionMap
- * @returns {Array, Array} An array of deferred answers and an array of answers to score.
+ * @param {Array} filteredAnswers - User answers after filtering.
+ * @param {Map<string, object>} questionMap - Map of all questions
+ * @returns {[Array, Array]} An array of deferred answers and an array of answers to score.
  */
 function splitDeferredAnswers(filteredAnswers, questionMap) {
   return filteredAnswers.reduce(
@@ -65,7 +65,7 @@ function scoreAnswers(filteredAnswers, questionMap) {
 
     if (question.scoreDependency) {
       dependentUserAnswers[question.scoreDependency] = deferredAnswers.find(
-        ([questionId]) => questionId === question.scoreDependency
+        ([dependencyId]) => dependencyId === question.scoreDependency
       )[1]
 
       // dependentUserAnswers.adding-value = 'adding-value-A1'
@@ -79,7 +79,7 @@ function scoreAnswers(filteredAnswers, questionMap) {
 
     // Ensure responses are always an array
     const responses = Array.isArray(answers) ? answers : [answers]
-    const score = question.scoreMethod(
+    const answersScored = question.scoreMethod(
       question,
       responses,
       dependentUserAnswers
@@ -92,7 +92,7 @@ function scoreAnswers(filteredAnswers, questionMap) {
         questionId: deferred.id,
         category: deferred.category,
         fundingPriorities: deferred.fundingPriorities,
-        score
+        score: answersScored
       })
     }
 
@@ -100,7 +100,7 @@ function scoreAnswers(filteredAnswers, questionMap) {
       questionId,
       category: question.category,
       fundingPriorities: question.fundingPriorities,
-      score: question.scoreMethod(question, responses, dependentUserAnswers)
+      score: answersScored
     }
   })
 

@@ -1,7 +1,7 @@
 import score from './score.js'
 import multiScore from './methods/multi-score.js'
 import singleScore from './methods/single-score.js'
-import matrixScore from '~/src/services/scoring/methods/matrix-score.js'
+import matrixScore from './methods/matrix-score.js'
 import { ScoreBands } from '~/src/config/score-bands.js'
 
 describe('score function', () => {
