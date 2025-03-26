@@ -50,8 +50,24 @@ describe('score function', () => {
       category: 'Category 2',
       fundingPriorities: ['Priority B', 'Priority C'],
       answers: [
-        { answer: 'A', score: { A: 1, B: 2, C: 3, D: 4 } },
-        { answer: 'B', score: { A: 2, B: 4, C: 6, D: 8 } }
+        {
+          answer: 'matrixScoreA',
+          score: {
+            matrixDependencyA: 1,
+            matrixDependencyB: 2,
+            matrixDependencyC: 3,
+            matrixDependencyD: 4
+          }
+        },
+        {
+          answer: 'matrixScoreB',
+          score: {
+            matrixDependencyA: 2,
+            matrixDependencyB: 4,
+            matrixDependencyC: 6,
+            matrixDependencyD: 8
+          }
+        }
       ],
       maxScore: 8,
       scoreBand: [
@@ -138,7 +154,10 @@ describe('score function', () => {
   })
 
   it('returns correct scores for valid matrixScoring question', () => {
-    const answers = { matrixAnswer: ['A'], matrixDependency: ['A'] }
+    const answers = {
+      matrixAnswer: ['matrixScoreA'],
+      matrixDependency: ['matrixDependencyA']
+    }
     const mockConfig = mockScoringConfig('matrixAnswer', 'matrixDependency')
     const result = score(mockConfig)(answers)
     expect(result).toHaveLength(2)
@@ -160,50 +179,50 @@ describe('score function', () => {
 
   it.each([
     {
-      answer: 'A',
-      dependentAnswer: 'A',
+      answer: 'matrixScoreA',
+      dependentAnswer: 'matrixDependencyA',
       expectedScore: 1,
       expectedBand: ScoreBands.WEAK
     },
     {
-      answer: 'A',
-      dependentAnswer: 'B',
+      answer: 'matrixScoreA',
+      dependentAnswer: 'matrixDependencyB',
       expectedScore: 2,
       expectedBand: ScoreBands.WEAK
     },
     {
-      answer: 'A',
-      dependentAnswer: 'C',
+      answer: 'matrixScoreA',
+      dependentAnswer: 'matrixDependencyC',
       expectedScore: 3,
       expectedBand: ScoreBands.MEDIUM
     },
     {
-      answer: 'A',
-      dependentAnswer: 'D',
+      answer: 'matrixScoreA',
+      dependentAnswer: 'matrixDependencyD',
       expectedScore: 4,
       expectedBand: ScoreBands.MEDIUM
     },
     {
-      answer: 'B',
-      dependentAnswer: 'A',
+      answer: 'matrixScoreB',
+      dependentAnswer: 'matrixDependencyA',
       expectedScore: 2,
       expectedBand: ScoreBands.WEAK
     },
     {
-      answer: 'B',
-      dependentAnswer: 'B',
+      answer: 'matrixScoreB',
+      dependentAnswer: 'matrixDependencyB',
       expectedScore: 4,
       expectedBand: ScoreBands.MEDIUM
     },
     {
-      answer: 'B',
-      dependentAnswer: 'C',
+      answer: 'matrixScoreB',
+      dependentAnswer: 'matrixDependencyC',
       expectedScore: 6,
       expectedBand: ScoreBands.STRONG
     },
     {
-      answer: 'B',
-      dependentAnswer: 'D',
+      answer: 'matrixScoreB',
+      dependentAnswer: 'matrixDependencyD',
       expectedScore: 8,
       expectedBand: ScoreBands.STRONG
     }
@@ -215,13 +234,13 @@ describe('score function', () => {
         matrixDependency: [dependentAnswer]
       }
       const mockConfig = mockScoringConfig('matrixAnswer', 'matrixDependency')
-      const sut = score(mockConfig)(answers)
-      expect(sut).toHaveLength(2)
+      const result = score(mockConfig)(answers)
+      expect(result).toHaveLength(2)
       // Ensure that both questions receive the same score and band
       // The band is the important part, for the dependent question the score is irrelevant
-      sut.forEach((result) => {
-        expect(result.score.value).toBe(expectedScore)
-        expect(result.score.band).toBe(expectedBand)
+      result.forEach((matrixAnswer) => {
+        expect(matrixAnswer.score.value).toBe(expectedScore)
+        expect(matrixAnswer.score.band).toBe(expectedBand)
       })
     }
   )

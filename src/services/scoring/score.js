@@ -68,8 +68,6 @@ function scoreAnswers(filteredAnswers, questionMap) {
         ([dependencyId]) => dependencyId === question.scoreDependency
       )[1]
 
-      // dependentUserAnswers.adding-value = 'adding-value-A1'
-
       if (dependentUserAnswers[question.scoreDependency] === undefined) {
         throw new Error(
           `Answer for question "${question.scoreDependency}" not found, and is a dependency of "${question.id}".`

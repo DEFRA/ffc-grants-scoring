@@ -3,15 +3,31 @@ import matrixScore from './matrix-score.js' // adjust path as needed
 
 /**
  * Question config.
- * @type {import("../../../config/scoring-types.js").Question}
+ * @type {import("~/src/config/scoring-types.js").Question[]} questionConfig
  */
 const questionConfig = [
   {
     id: 'matrixScore',
     scoreDependency: 'matrixDependency',
     answers: [
-      { answer: 'A', score: { A: 1, B: 2, C: 3, D: 4 } },
-      { answer: 'B', score: { A: 2, B: 4, C: 6, D: 8 } }
+      {
+        answer: 'matrixScoreA',
+        score: {
+          dependentQuestionA: 1,
+          dependentQuestionB: 2,
+          dependentQuestionC: 3,
+          dependentQuestionD: 4
+        }
+      },
+      {
+        answer: 'matrixScoreB',
+        score: {
+          dependentQuestionA: 2,
+          dependentQuestionB: 4,
+          dependentQuestionC: 6,
+          dependentQuestionD: 8
+        }
+      }
     ],
     maxScore: 8,
     scoreBand: [
@@ -21,7 +37,7 @@ const questionConfig = [
     ]
   },
   {
-    id: 'matrixDependency',
+    id: 'dependentQuestion',
     isDependency: true
   }
 ]
@@ -29,43 +45,43 @@ const questionConfig = [
 describe('matrixScore', () => {
   it.each([
     {
-      answer: 'A',
-      dependentAnswer: 'A',
+      answer: 'matrixScoreA',
+      dependentAnswer: 'dependentQuestionA',
       expectedScore: 1
     },
     {
-      answer: 'A',
-      dependentAnswer: 'B',
+      answer: 'matrixScoreA',
+      dependentAnswer: 'dependentQuestionB',
       expectedScore: 2
     },
     {
-      answer: 'A',
-      dependentAnswer: 'C',
+      answer: 'matrixScoreA',
+      dependentAnswer: 'dependentQuestionC',
       expectedScore: 3
     },
     {
-      answer: 'A',
-      dependentAnswer: 'D',
+      answer: 'matrixScoreA',
+      dependentAnswer: 'dependentQuestionD',
       expectedScore: 4
     },
     {
-      answer: 'B',
-      dependentAnswer: 'A',
+      answer: 'matrixScoreB',
+      dependentAnswer: 'dependentQuestionA',
       expectedScore: 2
     },
     {
-      answer: 'B',
-      dependentAnswer: 'B',
+      answer: 'matrixScoreB',
+      dependentAnswer: 'dependentQuestionB',
       expectedScore: 4
     },
     {
-      answer: 'B',
-      dependentAnswer: 'C',
+      answer: 'matrixScoreB',
+      dependentAnswer: 'dependentQuestionC',
       expectedScore: 6
     },
     {
-      answer: 'B',
-      dependentAnswer: 'D',
+      answer: 'matrixScoreB',
+      dependentAnswer: 'dependentQuestionD',
       expectedScore: 8
     }
   ])(
