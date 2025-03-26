@@ -1,5 +1,6 @@
 import singleScore from '~/src/services/scoring/methods/single-score.js'
 import multiScore from '~/src/services/scoring/methods/multi-score.js'
+import matrixScore from '~/src/services/scoring/methods/matrix-score.js'
 import { ScoreBands } from '../score-bands.js'
 import { scoringConfigSchema } from '../scoring-config-schema.js'
 
@@ -19,15 +20,72 @@ const addingValueGrantConfig = {
       fundingPriorities: [
         'Create and expand processing capacity to provide more English-grown food for consumers to buy'
       ],
-      scoreMethod: singleScore,
+      scoreMethod: matrixScore,
+      scoreDependency: 'addingValue',
       answers: [
-        { answer: 'products-processed-A1', score: 7 },
-        { answer: 'products-processed-A2', score: 6 },
-        { answer: 'products-processed-A3', score: 5 },
-        { answer: 'products-processed-A4', score: 4 },
-        { answer: 'products-processed-A5', score: 3 },
-        { answer: 'products-processed-A6', score: 2 },
-        { answer: 'products-processed-A7', score: 1 }
+        {
+          answer: 'products-processed-A1',
+          score: {
+            'adding-value-A1': 24,
+            'adding-value-A2': 18,
+            'adding-value-A3': 9,
+            'adding-value-A4': 3
+          }
+        },
+        {
+          answer: 'products-processed-A2',
+          score: {
+            'adding-value-A1': 30,
+            'adding-value-A2': 21,
+            'adding-value-A3': 12,
+            'adding-value-A4': 3
+          }
+        },
+        {
+          answer: 'products-processed-A3',
+          score: {
+            'adding-value-A1': 24,
+            'adding-value-A2': 18,
+            'adding-value-A3': 9,
+            'adding-value-A4': 3
+          }
+        },
+        {
+          answer: 'products-processed-A4',
+          score: {
+            'adding-value-A1': 0,
+            'adding-value-A2': 0,
+            'adding-value-A3': 0,
+            'adding-value-A4': 0
+          }
+        },
+        {
+          answer: 'products-processed-A5',
+          score: {
+            'adding-value-A1': 15,
+            'adding-value-A2': 9,
+            'adding-value-A3': 3,
+            'adding-value-A4': 0
+          }
+        },
+        {
+          answer: 'products-processed-A6',
+          score: {
+            'adding-value-A1': 18,
+            'adding-value-A2': 12,
+            'adding-value-A3': 6,
+            'adding-value-A4': 0
+          }
+        },
+        {
+          answer: 'products-processed-A7',
+          score: {
+            'adding-value-A1': 15,
+            'adding-value-A2': 9,
+            'adding-value-A3': 3,
+            'adding-value-A4': 0
+          }
+        }
       ],
       scoreBand: [
         { name: ScoreBands.WEAK, minValue: 0, maxValue: 2 },
@@ -43,13 +101,8 @@ const addingValueGrantConfig = {
         IMPROVE_PROCESSING_AND_SUPPLY_CHAINS,
         GROW_YOUR_BUSINESS
       ],
-      scoreMethod: singleScore,
-      answers: [
-        { answer: 'adding-value-A1', score: 9 },
-        { answer: 'adding-value-A2', score: 7 },
-        { answer: 'adding-value-A3', score: 5 },
-        { answer: 'adding-value-A4', score: 3 }
-      ],
+      scoreMethod: () => undefined,
+      isDependency: true,
       scoreBand: [
         { name: ScoreBands.WEAK, minValue: 0, maxValue: 5 },
         { name: ScoreBands.MEDIUM, minValue: 6, maxValue: 7 },

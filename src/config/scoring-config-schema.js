@@ -5,7 +5,10 @@ const answersSchema = Joi.array()
   .items(
     Joi.object({
       answer: Joi.string().required(),
-      score: Joi.number().allow(null) // Allow numbers or null
+      score: Joi.alternatives().try(
+        Joi.number().allow(null),
+        Joi.object().pattern(Joi.string(), Joi.number().allow(null))
+      )
     })
   )
   .required()
@@ -28,8 +31,14 @@ const questionsSchema = Joi.array()
       id: Joi.string().required(),
       category: Joi.string().required(),
       fundingPriorities: Joi.array().items(Joi.string()).optional(),
+      isDependency: Joi.boolean().optional(),
+      scoreDependency: Joi.string().optional(),
       scoreMethod: Joi.function().required(),
-      answers: answersSchema,
+      answers: Joi.alternatives().conditional('isDependency', {
+        is: true,
+        then: Joi.optional(),
+        otherwise: answersSchema
+      }),
       scoreBand: scoreBandSchema,
       maxScore: Joi.number().required()
     })

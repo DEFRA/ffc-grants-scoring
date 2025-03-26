@@ -1,6 +1,7 @@
 import score from './score.js'
 import multiScore from './methods/multi-score.js'
 import singleScore from './methods/single-score.js'
+import matrixScore from '~/src/services/scoring/methods/matrix-score.js'
 import { ScoreBands } from '~/src/config/score-bands.js'
 
 describe('score function', () => {
@@ -41,6 +42,35 @@ describe('score function', () => {
         { name: ScoreBands.STRONG, minValue: 9, maxValue: 12 }
       ],
       maxScore: 12
+    },
+    matrixAnswer: {
+      id: 'matrixAnswer',
+      scoreMethod: matrixScore,
+      scoreDependency: 'matrixDependency',
+      category: 'Category 2',
+      fundingPriorities: ['Priority B', 'Priority C'],
+      answers: [
+        { answer: 'A', score: { A: 1, B: 2, C: 3, D: 4 } },
+        { answer: 'B', score: { A: 2, B: 4, C: 6, D: 8 } }
+      ],
+      maxScore: 8,
+      scoreBand: [
+        { name: ScoreBands.WEAK, minValue: 0, maxValue: 2 },
+        { name: ScoreBands.MEDIUM, minValue: 3, maxValue: 5 },
+        { name: ScoreBands.STRONG, minValue: 6, maxValue: 8 }
+      ]
+    },
+    matrixDependency: {
+      id: 'matrixDependency',
+      isDependency: true,
+      category: 'Category 2',
+      fundingPriorities: ['Priority B', 'Priority C'],
+      maxScore: 8,
+      scoreBand: [
+        { name: ScoreBands.WEAK, minValue: 0, maxValue: 2 },
+        { name: ScoreBands.MEDIUM, minValue: 3, maxValue: 5 },
+        { name: ScoreBands.STRONG, minValue: 6, maxValue: 8 }
+      ]
     }
   }
 
@@ -105,6 +135,101 @@ describe('score function', () => {
         score: { value: 10, band: ScoreBands.STRONG }
       }
     ])
+  })
+
+  it('returns correct scores for valid matrixScoring question', () => {
+    const answers = { matrixAnswer: ['A'], matrixDependency: ['A'] }
+    const mockConfig = mockScoringConfig('matrixAnswer', 'matrixDependency')
+    const result = score(mockConfig)(answers)
+    expect(result).toHaveLength(2)
+    expect(result).toEqual([
+      {
+        questionId: 'matrixAnswer',
+        category: 'Category 2',
+        fundingPriorities: ['Priority B', 'Priority C'],
+        score: { value: 1, band: ScoreBands.WEAK }
+      },
+      {
+        questionId: 'matrixDependency',
+        category: 'Category 2',
+        fundingPriorities: ['Priority B', 'Priority C'],
+        score: { value: 1, band: ScoreBands.WEAK }
+      }
+    ])
+  })
+
+  it.each([
+    {
+      answer: 'A',
+      dependentAnswer: 'A',
+      expectedScore: 1,
+      expectedBand: ScoreBands.WEAK
+    },
+    {
+      answer: 'A',
+      dependentAnswer: 'B',
+      expectedScore: 2,
+      expectedBand: ScoreBands.WEAK
+    },
+    {
+      answer: 'A',
+      dependentAnswer: 'C',
+      expectedScore: 3,
+      expectedBand: ScoreBands.MEDIUM
+    },
+    {
+      answer: 'A',
+      dependentAnswer: 'D',
+      expectedScore: 4,
+      expectedBand: ScoreBands.MEDIUM
+    },
+    {
+      answer: 'B',
+      dependentAnswer: 'A',
+      expectedScore: 2,
+      expectedBand: ScoreBands.WEAK
+    },
+    {
+      answer: 'B',
+      dependentAnswer: 'B',
+      expectedScore: 4,
+      expectedBand: ScoreBands.MEDIUM
+    },
+    {
+      answer: 'B',
+      dependentAnswer: 'C',
+      expectedScore: 6,
+      expectedBand: ScoreBands.STRONG
+    },
+    {
+      answer: 'B',
+      dependentAnswer: 'D',
+      expectedScore: 8,
+      expectedBand: ScoreBands.STRONG
+    }
+  ])(
+    `should return correct matrix score for both questions using answers $answer and $dependentAnswer`,
+    ({ answer, dependentAnswer, expectedScore, expectedBand }) => {
+      const answers = {
+        matrixAnswer: [answer],
+        matrixDependency: [dependentAnswer]
+      }
+      const mockConfig = mockScoringConfig('matrixAnswer', 'matrixDependency')
+      const sut = score(mockConfig)(answers)
+      expect(sut).toHaveLength(2)
+      // Ensure that both questions receive the same score and band
+      // The band is the important part, for the dependent question the score is irrelevant
+      sut.forEach((result) => {
+        expect(result.score.value).toBe(expectedScore)
+        expect(result.score.band).toBe(expectedBand)
+      })
+    }
+  )
+
+  it('throws error when matrix scoring question is missing dependency', () => {
+    const answers = { matrixAnswer: ['A'] }
+    const mockConfig = mockScoringConfig('matrixAnswer')
+    expect(() => score(mockConfig)(answers)).toThrow()
   })
 
   it('handles None of the above correctly for singleAnswer', () => {

@@ -24,25 +24,87 @@ function findMissingQuestions(filteredAnswers, requiredQuestionIds) {
 }
 
 /**
+ * Splits deferred answers from answers to score.
+ * @param {Array} filteredAnswers
+ * @param {Map<string, Object>} questionMap
+ * @returns {Array, Array} An array of deferred answers and an array of answers to score.
+ */
+function splitDeferredAnswers(filteredAnswers, questionMap) {
+  return filteredAnswers.reduce(
+    (acc, [questionId, answers]) => {
+      const question = questionMap.get(questionId)
+
+      if (question.isDependency) {
+        acc.deferredAnswers.push([questionId, answers])
+      } else {
+        acc.answersToScore.push([questionId, answers])
+      }
+
+      return acc
+    },
+    { deferredAnswers: [], answersToScore: [] }
+  )
+}
+
+/**
  * Scores valid answers based on scoring config.
  * @param {Array} filteredAnswers - The filtered user answers.
  * @param {Map<string, object>} questionMap - A Map of question ID to scoring config.
  * @returns {Array} The scored results.
  */
 function scoreAnswers(filteredAnswers, questionMap) {
-  return filteredAnswers.map(([questionId, answers]) => {
+  const { deferredAnswers, answersToScore } = splitDeferredAnswers(
+    filteredAnswers,
+    questionMap
+  )
+
+  const deferredResults = []
+  const scoreResults = answersToScore.flatMap(([questionId, answers]) => {
     const question = questionMap.get(questionId)
+    const dependentUserAnswers = {}
+
+    if (question.scoreDependency) {
+      dependentUserAnswers[question.scoreDependency] = deferredAnswers.find(
+        ([questionId]) => questionId === question.scoreDependency
+      )[1]
+
+      // dependentUserAnswers.adding-value = 'adding-value-A1'
+
+      if (dependentUserAnswers[question.scoreDependency] === undefined) {
+        throw new Error(
+          `Answer for question "${question.scoreDependency}" not found, and is a dependency of "${question.id}".`
+        )
+      }
+    }
 
     // Ensure responses are always an array
     const responses = Array.isArray(answers) ? answers : [answers]
+    const score = question.scoreMethod(
+      question,
+      responses,
+      dependentUserAnswers
+    )
+
+    if (question.scoreDependency) {
+      const deferred = questionMap.get(question.scoreDependency)
+
+      deferredResults.push({
+        questionId: deferred.id,
+        category: deferred.category,
+        fundingPriorities: deferred.fundingPriorities,
+        score
+      })
+    }
 
     return {
       questionId,
       category: question.category,
       fundingPriorities: question.fundingPriorities,
-      score: question.scoreMethod(question, responses)
+      score: question.scoreMethod(question, responses, dependentUserAnswers)
     }
   })
+
+  return [...scoreResults, ...deferredResults]
 }
 
 /**
