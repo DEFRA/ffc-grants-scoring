@@ -1,7 +1,7 @@
 /**
  * @typedef {object} Answer
  * @property {string} answer - The answer text.
- * @property {number|null} score - The score associated with the answer, or null if no score applies.
+ * @property {number|null|Record<string, number>} score - The score associated with the answer, or null if no score applies.
  */
 
 /**
@@ -16,7 +16,9 @@
  * @property {string} category - The category of the question.
  * @property {string[]} fundingPriorities - An optional array of funding priorities related to the question.
  * @property {Function} scoreMethod - The scoring function to calculate the score for the question.
- * @property {Answer[]} answers - An array of possible answers for the question.
+ * @property {string|undefined} scoreDependency - The ID of the question that the score depends on.
+ * @property {boolean|undefined} isDependent - A flag indicating if the question is dependent on another question.
+ * @property {Answer[]|undefined} answers - An array of possible answers for the question.
  * @property {number} maxScore - Max score
  * @property {ScoreBand[]} scoreBand - An array of score bands for the question.
  */

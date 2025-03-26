@@ -38,7 +38,13 @@ const questionConfig = [
   },
   {
     id: 'dependentQuestion',
-    isDependency: true
+    isDependency: true,
+    maxScore: 8,
+    scoreBand: [
+      { name: ScoreBands.WEAK, minValue: 0, maxValue: 2 },
+      { name: ScoreBands.MEDIUM, minValue: 3, maxValue: 5 },
+      { name: ScoreBands.STRONG, minValue: 6, maxValue: 8 }
+    ]
   }
 ]
 
