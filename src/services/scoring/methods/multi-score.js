@@ -8,17 +8,25 @@
  */
 function multiScore(questionScoringConfig, userAnswers) {
   const scores = userAnswers.map((userAnswer) => {
-    const matchingAnswer = questionScoringConfig.answers.find(
-      (answer) => answer.answer === userAnswer
+    const matchingScoreConfig = questionScoringConfig.answers.find(
+      (scoringComponent) => scoringComponent.answer === userAnswer
     )
 
-    if (!matchingAnswer) {
+    if (!matchingScoreConfig) {
       throw new Error(
         `Answer "${userAnswer}" not found in question: ${questionScoringConfig.id}.`
       )
     }
 
-    return matchingAnswer.score
+    // This is needed to allow "None of the above" to be handled correctly but also to ensure that
+    // the types are correct for the following scores.reduce function. Ideally we would like
+    // to throw an error here to catch invalid scoring configurations passed in to multiScore
+    if (typeof matchingScoreConfig.score !== 'number') {
+      matchingScoreConfig.score = 0
+    }
+
+    /** @type {number} */
+    return matchingScoreConfig.score
   })
 
   // Sum up all the valid scores
