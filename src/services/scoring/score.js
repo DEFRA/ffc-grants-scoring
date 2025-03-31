@@ -1,8 +1,42 @@
+// Error Message Constants
+const ERROR_MESSAGES = {
+  MISSING_DEPENDENCY: (questionId, dependencyId) =>
+    `Answer for question "${dependencyId}" not found, and is a dependency of "${questionId}".`,
+  QUESTIONS_MISSING: (missingIds) =>
+    `Questions with id(s): ${missingIds.join(', ')} not found in user's answers.`
+}
+
 /**
- * Filters user answers, keeping only those that exist in the scoring config.
+ * Converts the input into an array if it is not already an array.
+ * @param {any} responses - The input value to be converted to an array.
+ * @returns {Array} Returns an array. If the input is an array, it is returned as-is. Otherwise, the input is wrapped in an array.
+ */
+function toArray(responses) {
+  return Array.isArray(responses) ? responses : [responses]
+}
+
+/**
+ * Finds and returns the answer value for a dependency ID within the deferred answers array.
+ * If the dependency ID does not exist in the array, an error is thrown.
+ * @param {Array} dependentAnswers - An array of deferred answers where each entry is a tuple containing an ID and its respective value.
+ * @param {string|number} dependencyId - The ID of the dependency to be located in the deferred answers array.
+ * @param {string|number} questionId - The ID of the question linked to the dependency.
+ * @returns {*} The value associated with the specified dependency ID.
+ * @throws {Error} If the dependency ID is not found in the deferred answers array.
+ */
+function findDependencyAnswer(dependentAnswers, dependencyId, questionId) {
+  const dependencyValue = dependentAnswers.find(([id]) => id === dependencyId)
+  if (!dependencyValue) {
+    throw new Error(ERROR_MESSAGES.MISSING_DEPENDENCY(questionId, dependencyId))
+  }
+  return dependencyValue[1]
+}
+
+/**
+ * Filters user answers, retaining only those present in the scoring configuration.
  * @param {object} userAnswers - The user's provided answers.
- * @param {Set<string>} validQuestionIds - The set of valid question IDs.
- * @returns {Array} Filtered user answers as an array of [questionId, answers].
+ * @param {Set<string>} validQuestionIds - Valid question IDs set.
+ * @returns {Array} Filtered valid answers.
  */
 function filterValidAnswers(userAnswers, validQuestionIds) {
   return Object.entries(userAnswers).filter(([questionId]) =>
@@ -11,49 +45,99 @@ function filterValidAnswers(userAnswers, validQuestionIds) {
 }
 
 /**
- * Finds questions that are in the scoring config but missing from user answers.
- * @param {Array} filteredAnswers - User answers after filtering.
- * @param {Set<string>} requiredQuestionIds - The set of all required question IDs.
- * @returns {Array} The IDs of missing questions.
+ * Finds IDs for required questions not present in user answers.
+ * @param {Array} filteredAnswers - Filtered valid answers.
+ * @param {Set<string>} requiredQuestionIds - All required question IDs.
+ * @returns {Array} IDs of missing questions.
  */
 function findMissingQuestions(filteredAnswers, requiredQuestionIds) {
-  const userAnswerQuestionIds = new Set(
-    filteredAnswers.map(([questionId]) => questionId)
-  )
-  return [...requiredQuestionIds].filter((id) => !userAnswerQuestionIds.has(id))
+  const answeredIds = new Set(filteredAnswers.map(([questionId]) => questionId))
+  return [...requiredQuestionIds].filter((id) => !answeredIds.has(id))
 }
 
 /**
- * Scores valid answers based on scoring config.
- * @param {Array} filteredAnswers - The filtered user answers.
- * @param {Map<string, object>} questionMap - A Map of question ID to scoring config.
- * @returns {Array} The scored results.
+ * Splits the filtered answers into deferred answers and direct scoring answers.
+ * @param {Array} filteredAnswers - Filtered valid answers.
+ * @param {Map<string, object>} questionMap - Question configuration map.
+ * @returns {object} Object containing deferredAnswers and answersToScore arrays.
+ */
+function splitDeferredAnswers(filteredAnswers, questionMap) {
+  return filteredAnswers.reduce(
+    (acc, [questionId, answers]) => {
+      const question = questionMap.get(questionId)
+      const target = question.isDependency
+        ? acc.deferredAnswers
+        : acc.answersToScore
+      target.push([questionId, answers])
+      return acc
+    },
+    { deferredAnswers: [], answersToScore: [] }
+  )
+}
+
+/**
+ * Scores the user answers based on the provided scoring configurations.
+ * @param {Array} filteredAnswers - Filtered valid answers.
+ * @param {Map<string, object>} questionMap - Question configuration map.
+ * @returns {Array} Scored answers array.
  */
 function scoreAnswers(filteredAnswers, questionMap) {
-  return filteredAnswers.map(([questionId, answers]) => {
+  const { deferredAnswers, answersToScore } = splitDeferredAnswers(
+    filteredAnswers,
+    questionMap
+  )
+
+  const results = []
+
+  answersToScore.forEach(([questionId, answers]) => {
     const question = questionMap.get(questionId)
+    const dependentAnswers = {}
 
-    // Ensure responses are always an array
-    const responses = Array.isArray(answers) ? answers : [answers]
+    if (question.scoreDependency) {
+      dependentAnswers[question.scoreDependency] = findDependencyAnswer(
+        deferredAnswers,
+        question.scoreDependency,
+        questionId
+      )
+    }
 
-    return {
+    const answersScored = question.scoreMethod(
+      question,
+      toArray(answers),
+      dependentAnswers
+    )
+
+    results.push({
       questionId,
       category: question.category,
       fundingPriorities: question.fundingPriorities,
-      score: question.scoreMethod(question, responses)
+      score: answersScored
+    })
+
+    if (question.scoreDependency) {
+      const dependentQuestion = questionMap.get(question.scoreDependency)
+      results.push({
+        questionId: dependentQuestion.id,
+        category: dependentQuestion.category,
+        fundingPriorities: dependentQuestion.fundingPriorities,
+        score: answersScored
+      })
     }
   })
+
+  return results
 }
 
 /**
- * Calculates and evaluates the score based on provided scoring data and answers.
- * @param {import("~/src/config/scoring-types.js").ScoringConfig} scoringConfig - The scoring data.
- * @param {boolean} allowPartialScoring - Whether to allow partial scoring.
- * @returns {Function} A function that takes user answers and returns an array of scored results.
- * @throws {Error} If required questions are missing from user answers.
+ * Returns a function to score user answers.
+ * @param {object} scoringConfig - Scoring configuration.
+ * @param {boolean} allowPartialScoring - Flag for allowing partial scoring.
+ * @returns {Function} User answer scoring function.
  */
 function score(scoringConfig, allowPartialScoring) {
-  const questionMap = new Map(scoringConfig.questions.map((q) => [q.id, q]))
+  const questionMap = new Map(
+    scoringConfig.questions.map((question) => [question.id, question])
+  )
   const scoringConfigQuestionIds = new Set(questionMap.keys())
 
   return (userAnswers) => {
@@ -69,9 +153,7 @@ function score(scoringConfig, allowPartialScoring) {
       )
 
       if (missingQuestions.length > 0) {
-        throw new Error(
-          `Questions with id(s): ${missingQuestions.join(', ')} not found in user's answers.`
-        )
+        throw new Error(ERROR_MESSAGES.QUESTIONS_MISSING(missingQuestions))
       }
     }
 
