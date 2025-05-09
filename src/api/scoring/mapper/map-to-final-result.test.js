@@ -2,8 +2,25 @@ import mapToFinalResult from './map-to-final-result.js'
 import singleScore from '../../../services/scoring/methods/single-score.js'
 import multiScore from '../../../services/scoring/methods/multi-score.js'
 import { ScoreBands } from '../../../config/score-bands.js'
+import { log } from '~/src/api/logging/log.js'
+
+// Mock the log function
+jest.mock('~/src/api/logging/log.js', () => ({
+  log: jest.fn(),
+  LogCodes: {
+    SCORING: {
+      MATRIX_SCORE: {
+        GENERAL_ERROR: { level: 'error', messageFunc: jest.fn() }
+      }
+    }
+  }
+}))
 
 describe('mapToFinalResult', () => {
+  beforeEach(() => {
+    jest.clearAllMocks()
+  })
+
   const scoringConfig = {
     questions: [
       {
@@ -123,5 +140,29 @@ describe('mapToFinalResult', () => {
     expect(() => mapToFinalResult(scoringConfig, 'invalid')).toThrow(
       'rawScores must be an array'
     )
+  })
+
+  it('should throw an error when no matching score band is found', () => {
+    // Create a score that doesn't match any score bands
+    const rawScores = [
+      { questionId: 'q1', score: { value: 50, band: ScoreBands.STRONG } },
+      { questionId: 'q2', score: { value: 50, band: ScoreBands.STRONG } }
+    ]
+
+    // Config with score bands that don't match the total score
+    const configWithGap = {
+      ...scoringConfig,
+      scoreBand: [
+        { name: ScoreBands.WEAK, minValue: 0, maxValue: 5 },
+        { name: ScoreBands.MEDIUM, minValue: 6, maxValue: 10 },
+        // Gap between 10 and 200
+        { name: ScoreBands.STRONG, minValue: 200, maxValue: 300 }
+      ]
+    }
+
+    expect(() => mapToFinalResult(configWithGap, rawScores)).toThrow(
+      'No matching score band found for total score 100. Check configuration for scoreBand gaps.'
+    )
+    expect(log).toHaveBeenCalled()
   })
 })

@@ -15,87 +15,87 @@ const GROW_YOUR_BUSINESS = 'Grow your business'
 const addingValueGrantConfig = {
   questions: [
     {
-      id: 'productsProcessed',
+      id: 'produceProcessedRadiosField',
       category: 'Produce processed',
       fundingPriorities: [
         'Create and expand processing capacity to provide more English-grown food for consumers to buy'
       ],
       scoreMethod: matrixScore,
-      scoreDependency: 'addingValue',
+      scoreDependency: 'howAddingValueRadiosField',
       answers: [
         {
-          answer: 'products-processed-A1',
+          answer: 'produceProcessed-A1',
           score: {
-            'adding-value-A1': 24,
-            'adding-value-A2': 18,
-            'adding-value-A3': 9,
-            'adding-value-A4': 3
+            'howAddingValue-A1': 24,
+            'howAddingValue-A2': 18,
+            'howAddingValue-A3': 9,
+            'howAddingValue-A4': 3
           }
         },
         {
-          answer: 'products-processed-A2',
+          answer: 'produceProcessed-A2',
           score: {
-            'adding-value-A1': 30,
-            'adding-value-A2': 21,
-            'adding-value-A3': 12,
-            'adding-value-A4': 3
+            'howAddingValue-A1': 30,
+            'howAddingValue-A2': 21,
+            'howAddingValue-A3': 12,
+            'howAddingValue-A4': 3
           }
         },
         {
-          answer: 'products-processed-A3',
+          answer: 'produceProcessed-A3',
           score: {
-            'adding-value-A1': 24,
-            'adding-value-A2': 18,
-            'adding-value-A3': 9,
-            'adding-value-A4': 3
+            'howAddingValue-A1': 24,
+            'howAddingValue-A2': 18,
+            'howAddingValue-A3': 9,
+            'howAddingValue-A4': 3
           }
         },
         {
-          answer: 'products-processed-A4',
+          answer: 'produceProcessed-A4',
           score: {
-            'adding-value-A1': 0,
-            'adding-value-A2': 0,
-            'adding-value-A3': 0,
-            'adding-value-A4': 0
+            'howAddingValue-A1': 0,
+            'howAddingValue-A2': 0,
+            'howAddingValue-A3': 0,
+            'howAddingValue-A4': 0
           }
         },
         {
-          answer: 'products-processed-A5',
+          answer: 'produceProcessed-A5',
           score: {
-            'adding-value-A1': 15,
-            'adding-value-A2': 9,
-            'adding-value-A3': 3,
-            'adding-value-A4': 0
+            'howAddingValue-A1': 15,
+            'howAddingValue-A2': 9,
+            'howAddingValue-A3': 3,
+            'howAddingValue-A4': 0
           }
         },
         {
-          answer: 'products-processed-A6',
+          answer: 'produceProcessed-A6',
           score: {
-            'adding-value-A1': 18,
-            'adding-value-A2': 12,
-            'adding-value-A3': 6,
-            'adding-value-A4': 0
+            'howAddingValue-A1': 18,
+            'howAddingValue-A2': 12,
+            'howAddingValue-A3': 6,
+            'howAddingValue-A4': 0
           }
         },
         {
-          answer: 'products-processed-A7',
+          answer: 'produceProcessed-A7',
           score: {
-            'adding-value-A1': 15,
-            'adding-value-A2': 9,
-            'adding-value-A3': 3,
-            'adding-value-A4': 0
+            'howAddingValue-A1': 15,
+            'howAddingValue-A2': 9,
+            'howAddingValue-A3': 3,
+            'howAddingValue-A4': 0
           }
         }
       ],
       scoreBand: [
-        { name: ScoreBands.WEAK, minValue: 0, maxValue: 2 },
-        { name: ScoreBands.MEDIUM, minValue: 3, maxValue: 5 },
-        { name: ScoreBands.STRONG, minValue: 6, maxValue: 7 }
+        { name: ScoreBands.WEAK, minValue: 0, maxValue: 10 },
+        { name: ScoreBands.MEDIUM, minValue: 11, maxValue: 20 },
+        { name: ScoreBands.STRONG, minValue: 21, maxValue: 30 }
       ],
-      maxScore: 7
+      maxScore: 30
     },
     {
-      id: 'addingValue',
+      id: 'howAddingValueRadiosField',
       category: 'Adding value',
       fundingPriorities: [
         IMPROVE_PROCESSING_AND_SUPPLY_CHAINS,
@@ -111,7 +111,7 @@ const addingValueGrantConfig = {
       maxScore: 8
     },
     {
-      id: 'projectImpact',
+      id: 'projectImpactCheckboxesField',
       category: 'Project impact',
       fundingPriorities: [
         IMPROVE_PROCESSING_AND_SUPPLY_CHAINS,
@@ -119,10 +119,10 @@ const addingValueGrantConfig = {
       ],
       scoreMethod: multiScore,
       answers: [
-        { answer: 'project-impact-A1', score: 7 },
-        { answer: 'project-impact-A2', score: 6 },
-        { answer: 'project-impact-A3', score: 5 },
-        { answer: 'project-impact-A4', score: 4 }
+        { answer: 'projectImpact-A1', score: 7 },
+        { answer: 'projectImpact-A2', score: 6 },
+        { answer: 'projectImpact-A3', score: 5 },
+        { answer: 'projectImpact-A4', score: 4 }
       ],
       scoreBand: [
         { name: ScoreBands.WEAK, minValue: 0, maxValue: 10 },
@@ -132,7 +132,7 @@ const addingValueGrantConfig = {
       maxScore: 22
     },
     {
-      id: 'futureCustomers',
+      id: 'futureCustomersRadiosField',
       category: 'Future customers',
       fundingPriorities: [
         IMPROVE_PROCESSING_AND_SUPPLY_CHAINS,
@@ -140,20 +140,20 @@ const addingValueGrantConfig = {
       ],
       scoreMethod: singleScore,
       answers: [
-        { answer: 'future-customers-A1', score: 11 },
-        { answer: 'future-customers-A2', score: 9 },
-        { answer: 'future-customers-A3', score: 7 },
-        { answer: 'future-customers-A4', score: 5 }
+        { answer: 'futureCustomers-A1', score: 11 },
+        { answer: 'futureCustomers-A2', score: 9 },
+        { answer: 'futureCustomers-A3', score: 7 },
+        { answer: 'futureCustomers-A4', score: 5 }
       ],
       scoreBand: [
         { name: ScoreBands.WEAK, minValue: 0, maxValue: 6 },
         { name: ScoreBands.MEDIUM, minValue: 7, maxValue: 8 },
         { name: ScoreBands.STRONG, minValue: 9, maxValue: 11 }
       ],
-      maxScore: 8
+      maxScore: 11
     },
     {
-      id: 'collaboration',
+      id: 'collaborationRadiosField',
       category: 'Future customers',
       fundingPriorities: [
         IMPROVE_PROCESSING_AND_SUPPLY_CHAINS,
@@ -172,18 +172,18 @@ const addingValueGrantConfig = {
       maxScore: 4
     },
     {
-      id: 'environmentalImpact',
+      id: 'environmentalImpactCheckboxesField',
       category: 'Collaboration',
       fundingPriorities: ['Improve the environment'],
       scoreMethod: multiScore,
       answers: [
-        { answer: 'environmental-impact-A1', score: 14 },
-        { answer: 'environmental-impact-A2', score: 12 },
-        { answer: 'environmental-impact-A3', score: 10 },
-        { answer: 'environmental-impact-A4', score: 8 },
-        { answer: 'environmental-impact-A5', score: 6 },
-        { answer: 'environmental-impact-A6', score: 4 },
-        { answer: 'environmental-impact-A7', score: 2 }
+        { answer: 'environmentalImpact-A1', score: 14 },
+        { answer: 'environmentalImpact-A2', score: 12 },
+        { answer: 'environmentalImpact-A3', score: 10 },
+        { answer: 'environmentalImpact-A4', score: 8 },
+        { answer: 'environmentalImpact-A5', score: 6 },
+        { answer: 'environmentalImpact-A6', score: 4 },
+        { answer: 'environmentalImpact-A7', score: 2 }
       ],
       scoreBand: [
         { name: ScoreBands.WEAK, minValue: 0, maxValue: 10 },
@@ -194,11 +194,11 @@ const addingValueGrantConfig = {
     }
   ],
   scoreBand: [
-    { name: ScoreBands.WEAK, minValue: 0, maxValue: 17 },
-    { name: ScoreBands.MEDIUM, minValue: 17, maxValue: 28 },
-    { name: ScoreBands.STRONG, minValue: 28, maxValue: 37 }
+    { name: ScoreBands.WEAK, minValue: 0, maxValue: 50 },
+    { name: ScoreBands.MEDIUM, minValue: 51, maxValue: 80 },
+    { name: ScoreBands.STRONG, minValue: 81, maxValue: 150 }
   ],
-  maxScore: 37,
+  maxScore: 123,
   eligibilityPercentageThreshold: 60
 }
 

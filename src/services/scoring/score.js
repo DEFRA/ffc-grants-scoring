@@ -8,11 +8,21 @@ const ERROR_MESSAGES = {
 
 /**
  * Converts the input into an array if it is not already an array.
+ * For string values with commas, splits them into an array.
  * @param {any} responses - The input value to be converted to an array.
- * @returns {Array} Returns an array. If the input is an array, it is returned as-is. Otherwise, the input is wrapped in an array.
+ * @returns {Array} Returns an array.
  */
 function toArray(responses) {
-  return Array.isArray(responses) ? responses : [responses]
+  if (Array.isArray(responses)) {
+    return responses
+  }
+
+  // Handle comma-separated strings for multi-select fields
+  if (typeof responses === 'string' && responses.includes(',')) {
+    return responses.split(',')
+  }
+
+  return [responses]
 }
 
 /**

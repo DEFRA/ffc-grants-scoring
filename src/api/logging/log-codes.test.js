@@ -52,6 +52,80 @@ describe('LogCodes', () => {
     )
   })
 
+  it('SCORING.CONFIG_ERROR generates correct message', () => {
+    const messageOptions = { grantType, error: 'Invalid config structure' }
+    expect(LogCodes.SCORING.CONFIG_ERROR.messageFunc(messageOptions)).toBe(
+      `Config error for grantType=${grantType}: Invalid config structure`
+    )
+  })
+
+  it('SCORING.MATRIX_SCORE.MISSING_DEPENDENCY generates correct message', () => {
+    const messageOptions = {
+      dependency: 'testDependency',
+      questionId: 'testQuestion'
+    }
+    expect(
+      LogCodes.SCORING.MATRIX_SCORE.MISSING_DEPENDENCY.messageFunc(
+        messageOptions
+      )
+    ).toBe(
+      `Matrix scoring error: Dependency answer for testDependency is missing for question testQuestion`
+    )
+  })
+
+  it('SCORING.MATRIX_SCORE.EMPTY_DEPENDENCY generates correct message', () => {
+    const messageOptions = {
+      dependency: 'testDependency',
+      questionId: 'testQuestion'
+    }
+    expect(
+      LogCodes.SCORING.MATRIX_SCORE.EMPTY_DEPENDENCY.messageFunc(messageOptions)
+    ).toBe(
+      `Matrix scoring error: Processed dependency answer for testDependency is empty for question testQuestion`
+    )
+  })
+
+  it('SCORING.MATRIX_SCORE.INVALID_USER_ANSWERS generates correct message', () => {
+    const messageOptions = { questionId: 'testQuestion' }
+    expect(
+      LogCodes.SCORING.MATRIX_SCORE.INVALID_USER_ANSWERS.messageFunc(
+        messageOptions
+      )
+    ).toBe(
+      `Matrix scoring error: User answers array is empty or invalid for question: testQuestion`
+    )
+  })
+
+  it('SCORING.MATRIX_SCORE.ANSWER_NOT_FOUND generates correct message', () => {
+    const messageOptions = { answer: 'testAnswer', questionId: 'testQuestion' }
+    expect(
+      LogCodes.SCORING.MATRIX_SCORE.ANSWER_NOT_FOUND.messageFunc(messageOptions)
+    ).toBe(
+      `Matrix scoring error: Answer "testAnswer" not found in question: testQuestion`
+    )
+  })
+
+  it('SCORING.MATRIX_SCORE.NO_SCORE_FOR_DEPENDENCY generates correct message', () => {
+    const messageOptions = {
+      dependency: 'testDependency',
+      questionId: 'testQuestion'
+    }
+    expect(
+      LogCodes.SCORING.MATRIX_SCORE.NO_SCORE_FOR_DEPENDENCY.messageFunc(
+        messageOptions
+      )
+    ).toBe(
+      `Matrix scoring error: No score found for dependency answer "testDependency" in question: testQuestion`
+    )
+  })
+
+  it('SCORING.MATRIX_SCORE.GENERAL_ERROR generates correct message', () => {
+    const messageOptions = { error: 'Test error', questionId: 'testQuestion' }
+    expect(
+      LogCodes.SCORING.MATRIX_SCORE.GENERAL_ERROR.messageFunc(messageOptions)
+    ).toBe(`Matrix scoring error: Test error in question: testQuestion`)
+  })
+
   describe('validateLogCodes', () => {
     it('should validate all log codes without error for valid log codes', () => {
       expect(() => validateLogCodes(LogCodes)).not.toThrow()
@@ -121,6 +195,24 @@ describe('LogCodes', () => {
       }
       expect(() => validateLogCodes(logCodeNotAnObject)).toThrow(
         'logCode.messageFunc must be a function'
+      )
+    })
+
+    it('should recursively validate nested log code structures', () => {
+      const nestedLogCodes = {
+        SCORING: {
+          NESTED: {
+            DEEPLY: {
+              INVALID_LOG: {
+                level: 'invalidLogLevel',
+                messageFunc: () => 'This is a message func'
+              }
+            }
+          }
+        }
+      }
+      expect(() => validateLogCodes(nestedLogCodes)).toThrow(
+        'Invalid log level'
       )
     })
   })
