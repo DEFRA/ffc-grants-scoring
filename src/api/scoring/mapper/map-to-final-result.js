@@ -15,10 +15,10 @@ function mapToFinalResult(scoringConfig, rawScores) {
   // Calculate max score by summing up the highest possible score for each question
   const maxScore = scoringConfig.maxScore
   const percentage = maxScore > 0 ? (score / maxScore) * 100 : 0
-  const scoreBand =
-    scoringConfig.scoreBand.find(
-      (band) => score >= band.minValue && score <= band.maxValue
-    ).name ?? null
+  const foundBand = scoringConfig.scoreBand.find(
+    (band) => score >= band.minValue && score <= band.maxValue
+  )
+  const scoreBand = foundBand ? foundBand.name : null
 
   return {
     answers: rawScores,

@@ -59,4 +59,24 @@ describe('multiScore', () => {
       multiScore(questionConfig, ['F']) // Invalid answer
     }).toThrow('Answer "F" not found in question: multiAnswer.')
   })
+
+  it('should return null for band if no matching band is found', () => {
+    const questionConfigWithNoMatchingBand = {
+      ...questionConfig,
+      scoreBand: [
+        { name: ScoreBands.WEAK, minValue: 0, maxValue: 3 },
+        { name: ScoreBands.MEDIUM, minValue: 4, maxValue: 6 }
+      ]
+    }
+
+    const result = multiScore(questionConfigWithNoMatchingBand, [
+      'A',
+      'B',
+      'C',
+      'D'
+    ])
+
+    expect(result.value).toBe(12)
+    expect(result.band).toBeNull()
+  })
 })

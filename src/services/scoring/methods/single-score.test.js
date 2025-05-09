@@ -52,4 +52,19 @@ describe('singleScore', () => {
       singleScore(questionConfig, ['C'])
     }).toThrow('Answer "C" not found in question: singleAnswer.')
   })
+
+  it('should return null for band if no matching band is found', () => {
+    const questionConfigWithNoMatchingBand = {
+      ...questionConfig,
+      scoreBand: [
+        { name: ScoreBands.WEAK, minValue: 0, maxValue: 3 },
+        { name: ScoreBands.MEDIUM, minValue: 4, maxValue: 6 }
+      ]
+    }
+
+    const result = singleScore(questionConfigWithNoMatchingBand, ['B'])
+
+    expect(result.value).toBe(8)
+    expect(result.band).toBeNull()
+  })
 })
