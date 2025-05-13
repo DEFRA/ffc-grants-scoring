@@ -7,6 +7,7 @@ import { log, LogCodes } from '../logging/log.js'
 export const handler = (request, h) => {
   const { grantType } = request.params
   log(LogCodes.SCORING.REQUEST_RECEIVED, { grantType })
+  log(LogCodes.SCORING.REQUEST_PAYLOAD, { grantType, payload: request.payload })
 
   const scoringConfig = getScoringConfig(grantType)
 
@@ -26,6 +27,7 @@ export const handler = (request, h) => {
   try {
     // Extract user answers directly
     const answers = request.payload.data.main
+
     // Find matching scoring data for the provided questionIds
     const rawScores = score(
       scoringConfig,

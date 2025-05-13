@@ -7,6 +7,11 @@ export const LogCodes = {
       messageFunc: (messageOptions) =>
         `Request received for grantType=${messageOptions.grantType}`
     },
+    REQUEST_PAYLOAD: {
+      level: 'debug',
+      messageFunc: (messageOptions) =>
+        `Request payload for grantType=${messageOptions.grantType}:\n${JSON.stringify(messageOptions.payload, null, 2)}`
+    },
     CONFIG_MISSING: {
       level: 'error',
       messageFunc: (messageOptions) =>
@@ -31,6 +36,43 @@ export const LogCodes = {
       level: 'error',
       messageFunc: (messageOptions) =>
         `Validation Error for grantType=${messageOptions.grantType} with message(s): ${messageOptions.message}`
+    },
+    CONFIG_ERROR: {
+      level: 'error',
+      messageFunc: (messageOptions) =>
+        `Config error for grantType=${messageOptions.grantType}: ${messageOptions.error}`
+    },
+    MATRIX_SCORE: {
+      MISSING_DEPENDENCY: {
+        level: 'error',
+        messageFunc: (messageOptions) =>
+          `Matrix scoring error: Dependency answer for ${messageOptions.dependency} is missing for question ${messageOptions.questionId}`
+      },
+      EMPTY_DEPENDENCY: {
+        level: 'error',
+        messageFunc: (messageOptions) =>
+          `Matrix scoring error: Processed dependency answer for ${messageOptions.dependency} is empty for question ${messageOptions.questionId}`
+      },
+      INVALID_USER_ANSWERS: {
+        level: 'error',
+        messageFunc: (messageOptions) =>
+          `Matrix scoring error: User answers array is empty or invalid for question: ${messageOptions.questionId}`
+      },
+      ANSWER_NOT_FOUND: {
+        level: 'error',
+        messageFunc: (messageOptions) =>
+          `Matrix scoring error: Answer "${messageOptions.answer}" not found in question: ${messageOptions.questionId}`
+      },
+      NO_SCORE_FOR_DEPENDENCY: {
+        level: 'error',
+        messageFunc: (messageOptions) =>
+          `Matrix scoring error: No score found for dependency answer "${messageOptions.dependency}" in question: ${messageOptions.questionId}`
+      },
+      GENERAL_ERROR: {
+        level: 'error',
+        messageFunc: (messageOptions) =>
+          `Matrix scoring error: ${messageOptions.error} in question: ${messageOptions.questionId}`
+      }
     }
   }
 }
@@ -42,17 +84,31 @@ export const validateLogCodes = (logCodes) => {
       if (value === null || value === undefined) {
         throw new Error('logCode must be a non-empty object')
       }
-      if ('level' in value && 'messageFunc' in value) {
-        try {
-          validateLogCode(value)
-        } catch (e) {
-          throw new Error(
-            `Invalid log code definition for "${key}": ${e.message}`
-          )
+
+      // Check if this is a leaf node (has level and messageFunc) or a nested node
+      if (typeof value === 'object' && value !== null) {
+        if ('level' in value || 'messageFunc' in value) {
+          // This is a leaf node, check that it has both required properties
+          if (!('level' in value && 'messageFunc' in value)) {
+            throw new Error(
+              `Invalid log code definition for "${key}": Missing "level" or "messageFunc"`
+            )
+          }
+
+          try {
+            validateLogCode(value)
+          } catch (e) {
+            throw new Error(
+              `Invalid log code definition for "${key}": ${e.message}`
+            )
+          }
+        } else {
+          // This is a nested node, recursively validate it
+          validateLogCodes({ [key]: value })
         }
       } else {
         throw new Error(
-          `Invalid log code definition for "${key}": Missing "level" or "messageFunc"`
+          `Invalid log code definition for "${key}": unexpected value type`
         )
       }
     })

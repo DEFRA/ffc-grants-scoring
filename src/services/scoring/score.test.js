@@ -156,7 +156,7 @@ describe('score function', () => {
   it('returns correct scores for valid matrixScoring question', () => {
     const answers = {
       matrixAnswer: ['matrixScoreA'],
-      matrixDependency: ['matrixDependencyA']
+      matrixDependency: 'matrixDependencyA'
     }
     const mockConfig = mockScoringConfig('matrixAnswer', 'matrixDependency')
     const result = score(mockConfig)(answers)
@@ -231,7 +231,7 @@ describe('score function', () => {
     ({ answer, dependentAnswer, expectedScore, expectedBand }) => {
       const answers = {
         matrixAnswer: [answer],
-        matrixDependency: [dependentAnswer]
+        matrixDependency: dependentAnswer
       }
       const mockConfig = mockScoringConfig('matrixAnswer', 'matrixDependency')
       const result = score(mockConfig)(answers)
