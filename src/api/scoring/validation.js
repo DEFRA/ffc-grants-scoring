@@ -36,7 +36,7 @@ export const scoringPayloadSchema = Joi.object({
         'any.required': '"main" field is missing inside "data"'
       })
   })
-    .label('Data')
+    .label('data')
     .required()
     .messages({
       'object.base': '"data" must be an object when using this format',
@@ -47,20 +47,19 @@ export const scoringPayloadSchema = Joi.object({
   .example({
     data: {
       main: {
-        '/products-processed': 'products-processed-A1',
-        '/adding-value': 'adding-value-A1',
-        '/project-impact': 'project-impact-A1',
-        '/future-customers': 'future-customers-A1',
-        '/collaboration': 'collaboration-A1',
-        '/environmental-impact': [
-          'environmental-impact-A1',
-          'environmental-impact-A2',
-          'environmental-impact-A3'
+        produceProcessedRadiosField: 'produceProcessed-A1',
+        howAddingValueRadiosField: 'howAddingValue-A1',
+        projectImpactCheckboxesField: ['projectImpact-A1', 'projectImpact-A2'],
+        futureCustomersRadiosField: 'futureCustomers-A1',
+        collaborationRadiosField: 'collaboration-A1',
+        environmentalImpactCheckboxesField: [
+          'environmentalImpact-A1',
+          'environmentalImpact-A2'
         ]
       }
     }
   })
-  .label('Scoring Payload')
+  .label('scoring-payload')
 
 const fundingPriorities = [
   'Improve processing and supply chains',
@@ -75,81 +74,93 @@ export const scoringResponseSchema = Joi.object({
         category: Joi.string(),
         fundingPriorities: Joi.array()
           .items(Joi.string())
-          .label('Funding Priorities'),
+          .label('funding-priorities'),
         score: Joi.object({
           value: Joi.number(),
           band: Joi.string()
-        }).label('Score')
-      }).label('Answer Item')
+        }).label('score')
+      }).label('scored-answer')
     )
-    .label('Answer Items'),
+    .label('scored-answers'),
   score: Joi.number(),
   status: Joi.string(),
   scoreBand: Joi.string()
 })
-  .label('Scoring Response')
+  .label('scoring-response')
   .example({
     answers: [
       {
-        questionId: '/products-processed',
-        category: 'Products processed',
+        questionId: 'produceProcessedRadiosField',
+        category: 'Produce processed',
         fundingPriorities: [
           'Create and expand processing capacity to provide more English-grown food for consumers to buy'
         ],
         score: {
-          value: 7,
+          value: 24,
           band: 'Strong'
         }
       },
       {
-        questionId: '/adding-value',
+        questionId: 'howAddingValueRadiosField',
         category: 'Adding value',
-        fundingPriorities,
+        fundingPriorities: [
+          'Improve processing and supply chains',
+          'Grow your business'
+        ],
         score: {
-          value: 9,
+          value: 24,
           band: 'Strong'
         }
       },
       {
-        questionId: '/project-impact',
+        questionId: 'projectImpactCheckboxesField',
         category: 'Project impact',
-        fundingPriorities,
+        fundingPriorities: [
+          'Improve processing and supply chains',
+          'Grow your business'
+        ],
         score: {
-          value: 7,
-          band: 'Weak'
+          value: 13,
+          band: 'Medium'
         }
       },
       {
-        questionId: '/future-customers',
+        questionId: 'futureCustomersRadiosField',
         category: 'Future customers',
-        fundingPriorities,
+        fundingPriorities: [
+          'Improve processing and supply chains',
+          'Grow your business'
+        ],
         score: {
           value: 11,
           band: 'Strong'
         }
       },
       {
-        questionId: '/collaboration',
+        questionId: 'collaborationRadiosField',
         category: 'Future customers',
-        fundingPriorities,
+        fundingPriorities: [
+          'Improve processing and supply chains',
+          'Encourage collaboration and partnerships'
+        ],
         score: {
           value: 4,
           band: 'Strong'
         }
       },
       {
-        questionId: '/environmental-impact',
+        questionId: 'environmentalImpactCheckboxesField',
         category: 'Collaboration',
         fundingPriorities: ['Improve the environment'],
         score: {
-          value: 36,
+          value: 26,
           band: 'Strong'
         }
       }
     ],
-    score: 74,
+    score: 102,
     status: 'Eligible',
-    scoreBand: 'Medium'
+    scoreBand: 'Strong'
   })
 
 export const errorResponseSchema = Joi.object({
@@ -157,7 +168,7 @@ export const errorResponseSchema = Joi.object({
   error: Joi.string().required(),
   message: Joi.string().required()
 })
-  .label('Error Response')
+  .label('error-response')
   .example({
     statusCode: 400,
     error: 'Bad Request',

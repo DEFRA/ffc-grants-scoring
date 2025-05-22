@@ -16,6 +16,7 @@ export const openApi = {
         {
           plugin: HapiSwagger,
           options: {
+            OAS: 'v3.0',
             documentationPath: '/scoring/api/v1/documentation',
             jsonPath: '/scoring/api/v1/swagger.json',
             info: {
