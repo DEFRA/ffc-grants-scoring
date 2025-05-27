@@ -51,6 +51,7 @@ describe('mapToFinalResult', () => {
           { name: ScoreBands.MEDIUM, minValue: 6, maxValue: 9 },
           { name: ScoreBands.STRONG, minValue: 10, maxValue: 12 }
         ],
+        isScoreOnly: true,
         maxScore: 12
       }
     ],
@@ -69,7 +70,7 @@ describe('mapToFinalResult', () => {
       { questionId: 'q2', score: { value: 2, band: ScoreBands.WEAK } }
     ]
     const expectedResult = {
-      answers: rawScores,
+      answers: [rawScores[0]],
       score: 4,
       status: 'Ineligible',
       scoreBand: ScoreBands.WEAK

@@ -6,6 +6,8 @@ import { scoringConfigSchema } from '../scoring-config-schema.js'
 
 const IMPROVE_PROCESSING_AND_SUPPLY_CHAINS =
   'Improve processing and supply chains'
+const ENCOURAGE_COLLABORATION_AND_PARTNERSHIPS =
+  'Encourage collaboration and partnerships'
 const GROW_YOUR_BUSINESS = 'Grow your business'
 
 /**
@@ -15,13 +17,33 @@ const GROW_YOUR_BUSINESS = 'Grow your business'
 const addingValueGrantConfig = {
   questions: [
     {
-      id: 'produceProcessedRadiosField',
+      id: 'isProvidingServicesToOtherFarmers',
+      scoreMethod: singleScore,
+      answers: [
+        { answer: 'true', score: 20 },
+        { answer: 'false', score: 0 }
+      ],
+      isScoreOnly: true,
+      maxScore: 20
+    },
+    {
+      id: 'isBuildingFruitStorage',
+      scoreMethod: singleScore,
+      answers: [
+        { answer: 'true', score: 45 },
+        { answer: 'false', score: 0 }
+      ],
+      isScoreOnly: true,
+      maxScore: 45
+    },
+    {
+      id: 'processedProduceType',
       category: 'Produce processed',
       fundingPriorities: [
         'Create and expand processing capacity to provide more English-grown food for consumers to buy'
       ],
       scoreMethod: matrixScore,
-      scoreDependency: 'howAddingValueRadiosField',
+      scoreDependency: 'valueAdditionMethod',
       answers: [
         {
           answer: 'produceProcessed-A1',
@@ -88,30 +110,24 @@ const addingValueGrantConfig = {
         }
       ],
       scoreBand: [
-        { name: ScoreBands.WEAK, minValue: 0, maxValue: 10 },
-        { name: ScoreBands.MEDIUM, minValue: 11, maxValue: 20 },
-        { name: ScoreBands.STRONG, minValue: 21, maxValue: 30 }
+        { name: ScoreBands.WEAK, minValue: 0, maxValue: 11 },
+        { name: ScoreBands.MEDIUM, minValue: 12, maxValue: 17 },
+        { name: ScoreBands.STRONG, minValue: 18, maxValue: 30 }
       ],
       maxScore: 30
     },
     {
-      id: 'howAddingValueRadiosField',
+      id: 'valueAdditionMethod',
       category: 'Adding value',
       fundingPriorities: [
         IMPROVE_PROCESSING_AND_SUPPLY_CHAINS,
         GROW_YOUR_BUSINESS
       ],
       scoreMethod: () => undefined,
-      isDependency: true,
-      scoreBand: [
-        { name: ScoreBands.WEAK, minValue: 0, maxValue: 5 },
-        { name: ScoreBands.MEDIUM, minValue: 6, maxValue: 7 },
-        { name: ScoreBands.STRONG, minValue: 8, maxValue: 9 }
-      ],
-      maxScore: 8
+      isDependency: true
     },
     {
-      id: 'projectImpactCheckboxesField',
+      id: 'impactType',
       category: 'Project impact',
       fundingPriorities: [
         IMPROVE_PROCESSING_AND_SUPPLY_CHAINS,
@@ -119,78 +135,100 @@ const addingValueGrantConfig = {
       ],
       scoreMethod: multiScore,
       answers: [
-        { answer: 'projectImpact-A1', score: 7 },
-        { answer: 'projectImpact-A2', score: 6 },
-        { answer: 'projectImpact-A3', score: 5 },
-        { answer: 'projectImpact-A4', score: 4 }
+        { answer: 'projectImpact-A1', score: 6 },
+        { answer: 'projectImpact-A2', score: 4 },
+        { answer: 'projectImpact-A3', score: 3 },
+        { answer: 'projectImpact-A4', score: 2 }
       ],
       scoreBand: [
-        { name: ScoreBands.WEAK, minValue: 0, maxValue: 10 },
-        { name: ScoreBands.MEDIUM, minValue: 11, maxValue: 16 },
-        { name: ScoreBands.STRONG, minValue: 17, maxValue: 22 }
+        { name: ScoreBands.WEAK, minValue: 0, maxValue: 6 },
+        { name: ScoreBands.MEDIUM, minValue: 7, maxValue: 10 },
+        { name: ScoreBands.STRONG, minValue: 11, maxValue: 15 }
       ],
-      maxScore: 22
+      maxScore: 15
     },
     {
-      id: 'futureCustomersRadiosField',
-      category: 'Future customers',
+      id: 'manualLabourEquivalence',
+      category: 'Mechanisation',
       fundingPriorities: [
         IMPROVE_PROCESSING_AND_SUPPLY_CHAINS,
         GROW_YOUR_BUSINESS
       ],
       scoreMethod: singleScore,
       answers: [
-        { answer: 'futureCustomers-A1', score: 11 },
-        { answer: 'futureCustomers-A2', score: 9 },
-        { answer: 'futureCustomers-A3', score: 7 },
-        { answer: 'futureCustomers-A4', score: 5 }
+        { answer: 'manualLabourAmount-A1', score: 1.65 },
+        { answer: 'manualLabourAmount-A2', score: 3.35 },
+        { answer: 'manualLabourAmount-A3', score: 5 }
       ],
       scoreBand: [
-        { name: ScoreBands.WEAK, minValue: 0, maxValue: 6 },
-        { name: ScoreBands.MEDIUM, minValue: 7, maxValue: 8 },
-        { name: ScoreBands.STRONG, minValue: 9, maxValue: 11 }
+        { name: ScoreBands.WEAK, minValue: 0, maxValue: 1.64 },
+        { name: ScoreBands.MEDIUM, minValue: 1.65, maxValue: 4.99 },
+        { name: ScoreBands.STRONG, minValue: 5, maxValue: 5 }
       ],
-      maxScore: 11
+      maxScore: 5
     },
     {
-      id: 'collaborationRadiosField',
+      id: 'futureCustomerTypes',
       category: 'Future customers',
       fundingPriorities: [
         IMPROVE_PROCESSING_AND_SUPPLY_CHAINS,
-        'Encourage collaboration and partnerships'
+        GROW_YOUR_BUSINESS
+      ],
+      scoreMethod: multiScore,
+      answers: [
+        { answer: 'futureCustomers-A1', score: 0 },
+        { answer: 'futureCustomers-A2', score: 2 },
+        { answer: 'futureCustomers-A3', score: 3 },
+        { answer: 'futureCustomers-A4', score: 5 }
+      ],
+      scoreBand: [
+        { name: ScoreBands.WEAK, minValue: 0, maxValue: 2 },
+        { name: ScoreBands.MEDIUM, minValue: 3, maxValue: 4 },
+        { name: ScoreBands.STRONG, minValue: 5, maxValue: 10 }
+      ],
+      maxScore: 10
+    },
+    {
+      id: 'collaboration',
+      category: 'Future customers',
+      fundingPriorities: [
+        IMPROVE_PROCESSING_AND_SUPPLY_CHAINS,
+        ENCOURAGE_COLLABORATION_AND_PARTNERSHIPS
       ],
       scoreMethod: singleScore,
       answers: [
-        { answer: 'collaboration-A1', score: 4 },
-        { answer: 'collaboration-A2', score: 2 }
+        { answer: 'true', score: 10 },
+        { answer: 'false', score: 0 }
       ],
       scoreBand: [
-        { name: ScoreBands.WEAK, minValue: 0, maxValue: 1 },
-        { name: ScoreBands.MEDIUM, minValue: 2, maxValue: 3 },
-        { name: ScoreBands.STRONG, minValue: 4, maxValue: 4 }
+        { name: ScoreBands.WEAK, minValue: 0, maxValue: 9 },
+        { name: ScoreBands.MEDIUM, minValue: 9.1, maxValue: 9.9 },
+        { name: ScoreBands.STRONG, minValue: 10, maxValue: 10 }
       ],
-      maxScore: 4
+      maxScore: 10
     },
     {
-      id: 'environmentalImpactCheckboxesField',
-      category: 'Collaboration',
-      fundingPriorities: ['Improve the environment'],
+      id: 'environmentalImpactTypes',
+      category: 'Environmental impact',
+      fundingPriorities: [
+        IMPROVE_PROCESSING_AND_SUPPLY_CHAINS,
+        ENCOURAGE_COLLABORATION_AND_PARTNERSHIPS
+      ],
       scoreMethod: multiScore,
       answers: [
-        { answer: 'environmentalImpact-A1', score: 14 },
-        { answer: 'environmentalImpact-A2', score: 12 },
-        { answer: 'environmentalImpact-A3', score: 10 },
-        { answer: 'environmentalImpact-A4', score: 8 },
-        { answer: 'environmentalImpact-A5', score: 6 },
-        { answer: 'environmentalImpact-A6', score: 4 },
-        { answer: 'environmentalImpact-A7', score: 2 }
+        { answer: 'environmentalImpact-A1', score: 9 },
+        { answer: 'environmentalImpact-A2', score: 3.3 },
+        { answer: 'environmentalImpact-A3', score: 3.3 },
+        { answer: 'environmentalImpact-A4', score: 3.3 },
+        { answer: 'environmentalImpact-A5', score: 8.1 },
+        { answer: 'environmentalImpact-A6', score: 3 }
       ],
       scoreBand: [
-        { name: ScoreBands.WEAK, minValue: 0, maxValue: 10 },
-        { name: ScoreBands.MEDIUM, minValue: 11, maxValue: 13 },
-        { name: ScoreBands.STRONG, minValue: 14, maxValue: 56 }
+        { name: ScoreBands.WEAK, minValue: 0, maxValue: 6.5 },
+        { name: ScoreBands.MEDIUM, minValue: 6.6, maxValue: 12.2 },
+        { name: ScoreBands.STRONG, minValue: 12.3, maxValue: 30 }
       ],
-      maxScore: 56
+      maxScore: 30
     }
   ],
   scoreBand: [

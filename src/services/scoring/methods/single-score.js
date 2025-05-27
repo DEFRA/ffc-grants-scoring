@@ -24,7 +24,7 @@ function singleScore(questionScoringConfig, userAnswers) {
 
   const value = matchingAnswer.score
   const band =
-    questionScoringConfig.scoreBand.find(
+    questionScoringConfig.scoreBand?.find(
       (band) => value >= band.minValue && value <= band.maxValue
     ).name ?? null
   return { value, band }
