@@ -23,13 +23,13 @@ const scoreBandSchema = Joi.array()
       maxValue: Joi.number().required()
     })
   )
-  .required()
+  .optional()
 
 const questionsSchema = Joi.array()
   .items(
     Joi.object({
       id: Joi.string().required(),
-      category: Joi.string().required(),
+      category: Joi.string().optional(),
       fundingPriorities: Joi.array().items(Joi.string()).optional(),
       isDependency: Joi.boolean().optional(),
       scoreDependency: Joi.string().optional(),
@@ -40,7 +40,8 @@ const questionsSchema = Joi.array()
         otherwise: answersSchema
       }),
       scoreBand: scoreBandSchema,
-      maxScore: Joi.number().required()
+      isScoreOnly: Joi.boolean().optional(),
+      maxScore: Joi.number().optional()
     })
   )
   .required()

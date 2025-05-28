@@ -19,6 +19,7 @@
  * @property {string|undefined} scoreDependency - The ID of the question that the score depends on.
  * @property {boolean|undefined} isDependent - A flag indicating if the question is dependent on another question.
  * @property {Answer[]|undefined} answers - An array of possible answers for the question.
+ * @property {boolean} isScoreOnly - A flag indicating if the question is only for scoring purposes and will not be included in final answers.
  * @property {number} maxScore - Max score
  * @property {ScoreBand[]} scoreBand - An array of score bands for the question.
  */
