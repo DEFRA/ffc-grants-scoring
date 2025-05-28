@@ -169,7 +169,7 @@ const addingValueGrantConfig = {
     },
     {
       id: 'futureCustomerTypes',
-      category: 'Future customers',
+      category: 'New customers',
       fundingPriorities: [
         IMPROVE_PROCESSING_AND_SUPPLY_CHAINS,
         GROW_YOUR_BUSINESS
@@ -190,7 +190,7 @@ const addingValueGrantConfig = {
     },
     {
       id: 'collaboration',
-      category: 'Future customers',
+      category: 'Collaboration',
       fundingPriorities: [
         IMPROVE_PROCESSING_AND_SUPPLY_CHAINS,
         ENCOURAGE_COLLABORATION_AND_PARTNERSHIPS
