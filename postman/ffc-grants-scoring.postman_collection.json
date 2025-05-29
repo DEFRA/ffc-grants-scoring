@@ -1,8 +1,10 @@
 {
 	"info": {
-		"_postman_id": "fbf52245-a122-483f-a987-f5fc91c8f61f",
+		"_postman_id": "35c5b8ec-669c-4caa-9cab-6da2cff64750",
 		"name": "ffc-grants-scoring",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "45437546",
+		"_collection_link": "https://andrew-5807231.postman.co/workspace/Andrew's-Workspace~c4430974-a476-4315-8108-3b882bee7b85/collection/45437546-35c5b8ec-669c-4caa-9cab-6da2cff64750?action=share&source=collection_link&creator=45437546"
 	},
 	"item": [
 		{
@@ -28,7 +30,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n  \"data\": {\n    \"main\": {\n      \"/products-processed\": \"products-processed-A1\",\n      \"/adding-value\": \"adding-value-A1\",\n      \"/project-impact\": [\"project-impact-A1\",\"project-impact-A2\",\"project-impact-A4\"],\n      \"/future-customers\": \"future-customers-A1\",\n      \"/collaboration\": \"collaboration-A1\",\n      \"/environmental-impact\": [\"environmental-impact-A1\",\"environmental-impact-A2\",\"environmental-impact-A3\"]\n    }\n  }\n}\n",
+					"raw": "{\n  \"meta\": {},\n  \"data\": {\n    \"main\": {\n      \"isProvidingServicesToOtherFarmers\": \"false\",\n      \"isBuildingFruitStorage\": \"false\",\n      \"processedProduceType\": \"produceProcessed-A1\",\n      \"valueAdditionMethod\": \"howAddingValue-A1\",\n      \"impactType\": [\"projectImpact-A1\"],\n      \"manualLabourEquivalence\": \"manualLabourAmount-A1\",\n      \"futureCustomerTypes\": \"futureCustomers-A1\",\n      \"collaboration\": \"true\",\n      \"environmentalImpactTypes\": [\"environmentalImpact-A1\",\"environmentalImpact-A2\",\"environmentalImpact-A3\"]\n    }\n  }\n}\n",
 					"options": {
 						"raw": {
 							"language": "json"

@@ -119,6 +119,7 @@ function scoreAnswers(filteredAnswers, questionMap) {
 
     results.push({
       questionId,
+      changeLink: question.changeLink,
       category: question.category,
       fundingPriorities: question.fundingPriorities,
       score: answersScored
@@ -128,6 +129,7 @@ function scoreAnswers(filteredAnswers, questionMap) {
       const dependentQuestion = questionMap.get(question.scoreDependency)
       results.push({
         questionId: dependentQuestion.id,
+        changeLink: dependentQuestion.changeLink,
         category: dependentQuestion.category,
         fundingPriorities: dependentQuestion.fundingPriorities,
         score: answersScored

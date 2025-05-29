@@ -47,12 +47,15 @@ export const scoringPayloadSchema = Joi.object({
   .example({
     data: {
       main: {
-        produceProcessedRadiosField: 'produceProcessed-A1',
-        howAddingValueRadiosField: 'howAddingValue-A1',
-        projectImpactCheckboxesField: ['projectImpact-A1', 'projectImpact-A2'],
-        futureCustomersRadiosField: 'futureCustomers-A1',
-        collaborationRadiosField: 'collaboration-A1',
-        environmentalImpactCheckboxesField: [
+        isProvidingServicesToOtherFarmers: 'true',
+        isBuildingFruitStorage: 'true',
+        processedProduceType: 'produceProcessed-A1',
+        valueAdditionMethod: 'howAddingValue-A1',
+        impactType: ['projectImpact-A1', 'projectImpact-A2'],
+        manualLabourEquivalence: 'manualLabourAmount-A1',
+        futureCustomerTypes: 'futureCustomers-A1',
+        collaboration: 'true',
+        environmentalImpactTypes: [
           'environmentalImpact-A1',
           'environmentalImpact-A2'
         ]
@@ -71,6 +74,7 @@ export const scoringResponseSchema = Joi.object({
     .items(
       Joi.object({
         questionId: Joi.string(),
+        changeLink: Joi.string(),
         category: Joi.string(),
         fundingPriorities: Joi.array()
           .items(Joi.string())
@@ -90,7 +94,8 @@ export const scoringResponseSchema = Joi.object({
   .example({
     answers: [
       {
-        questionId: 'produceProcessedRadiosField',
+        questionId: 'processedProduceType',
+        changeLink: '/produce-processed',
         category: 'Produce processed',
         fundingPriorities: [
           'Create and expand processing capacity to provide more English-grown food for consumers to buy'
@@ -101,7 +106,8 @@ export const scoringResponseSchema = Joi.object({
         }
       },
       {
-        questionId: 'howAddingValueRadiosField',
+        questionId: 'valueAdditionMethod',
+        changeLink: '/how-adding-value',
         category: 'Adding value',
         fundingPriorities: [
           'Improve processing and supply chains',
@@ -113,7 +119,8 @@ export const scoringResponseSchema = Joi.object({
         }
       },
       {
-        questionId: 'projectImpactCheckboxesField',
+        questionId: 'impactType',
+        changeLink: '/project-impact',
         category: 'Project impact',
         fundingPriorities: [
           'Improve processing and supply chains',
@@ -121,11 +128,25 @@ export const scoringResponseSchema = Joi.object({
         ],
         score: {
           value: 13,
-          band: 'Medium'
+          band: 'Average'
         }
       },
       {
-        questionId: 'futureCustomersRadiosField',
+        questionId: 'manualLabourEquivalence',
+        changeLink: '/manual-labour-amount',
+        category: 'Mechanisation',
+        fundingPriorities: [
+          'Improve processing and supply chains',
+          'Grow your business'
+        ],
+        score: {
+          value: 1.65,
+          band: 'Average'
+        }
+      },
+      {
+        questionId: 'futureCustomerTypes',
+        changeLink: '/future-customers',
         category: 'Future customers',
         fundingPriorities: [
           'Improve processing and supply chains',
@@ -137,8 +158,9 @@ export const scoringResponseSchema = Joi.object({
         }
       },
       {
-        questionId: 'collaborationRadiosField',
-        category: 'Future customers',
+        questionId: 'collaboration',
+        changeLink: '/collaboration',
+        category: 'Collaboration',
         fundingPriorities: [
           'Improve processing and supply chains',
           'Encourage collaboration and partnerships'
@@ -149,8 +171,8 @@ export const scoringResponseSchema = Joi.object({
         }
       },
       {
-        questionId: 'environmentalImpactCheckboxesField',
-        category: 'Collaboration',
+        questionId: '/environmental-impact',
+        category: 'Environmental impact',
         fundingPriorities: ['Improve the environment'],
         score: {
           value: 26,

@@ -33,7 +33,7 @@ describe('mapToFinalResult', () => {
         ],
         scoreBand: [
           { name: ScoreBands.WEAK, minValue: 0, maxValue: 1 },
-          { name: ScoreBands.MEDIUM, minValue: 1, maxValue: 2 },
+          { name: ScoreBands.AVERAGE, minValue: 1, maxValue: 2 },
           { name: ScoreBands.STRONG, minValue: 3, maxValue: 3 }
         ],
         maxScore: 3
@@ -48,7 +48,7 @@ describe('mapToFinalResult', () => {
         ],
         scoreBand: [
           { name: ScoreBands.WEAK, minValue: 0, maxValue: 5 },
-          { name: ScoreBands.MEDIUM, minValue: 6, maxValue: 9 },
+          { name: ScoreBands.AVERAGE, minValue: 6, maxValue: 9 },
           { name: ScoreBands.STRONG, minValue: 10, maxValue: 12 }
         ],
         isScoreOnly: true,
@@ -58,21 +58,19 @@ describe('mapToFinalResult', () => {
     maxScore: 15,
     scoreBand: [
       { name: ScoreBands.WEAK, minValue: 0, maxValue: 5 },
-      { name: ScoreBands.MEDIUM, minValue: 6, maxValue: 10 },
+      { name: ScoreBands.AVERAGE, minValue: 6, maxValue: 10 },
       { name: ScoreBands.STRONG, minValue: 11, maxValue: 15 }
-    ],
-    eligibilityPercentageThreshold: 80
+    ]
   }
 
   it('should return a properly formatted result with score, status, and band', () => {
     const rawScores = [
-      { questionId: 'q1', score: { value: 2, band: ScoreBands.MEDIUM } },
+      { questionId: 'q1', score: { value: 2, band: ScoreBands.AVERAGE } },
       { questionId: 'q2', score: { value: 2, band: ScoreBands.WEAK } }
     ]
     const expectedResult = {
       answers: [rawScores[0]],
       score: 4,
-      status: 'Ineligible',
       scoreBand: ScoreBands.WEAK
     }
 
@@ -89,7 +87,6 @@ describe('mapToFinalResult', () => {
 
     const result = mapToFinalResult(scoringConfig, rawScores)
 
-    expect(result.status).toBe('Eligible')
     expect(result.score).toBe(14)
     expect(result.scoreBand).toBe(ScoreBands.STRONG)
   })
@@ -100,7 +97,6 @@ describe('mapToFinalResult', () => {
     const result = mapToFinalResult(scoringConfig, rawScores)
 
     expect(result.score).toBe(0)
-    expect(result.status).toBe('Ineligible')
     expect(result.scoreBand).toBe(ScoreBands.WEAK)
   })
 
@@ -113,11 +109,10 @@ describe('mapToFinalResult', () => {
       ],
       scoreBand: [
         { name: ScoreBands.WEAK, minValue: 0, maxValue: 0 },
-        { name: ScoreBands.MEDIUM, minValue: 0, maxValue: 0 },
+        { name: ScoreBands.AVERAGE, minValue: 0, maxValue: 0 },
         { name: ScoreBands.STRONG, minValue: 0, maxValue: 0 }
       ],
-      maxScore: 0,
-      eligibilityPercentageThreshold: 80
+      maxScore: 0
     }
 
     const rawScores = [
@@ -128,7 +123,6 @@ describe('mapToFinalResult', () => {
     const result = mapToFinalResult(scoringConfig, rawScores)
 
     expect(result.score).toBe(0)
-    expect(result.status).toBe('Ineligible')
   })
 
   it('should throw an error if rawScores is not an array', () => {
@@ -155,7 +149,7 @@ describe('mapToFinalResult', () => {
       ...scoringConfig,
       scoreBand: [
         { name: ScoreBands.WEAK, minValue: 0, maxValue: 5 },
-        { name: ScoreBands.MEDIUM, minValue: 6, maxValue: 10 },
+        { name: ScoreBands.AVERAGE, minValue: 6, maxValue: 10 },
         // Gap between 10 and 200
         { name: ScoreBands.STRONG, minValue: 200, maxValue: 300 }
       ]

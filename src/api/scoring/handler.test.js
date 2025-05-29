@@ -29,8 +29,7 @@ describe('Handler Function', () => {
   const mockScoringConfig = {
     questions: [],
     scoreBand: [],
-    maxScore: 10,
-    eligibilityPercentageThreshold: 50
+    maxScore: 10
   }
 
   const mockAnswers = [

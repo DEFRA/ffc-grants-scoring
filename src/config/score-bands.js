@@ -1,5 +1,5 @@
 export const ScoreBands = Object.freeze({
   WEAK: 'Weak',
-  MEDIUM: 'Medium',
+  AVERAGE: 'Average',
   STRONG: 'Strong'
 })

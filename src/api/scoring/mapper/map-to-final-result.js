@@ -56,10 +56,6 @@ function mapToFinalResult(scoringConfig, rawScores) {
   return {
     answers: filteredScores,
     score: totalScore,
-    status:
-      percentage >= scoringConfig.eligibilityPercentageThreshold
-        ? 'Eligible'
-        : 'Ineligible',
     scoreBand: matchingBand.name
   }
 }

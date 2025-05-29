@@ -17,7 +17,7 @@ const scoreBandSchema = Joi.array()
   .items(
     Joi.object({
       name: Joi.string()
-        .valid(ScoreBands.WEAK, ScoreBands.MEDIUM, ScoreBands.STRONG)
+        .valid(ScoreBands.WEAK, ScoreBands.AVERAGE, ScoreBands.STRONG)
         .required(),
       minValue: Joi.number().required(),
       maxValue: Joi.number().required()
@@ -29,6 +29,7 @@ const questionsSchema = Joi.array()
   .items(
     Joi.object({
       id: Joi.string().required(),
+      changeLink: Joi.string().required(),
       category: Joi.string().optional(),
       fundingPriorities: Joi.array().items(Joi.string()).optional(),
       isDependency: Joi.boolean().optional(),
@@ -49,6 +50,5 @@ const questionsSchema = Joi.array()
 export const scoringConfigSchema = Joi.object({
   questions: questionsSchema,
   scoreBand: scoreBandSchema,
-  maxScore: Joi.number().required(),
-  eligibilityPercentageThreshold: Joi.number().min(0).max(100).required()
+  maxScore: Joi.number().required()
 })

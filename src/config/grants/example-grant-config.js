@@ -16,6 +16,7 @@ const exampleGrantConfig = {
         'This question is a single answer question',
         `It's funding priorities are undefined`
       ],
+      changeLink: '/single-answer',
       scoreMethod: singleScore,
       answers: [
         { answer: 'A', score: 4 },
@@ -24,7 +25,7 @@ const exampleGrantConfig = {
       ],
       scoreBand: [
         { name: ScoreBands.WEAK, minValue: 0, maxValue: 3 },
-        { name: ScoreBands.MEDIUM, minValue: 4, maxValue: 7 },
+        { name: ScoreBands.AVERAGE, minValue: 4, maxValue: 7 },
         { name: ScoreBands.STRONG, minValue: 8, maxValue: 8 }
       ],
       maxScore: 8
@@ -36,6 +37,7 @@ const exampleGrantConfig = {
         'This question is a multi answer question',
         `It's funding priorities are well defined`
       ],
+      changeLink: '/multi-answer',
       scoreMethod: multiScore,
       answers: [
         { answer: 'A', score: 4 },
@@ -47,7 +49,7 @@ const exampleGrantConfig = {
       ],
       scoreBand: [
         { name: ScoreBands.WEAK, minValue: 0, maxValue: 4 },
-        { name: ScoreBands.MEDIUM, minValue: 5, maxValue: 8 },
+        { name: ScoreBands.AVERAGE, minValue: 5, maxValue: 8 },
         { name: ScoreBands.STRONG, minValue: 9, maxValue: 12 }
       ],
       maxScore: 12
@@ -55,11 +57,10 @@ const exampleGrantConfig = {
   ],
   scoreBand: [
     { name: ScoreBands.WEAK, minValue: 0, maxValue: 8 },
-    { name: ScoreBands.MEDIUM, minValue: 9, maxValue: 15 },
+    { name: ScoreBands.AVERAGE, minValue: 9, maxValue: 15 },
     { name: ScoreBands.STRONG, minValue: 16, maxValue: 20 }
   ],
-  maxScore: 20,
-  eligibilityPercentageThreshold: 60
+  maxScore: 20
 }
 
 const { error, value } = scoringConfigSchema.validate(exampleGrantConfig)
