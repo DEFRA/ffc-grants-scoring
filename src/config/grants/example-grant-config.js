@@ -56,9 +56,9 @@ const exampleGrantConfig = {
     }
   ],
   scoreBand: [
-    { name: ScoreBands.WEAK, minValue: 0, maxValue: 8 },
-    { name: ScoreBands.AVERAGE, minValue: 9, maxValue: 15 },
-    { name: ScoreBands.STRONG, minValue: 16, maxValue: 20 }
+    { name: ScoreBands.WEAK, minPercentage: 0, maxPercentage: 20 },
+    { name: ScoreBands.AVERAGE, minPercentage: 20, maxPercentage: 50 },
+    { name: ScoreBands.STRONG, minPercentage: 50, maxPercentage: Infinity }
   ],
   maxScore: 20
 }

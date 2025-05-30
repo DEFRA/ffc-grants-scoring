@@ -36,8 +36,7 @@ describe('Scoring Response Validation', () => {
             }
           }
         ],
-        score: 24,
-        scoreBand: 'Strong'
+        score: { value: 24, band: 'Strong' }
       }
 
       const { error } = scoringResponseSchema.validate(validResponse)

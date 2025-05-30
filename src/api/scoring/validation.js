@@ -86,7 +86,10 @@ export const scoringResponseSchema = Joi.object({
       }).label('scored-answer')
     )
     .label('scored-answers'),
-  score: Joi.number(),
+  score: Joi.object({
+    value: Joi.number(),
+    band: Joi.string()
+  }).label('score'),
   status: Joi.string(),
   scoreBand: Joi.string()
 })

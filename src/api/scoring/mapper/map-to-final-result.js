@@ -39,7 +39,7 @@ function mapToFinalResult(scoringConfig, rawScores) {
   const matchingBand = scoringConfig.scoreBand.find(
     (band) =>
       totalScorePercentage >= band.minPercentage &&
-      totalScorePercentage <= band.maxPercentage
+      totalScorePercentage < band.maxPercentage
   )
 
   if (!matchingBand) {
@@ -57,8 +57,10 @@ function mapToFinalResult(scoringConfig, rawScores) {
 
   return {
     answers: filteredScores,
-    score: totalScore,
-    scoreBand: matchingBand.name
+    score: {
+      value: totalScore,
+      band: matchingBand.name
+    }
   }
 }
 

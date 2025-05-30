@@ -241,9 +241,9 @@ const addingValueGrantConfig = {
     }
   ],
   scoreBand: [
-    { name: ScoreBands.WEAK, minValue: 0, maxValue: 19 },
-    { name: ScoreBands.AVERAGE, minValue: 20, maxValue: 49 },
-    { name: ScoreBands.STRONG, minValue: 50, maxValue: 100 }
+    { name: ScoreBands.WEAK, minPercentage: 0, maxPercentage: 20 },
+    { name: ScoreBands.AVERAGE, minPercentage: 20, maxPercentage: 50 },
+    { name: ScoreBands.STRONG, minPercentage: 50, maxPercentage: Infinity }
   ],
   maxScore: 165
 }

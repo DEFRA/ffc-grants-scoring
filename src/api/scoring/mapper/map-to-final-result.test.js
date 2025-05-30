@@ -59,7 +59,7 @@ describe('mapToFinalResult', () => {
     scoreBand: [
       { name: ScoreBands.WEAK, minPercentage: 0, maxPercentage: 20 },
       { name: ScoreBands.AVERAGE, minPercentage: 21, maxPercentage: 50 },
-      { name: ScoreBands.STRONG, minPercentage: 51, maxPercentage: 100 }
+      { name: ScoreBands.STRONG, minPercentage: 51, maxPercentage: Infinity }
     ]
   }
 
@@ -70,8 +70,10 @@ describe('mapToFinalResult', () => {
     ]
     const expectedResult = {
       answers: [rawScores[0]],
-      score: 4,
-      scoreBand: ScoreBands.AVERAGE
+      score: {
+        value: 4,
+        band: ScoreBands.AVERAGE
+      }
     }
 
     const result = mapToFinalResult(scoringConfig, rawScores)
@@ -87,8 +89,7 @@ describe('mapToFinalResult', () => {
 
     const result = mapToFinalResult(scoringConfig, rawScores)
 
-    expect(result.score).toBe(15)
-    expect(result.scoreBand).toBe(ScoreBands.STRONG)
+    expect(result.score).toEqual({ value: 15, band: ScoreBands.STRONG })
   })
 
   it('should handle empty rawScores array', () => {
@@ -96,8 +97,7 @@ describe('mapToFinalResult', () => {
 
     const result = mapToFinalResult(scoringConfig, rawScores)
 
-    expect(result.score).toBe(0)
-    expect(result.scoreBand).toBe(ScoreBands.WEAK)
+    expect(result.score).toEqual({ value: 0, band: ScoreBands.WEAK })
   })
 
   it('should handle cases where max score is zero', () => {
@@ -108,9 +108,9 @@ describe('mapToFinalResult', () => {
         { id: 'q2', answers: [{ answer: 'No Score', score: 0 }] }
       ],
       scoreBand: [
-        { name: ScoreBands.WEAK, minPercentage: 0, maxPercentage: 0 },
-        { name: ScoreBands.AVERAGE, minPercentage: 0, maxPercentage: 0 },
-        { name: ScoreBands.STRONG, minPercentage: 0, maxPercentage: 0 }
+        { name: ScoreBands.WEAK, minPercentage: 0, maxPercentage: 1 },
+        { name: ScoreBands.AVERAGE, minPercentage: 1, maxPercentage: 50 },
+        { name: ScoreBands.STRONG, minPercentage: 50, maxPercentage: Infinity }
       ],
       maxScore: 0
     }
@@ -122,7 +122,7 @@ describe('mapToFinalResult', () => {
 
     const result = mapToFinalResult(scoringConfig, rawScores)
 
-    expect(result.score).toBe(0)
+    expect(result.score).toEqual({ band: 'Weak', value: 0 })
   })
 
   it('should throw an error if rawScores is not an array', () => {

@@ -25,6 +25,18 @@ const scoreBandSchema = Joi.array()
   )
   .optional()
 
+const totalScoreBandSchema = Joi.array()
+  .items(
+    Joi.object({
+      name: Joi.string()
+        .valid(ScoreBands.WEAK, ScoreBands.AVERAGE, ScoreBands.STRONG)
+        .required(),
+      minPercentage: Joi.number().required(),
+      maxPercentage: Joi.number().allow(Infinity).required()
+    })
+  )
+  .optional()
+
 const questionsSchema = Joi.array()
   .items(
     Joi.object({
@@ -49,6 +61,6 @@ const questionsSchema = Joi.array()
 
 export const scoringConfigSchema = Joi.object({
   questions: questionsSchema,
-  scoreBand: scoreBandSchema,
+  scoreBand: totalScoreBandSchema,
   maxScore: Joi.number().required()
 })
