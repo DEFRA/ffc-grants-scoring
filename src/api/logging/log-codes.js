@@ -25,7 +25,7 @@ export const LogCodes = {
     FINAL_RESULT: {
       level: 'info',
       messageFunc: (messageOptions) =>
-        `Scoring final result for grantType=${messageOptions.grantType}. Score=${messageOptions.finalResult.score}. Band=${messageOptions.finalResult.scoreBand}. Eligibility=${messageOptions.finalResult.status}`
+        `Scoring final result for grantType=${messageOptions.grantType}. Score=${messageOptions.finalResult.score}. Band=${messageOptions.finalResult.scoreBand}.`
     },
     CONVERSION_ERROR: {
       level: 'error',

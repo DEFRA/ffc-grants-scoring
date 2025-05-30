@@ -2,7 +2,6 @@
  * @typedef {object} FormattedScoringResponse
  * @property {Array<RawScore>} answers - The array of raw scoring results.
  * @property {number} score - The total score.
- * @property {'eligible' | 'ineligible'} status - The eligibility status based on the score.
  * @property {string | null} scoreBand - The name of the score band.
  */
 

@@ -10,6 +10,7 @@ describe('score function', () => {
       id: 'singleAnswer',
       scoreMethod: singleScore,
       category: 'Category 1',
+      changeLink: '/change-single-answer',
       fundingPriorities: ['Priority A'],
       answers: [
         { answer: 'A', score: 4 },
@@ -18,7 +19,7 @@ describe('score function', () => {
       ],
       scoreBand: [
         { name: ScoreBands.WEAK, minValue: 0, maxValue: 3 },
-        { name: ScoreBands.MEDIUM, minValue: 4, maxValue: 7 },
+        { name: ScoreBands.AVERAGE, minValue: 4, maxValue: 7 },
         { name: ScoreBands.STRONG, minValue: 8, maxValue: 8 }
       ],
       maxScore: 8
@@ -26,6 +27,7 @@ describe('score function', () => {
     multiAnswer: {
       id: 'multiAnswer',
       scoreMethod: multiScore,
+      changeLink: '/change-multi-answer',
       category: 'Category 2',
       fundingPriorities: ['Priority B', 'Priority C'],
       answers: [
@@ -38,7 +40,7 @@ describe('score function', () => {
       ],
       scoreBand: [
         { name: ScoreBands.WEAK, minValue: 0, maxValue: 4 },
-        { name: ScoreBands.MEDIUM, minValue: 5, maxValue: 8 },
+        { name: ScoreBands.AVERAGE, minValue: 5, maxValue: 8 },
         { name: ScoreBands.STRONG, minValue: 9, maxValue: 12 }
       ],
       maxScore: 12
@@ -46,6 +48,7 @@ describe('score function', () => {
     matrixAnswer: {
       id: 'matrixAnswer',
       scoreMethod: matrixScore,
+      changeLink: '/change-matrix-answer',
       scoreDependency: 'matrixDependency',
       category: 'Category 2',
       fundingPriorities: ['Priority B', 'Priority C'],
@@ -72,19 +75,20 @@ describe('score function', () => {
       maxScore: 8,
       scoreBand: [
         { name: ScoreBands.WEAK, minValue: 0, maxValue: 2 },
-        { name: ScoreBands.MEDIUM, minValue: 3, maxValue: 5 },
+        { name: ScoreBands.AVERAGE, minValue: 3, maxValue: 5 },
         { name: ScoreBands.STRONG, minValue: 6, maxValue: 8 }
       ]
     },
     matrixDependency: {
       id: 'matrixDependency',
       isDependency: true,
+      changeLink: '/change-matrix-dependency',
       category: 'Category 2',
       fundingPriorities: ['Priority B', 'Priority C'],
       maxScore: 8,
       scoreBand: [
         { name: ScoreBands.WEAK, minValue: 0, maxValue: 2 },
-        { name: ScoreBands.MEDIUM, minValue: 3, maxValue: 5 },
+        { name: ScoreBands.AVERAGE, minValue: 3, maxValue: 5 },
         { name: ScoreBands.STRONG, minValue: 6, maxValue: 8 }
       ]
     }
@@ -133,8 +137,9 @@ describe('score function', () => {
       {
         questionId: 'singleAnswer',
         category: 'Category 1',
+        changeLink: '/change-single-answer',
         fundingPriorities: ['Priority A'],
-        score: { value: 4, band: ScoreBands.MEDIUM }
+        score: { value: 4, band: ScoreBands.AVERAGE }
       }
     ])
   })
@@ -147,6 +152,7 @@ describe('score function', () => {
       {
         questionId: 'multiAnswer',
         category: 'Category 2',
+        changeLink: '/change-multi-answer',
         fundingPriorities: ['Priority B', 'Priority C'],
         score: { value: 10, band: ScoreBands.STRONG }
       }
@@ -165,12 +171,14 @@ describe('score function', () => {
       {
         questionId: 'matrixAnswer',
         category: 'Category 2',
+        changeLink: '/change-matrix-answer',
         fundingPriorities: ['Priority B', 'Priority C'],
         score: { value: 1, band: ScoreBands.WEAK }
       },
       {
         questionId: 'matrixDependency',
         category: 'Category 2',
+        changeLink: '/change-matrix-dependency',
         fundingPriorities: ['Priority B', 'Priority C'],
         score: { value: 1, band: ScoreBands.WEAK }
       }
@@ -194,13 +202,13 @@ describe('score function', () => {
       answer: 'matrixScoreA',
       dependentAnswer: 'matrixDependencyC',
       expectedScore: 3,
-      expectedBand: ScoreBands.MEDIUM
+      expectedBand: ScoreBands.AVERAGE
     },
     {
       answer: 'matrixScoreA',
       dependentAnswer: 'matrixDependencyD',
       expectedScore: 4,
-      expectedBand: ScoreBands.MEDIUM
+      expectedBand: ScoreBands.AVERAGE
     },
     {
       answer: 'matrixScoreB',
@@ -212,7 +220,7 @@ describe('score function', () => {
       answer: 'matrixScoreB',
       dependentAnswer: 'matrixDependencyB',
       expectedScore: 4,
-      expectedBand: ScoreBands.MEDIUM
+      expectedBand: ScoreBands.AVERAGE
     },
     {
       answer: 'matrixScoreB',
@@ -258,6 +266,7 @@ describe('score function', () => {
     expect(result).toEqual([
       {
         questionId: 'singleAnswer',
+        changeLink: '/change-single-answer',
         category: 'Category 1',
         fundingPriorities: ['Priority A'],
         score: { value: null, band: ScoreBands.WEAK }
@@ -273,6 +282,7 @@ describe('score function', () => {
       {
         questionId: 'multiAnswer',
         category: 'Category 2',
+        changeLink: '/change-multi-answer',
         fundingPriorities: ['Priority B', 'Priority C'],
         score: { value: 0, band: ScoreBands.WEAK }
       }
@@ -290,14 +300,16 @@ describe('score function', () => {
       {
         questionId: 'singleAnswer',
         category: 'Category 1',
+        changeLink: '/change-single-answer',
         fundingPriorities: ['Priority A'],
         score: { value: 8, band: ScoreBands.STRONG }
       },
       {
         questionId: 'multiAnswer',
         category: 'Category 2',
+        changeLink: '/change-multi-answer',
         fundingPriorities: ['Priority B', 'Priority C'],
-        score: { value: 6, band: ScoreBands.MEDIUM }
+        score: { value: 6, band: ScoreBands.AVERAGE }
       }
     ])
   })
@@ -310,8 +322,9 @@ describe('score function', () => {
       {
         questionId: 'singleAnswer',
         category: 'Category 1',
+        changeLink: '/change-single-answer',
         fundingPriorities: ['Priority A'],
-        score: { value: 4, band: ScoreBands.MEDIUM }
+        score: { value: 4, band: ScoreBands.AVERAGE }
       }
     ])
   })

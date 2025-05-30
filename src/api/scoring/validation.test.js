@@ -1,4 +1,8 @@
-import { scoringPayloadSchema, scoringQueryParamsSchema } from './validation.js'
+import {
+  scoringPayloadSchema,
+  scoringResponseSchema,
+  scoringQueryParamsSchema
+} from './validation.js'
 
 describe('Scoring query params validation', () => {
   it('should default to false if query is not provided', () => {
@@ -11,6 +15,86 @@ describe('Scoring query params validation', () => {
     const query = { allowPartialScoring: true }
     const result = scoringQueryParamsSchema.validate(query)
     expect(result.value.allowPartialScoring).toBe(true)
+  })
+})
+
+describe('Scoring Response Validation', () => {
+  describe('valid', () => {
+    it('should validate a correct response', () => {
+      const validResponse = {
+        answers: [
+          {
+            questionId: 'processedProduceType',
+            changeLink: '/produce-processed',
+            category: 'Produce processed',
+            fundingPriorities: [
+              'Create and expand processing capacity to provide more English-grown food for consumers to buy'
+            ],
+            score: {
+              value: 24,
+              band: 'Strong'
+            }
+          }
+        ],
+        score: { value: 24, band: 'Strong' }
+      }
+
+      const { error } = scoringResponseSchema.validate(validResponse)
+      expect(error).toBeUndefined()
+    })
+  })
+
+  describe('errors', () => {
+    it('should fail if "score.value" is a string', () => {
+      const invalidResponse = {
+        answers: [
+          {
+            questionId: 'q1',
+            changeLink: '/link',
+            category: 'Category',
+            fundingPriorities: ['priority'],
+            score: {
+              value: 'high', // invalid
+              band: 'Strong'
+            }
+          }
+        ],
+        score: 12,
+        scoreBand: 'Strong'
+      }
+
+      const { error } = scoringResponseSchema.validate(invalidResponse)
+      expect(error).toBeDefined()
+      expect(error.details[0].message).toMatch(
+        '"answers[0].score.value" must be a number'
+      )
+    })
+
+    it('should fail if "funding-priorities" is not an array', () => {
+      const invalidResponse = {
+        answers: [
+          {
+            questionId: 'q1',
+            changeLink: '/change/q1',
+            category: 'cat1',
+            fundingPriorities: 'fp1', // ❌ Should be an array
+            score: {
+              value: 10,
+              band: 'high'
+            }
+          }
+        ],
+        score: 50,
+        status: 'complete',
+        scoreBand: 'high'
+      }
+
+      const { error } = scoringResponseSchema.validate(invalidResponse)
+      expect(error).toBeDefined()
+      expect(error.details[0].message).toMatch(
+        /"funding-priorities" must be an array/
+      )
+    })
   })
 })
 

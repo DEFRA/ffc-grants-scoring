@@ -18,6 +18,7 @@ const addingValueGrantConfig = {
   questions: [
     {
       id: 'isProvidingServicesToOtherFarmers',
+      changeLink: '/other-farmers',
       scoreMethod: singleScore,
       answers: [
         { answer: 'true', score: 20 },
@@ -28,6 +29,7 @@ const addingValueGrantConfig = {
     },
     {
       id: 'isBuildingFruitStorage',
+      changeLink: '/fruit-storage',
       scoreMethod: singleScore,
       answers: [
         { answer: 'true', score: 45 },
@@ -38,6 +40,7 @@ const addingValueGrantConfig = {
     },
     {
       id: 'processedProduceType',
+      changeLink: '/produce-processed',
       category: 'Produce processed',
       fundingPriorities: [
         'Create and expand processing capacity to provide more English-grown food for consumers to buy'
@@ -111,13 +114,14 @@ const addingValueGrantConfig = {
       ],
       scoreBand: [
         { name: ScoreBands.WEAK, minValue: 0, maxValue: 11 },
-        { name: ScoreBands.MEDIUM, minValue: 12, maxValue: 17 },
+        { name: ScoreBands.AVERAGE, minValue: 12, maxValue: 17 },
         { name: ScoreBands.STRONG, minValue: 18, maxValue: 30 }
       ],
       maxScore: 30
     },
     {
       id: 'valueAdditionMethod',
+      changeLink: '/how-adding-value',
       category: 'Adding value',
       fundingPriorities: [
         IMPROVE_PROCESSING_AND_SUPPLY_CHAINS,
@@ -128,6 +132,7 @@ const addingValueGrantConfig = {
     },
     {
       id: 'impactType',
+      changeLink: '/project-impact',
       category: 'Project impact',
       fundingPriorities: [
         IMPROVE_PROCESSING_AND_SUPPLY_CHAINS,
@@ -142,13 +147,14 @@ const addingValueGrantConfig = {
       ],
       scoreBand: [
         { name: ScoreBands.WEAK, minValue: 0, maxValue: 6 },
-        { name: ScoreBands.MEDIUM, minValue: 7, maxValue: 10 },
+        { name: ScoreBands.AVERAGE, minValue: 7, maxValue: 10 },
         { name: ScoreBands.STRONG, minValue: 11, maxValue: 15 }
       ],
       maxScore: 15
     },
     {
       id: 'manualLabourEquivalence',
+      changeLink: '/manual-labour-amount',
       category: 'Mechanisation',
       fundingPriorities: [
         IMPROVE_PROCESSING_AND_SUPPLY_CHAINS,
@@ -162,13 +168,14 @@ const addingValueGrantConfig = {
       ],
       scoreBand: [
         { name: ScoreBands.WEAK, minValue: 0, maxValue: 1.64 },
-        { name: ScoreBands.MEDIUM, minValue: 1.65, maxValue: 4.99 },
+        { name: ScoreBands.AVERAGE, minValue: 1.65, maxValue: 4.99 },
         { name: ScoreBands.STRONG, minValue: 5, maxValue: 5 }
       ],
       maxScore: 5
     },
     {
       id: 'futureCustomerTypes',
+      changeLink: '/future-customers',
       category: 'New customers',
       fundingPriorities: [
         IMPROVE_PROCESSING_AND_SUPPLY_CHAINS,
@@ -183,13 +190,14 @@ const addingValueGrantConfig = {
       ],
       scoreBand: [
         { name: ScoreBands.WEAK, minValue: 0, maxValue: 2 },
-        { name: ScoreBands.MEDIUM, minValue: 3, maxValue: 4 },
+        { name: ScoreBands.AVERAGE, minValue: 3, maxValue: 4 },
         { name: ScoreBands.STRONG, minValue: 5, maxValue: 10 }
       ],
       maxScore: 10
     },
     {
       id: 'collaboration',
+      changeLink: '/collaboration',
       category: 'Collaboration',
       fundingPriorities: [
         IMPROVE_PROCESSING_AND_SUPPLY_CHAINS,
@@ -202,13 +210,14 @@ const addingValueGrantConfig = {
       ],
       scoreBand: [
         { name: ScoreBands.WEAK, minValue: 0, maxValue: 9 },
-        { name: ScoreBands.MEDIUM, minValue: 9.1, maxValue: 9.9 },
+        { name: ScoreBands.AVERAGE, minValue: 9.1, maxValue: 9.9 },
         { name: ScoreBands.STRONG, minValue: 10, maxValue: 10 }
       ],
       maxScore: 10
     },
     {
       id: 'environmentalImpactTypes',
+      changeLink: '/environmental-impact',
       category: 'Environmental impact',
       fundingPriorities: [
         IMPROVE_PROCESSING_AND_SUPPLY_CHAINS,
@@ -225,19 +234,18 @@ const addingValueGrantConfig = {
       ],
       scoreBand: [
         { name: ScoreBands.WEAK, minValue: 0, maxValue: 6.5 },
-        { name: ScoreBands.MEDIUM, minValue: 6.6, maxValue: 12.2 },
+        { name: ScoreBands.AVERAGE, minValue: 6.6, maxValue: 12.2 },
         { name: ScoreBands.STRONG, minValue: 12.3, maxValue: 30 }
       ],
       maxScore: 30
     }
   ],
   scoreBand: [
-    { name: ScoreBands.WEAK, minValue: 0, maxValue: 50 },
-    { name: ScoreBands.MEDIUM, minValue: 51, maxValue: 80 },
-    { name: ScoreBands.STRONG, minValue: 81, maxValue: 150 }
+    { name: ScoreBands.WEAK, minPercentage: 0, maxPercentage: 20 },
+    { name: ScoreBands.AVERAGE, minPercentage: 20, maxPercentage: 50 },
+    { name: ScoreBands.STRONG, minPercentage: 50, maxPercentage: Infinity }
   ],
-  maxScore: 123,
-  eligibilityPercentageThreshold: 60
+  maxScore: 165
 }
 
 const { error, value } = scoringConfigSchema.validate(addingValueGrantConfig)

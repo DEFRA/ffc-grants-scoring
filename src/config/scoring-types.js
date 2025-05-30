@@ -29,7 +29,6 @@
  * @property {Question[]} questions - An array of questions in the scoring configuration.
  * @property {ScoreBand[]} scoreBand - An array of score bands applicable across the configuration.
  * @property {number} maxScore - Max score of all questions' max scores
- * @property {number} eligibilityPercentageThreshold - The minimum percentage threshold for eligibility.
  */
 
 /**

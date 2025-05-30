@@ -15,7 +15,7 @@ const questionConfig = {
   maxScore: 8,
   scoreBand: [
     { name: ScoreBands.WEAK, minValue: 0, maxValue: 3 },
-    { name: ScoreBands.MEDIUM, minValue: 4, maxValue: 7 },
+    { name: ScoreBands.AVERAGE, minValue: 4, maxValue: 7 },
     { name: ScoreBands.STRONG, minValue: 8, maxValue: 8 }
   ]
 }
@@ -30,7 +30,7 @@ describe('singleScore', () => {
   it('should return Medium for mid-range score', () => {
     const result = singleScore(questionConfig, ['A'])
     expect(result.value).toBe(4)
-    expect(result.band).toBe(ScoreBands.MEDIUM)
+    expect(result.band).toBe(ScoreBands.AVERAGE)
   })
 
   it('should return Weak for null answer', () => {

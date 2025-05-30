@@ -18,7 +18,7 @@ const questionConfig = {
   maxScore: 12,
   scoreBand: [
     { name: ScoreBands.WEAK, minValue: 0, maxValue: 4 },
-    { name: ScoreBands.MEDIUM, minValue: 5, maxValue: 8 },
+    { name: ScoreBands.AVERAGE, minValue: 5, maxValue: 8 },
     { name: ScoreBands.STRONG, minValue: 9, maxValue: 12 }
   ]
 }
@@ -33,7 +33,7 @@ describe('multiScore', () => {
   it('should return Medium for mid-range score', () => {
     const result = multiScore(questionConfig, ['A', 'C']) // 4 + 2 = 6
     expect(result.value).toBe(6) // Sum of 4 + 2
-    expect(result.band).toBe(ScoreBands.MEDIUM) // Falls between 5 and 8
+    expect(result.band).toBe(ScoreBands.AVERAGE) // Falls between 5 and 8
   })
 
   it('should return Weak for low score', () => {
