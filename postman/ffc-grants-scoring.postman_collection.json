@@ -2,9 +2,7 @@
 	"info": {
 		"_postman_id": "35c5b8ec-669c-4caa-9cab-6da2cff64750",
 		"name": "ffc-grants-scoring",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "45437546",
-		"_collection_link": "https://andrew-5807231.postman.co/workspace/Andrew's-Workspace~c4430974-a476-4315-8108-3b882bee7b85/collection/45437546-35c5b8ec-669c-4caa-9cab-6da2cff64750?action=share&source=collection_link&creator=45437546"
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
 		{
