@@ -50,8 +50,7 @@ describe('Handler Function', () => {
 
   const mockFinalResult = {
     score: 8,
-    scoreBand: 'Medium',
-    status: 'eligible'
+    scoreBand: 'Medium'
   }
 
   const setupMocks = ({
@@ -189,7 +188,10 @@ describe('Handler Function', () => {
         grantType: 'example-grant'
       })
       expect(log).toHaveBeenCalledWith(LogCodes.SCORING.FINAL_RESULT, {
-        finalResult: { score: 8, scoreBand: 'Medium', status: 'eligible' },
+        finalResult: {
+          score: 8,
+          scoreBand: 'Medium'
+        },
         grantType: 'example-grant'
       })
     })

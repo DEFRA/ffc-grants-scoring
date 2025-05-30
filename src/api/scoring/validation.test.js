@@ -37,7 +37,6 @@ describe('Scoring Response Validation', () => {
           }
         ],
         score: 24,
-        status: 'Eligible',
         scoreBand: 'Strong'
       }
 
@@ -62,7 +61,6 @@ describe('Scoring Response Validation', () => {
           }
         ],
         score: 12,
-        status: 'Eligible',
         scoreBand: 'Strong'
       }
 

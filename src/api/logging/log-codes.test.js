@@ -29,8 +29,7 @@ describe('LogCodes', () => {
       grantType,
       finalResult: {
         score: 85,
-        scoreBand: 'A',
-        status: 'Eligible'
+        scoreBand: 'A'
       }
     }
     expect(LogCodes.SCORING.FINAL_RESULT.messageFunc(messageOptions)).toBe(

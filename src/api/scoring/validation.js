@@ -181,7 +181,6 @@ export const scoringResponseSchema = Joi.object({
       }
     ],
     score: 102,
-    status: 'Eligible',
     scoreBand: 'Strong'
   })
 
