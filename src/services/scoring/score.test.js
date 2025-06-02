@@ -82,15 +82,7 @@ describe('score function', () => {
     matrixDependency: {
       id: 'matrixDependency',
       isDependency: true,
-      changeLink: '/change-matrix-dependency',
-      category: 'Category 2',
-      fundingPriorities: ['Priority B', 'Priority C'],
-      maxScore: 8,
-      scoreBand: [
-        { name: ScoreBands.WEAK, minValue: 0, maxValue: 2 },
-        { name: ScoreBands.AVERAGE, minValue: 3, maxValue: 5 },
-        { name: ScoreBands.STRONG, minValue: 6, maxValue: 8 }
-      ]
+      changeLink: '/change-matrix-dependency'
     }
   }
 
@@ -177,10 +169,8 @@ describe('score function', () => {
       },
       {
         questionId: 'matrixDependency',
-        category: 'Category 2',
         changeLink: '/change-matrix-dependency',
-        fundingPriorities: ['Priority B', 'Priority C'],
-        score: { value: 1, band: ScoreBands.WEAK }
+        score: { value: 0, band: ScoreBands.WEAK }
       }
     ])
   })
@@ -244,11 +234,21 @@ describe('score function', () => {
       const mockConfig = mockScoringConfig('matrixAnswer', 'matrixDependency')
       const result = score(mockConfig)(answers)
       expect(result).toHaveLength(2)
-      // Ensure that both questions receive the same score and band
-      // The band is the important part, for the dependent question the score is irrelevant
-      result.forEach((matrixAnswer) => {
-        expect(matrixAnswer.score.value).toBe(expectedScore)
-        expect(matrixAnswer.score.band).toBe(expectedBand)
+
+      const matrixAnswerIndex = result.findIndex(
+        (answer) => answer.questionId === 'matrixAnswer'
+      )
+
+      expect(result[matrixAnswerIndex]).toEqual({
+        questionId: 'matrixAnswer',
+        category: 'Category 2',
+        fundingPriorities: ['Priority B', 'Priority C'],
+        score: { value: expectedScore, band: expectedBand }
+      })
+
+      expect(result[matrixAnswerIndex ^ 1]).toEqual({
+        questionId: 'matrixDependency',
+        score: { value: 0, band: expectedBand }
       })
     }
   )

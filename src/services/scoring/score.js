@@ -130,9 +130,7 @@ function scoreAnswers(filteredAnswers, questionMap) {
       results.push({
         questionId: dependentQuestion.id,
         changeLink: dependentQuestion.changeLink,
-        category: dependentQuestion.category,
-        fundingPriorities: dependentQuestion.fundingPriorities,
-        score: answersScored
+        score: { ...answersScored, value: 0 }
       })
     }
   })
