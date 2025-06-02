@@ -243,11 +243,13 @@ describe('score function', () => {
         questionId: 'matrixAnswer',
         category: 'Category 2',
         fundingPriorities: ['Priority B', 'Priority C'],
+        changeLink: '/change-matrix-answer',
         score: { value: expectedScore, band: expectedBand }
       })
 
       expect(result[matrixAnswerIndex ^ 1]).toEqual({
         questionId: 'matrixDependency',
+        changeLink: '/change-matrix-dependency',
         score: { value: 0, band: expectedBand }
       })
     }
