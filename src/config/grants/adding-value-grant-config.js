@@ -140,17 +140,17 @@ const addingValueGrantConfig = {
       ],
       scoreMethod: multiScore,
       answers: [
-        { answer: 'projectImpact-A1', score: 6 },
-        { answer: 'projectImpact-A2', score: 4 },
-        { answer: 'projectImpact-A3', score: 3 },
-        { answer: 'projectImpact-A4', score: 2 }
+        { answer: 'projectImpact-A1', score: 4.5 },
+        { answer: 'projectImpact-A2', score: 3 },
+        { answer: 'projectImpact-A3', score: 1.5 },
+        { answer: 'projectImpact-A4', score: 13.5 }
       ],
       scoreBand: [
-        { name: ScoreBands.WEAK, minValue: 0, maxValue: 6 },
-        { name: ScoreBands.AVERAGE, minValue: 7, maxValue: 10 },
-        { name: ScoreBands.STRONG, minValue: 11, maxValue: 15 }
+        { name: ScoreBands.WEAK, minValue: 0, maxValue: 4.4 },
+        { name: ScoreBands.AVERAGE, minValue: 4.5, maxValue: 13.4 },
+        { name: ScoreBands.STRONG, minValue: 13.5, maxValue: 22.5 }
       ],
-      maxScore: 15
+      maxScore: 22.5
     },
     {
       id: 'manualLabourEquivalence',
@@ -241,11 +241,11 @@ const addingValueGrantConfig = {
     }
   ],
   scoreBand: [
-    { name: ScoreBands.WEAK, minPercentage: 0, maxPercentage: 20 },
+    { name: ScoreBands.WEAK, minPercentage: 0, maxPercentage: 19 },
     { name: ScoreBands.AVERAGE, minPercentage: 20, maxPercentage: 50 },
     { name: ScoreBands.STRONG, minPercentage: 50, maxPercentage: Infinity }
   ],
-  maxScore: 165
+  maxScore: 127.5
 }
 
 const { error, value } = scoringConfigSchema.validate(addingValueGrantConfig)
