@@ -150,7 +150,7 @@ const addingValueGrantConfig = {
         { name: ScoreBands.AVERAGE, minValue: 4.5, maxValue: 13.4 },
         { name: ScoreBands.STRONG, minValue: 13.5, maxValue: 22.5 }
       ],
-      maxScore: 15
+      maxScore: 22.5
     },
     {
       id: 'manualLabourEquivalence',
