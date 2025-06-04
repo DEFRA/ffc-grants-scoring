@@ -31,8 +31,8 @@ const totalScoreBandSchema = Joi.array()
       name: Joi.string()
         .valid(ScoreBands.WEAK, ScoreBands.AVERAGE, ScoreBands.STRONG)
         .required(),
-      minPercentage: Joi.number().required(),
-      maxPercentage: Joi.number().allow(Infinity).required()
+      startPercentage: Joi.number().required(),
+      lessThanPercentage: Joi.number().allow(Infinity).required()
     })
   )
   .optional()

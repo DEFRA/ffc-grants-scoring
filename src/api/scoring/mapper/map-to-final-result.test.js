@@ -57,9 +57,13 @@ describe('mapToFinalResult', () => {
     ],
     maxScore: 15,
     scoreBand: [
-      { name: ScoreBands.WEAK, minPercentage: 0, maxPercentage: 20 },
-      { name: ScoreBands.AVERAGE, minPercentage: 21, maxPercentage: 50 },
-      { name: ScoreBands.STRONG, minPercentage: 51, maxPercentage: Infinity }
+      { name: ScoreBands.WEAK, startPercentage: 0, lessThanPercentage: 20 },
+      { name: ScoreBands.AVERAGE, startPercentage: 20, lessThanPercentage: 50 },
+      {
+        name: ScoreBands.STRONG,
+        startPercentage: 50,
+        lessThanPercentage: Infinity
+      }
     ]
   }
 
@@ -108,9 +112,17 @@ describe('mapToFinalResult', () => {
         { id: 'q2', answers: [{ answer: 'No Score', score: 0 }] }
       ],
       scoreBand: [
-        { name: ScoreBands.WEAK, minPercentage: 0, maxPercentage: 1 },
-        { name: ScoreBands.AVERAGE, minPercentage: 1, maxPercentage: 50 },
-        { name: ScoreBands.STRONG, minPercentage: 50, maxPercentage: Infinity }
+        { name: ScoreBands.WEAK, startPercentage: 0, lessThanPercentage: 1 },
+        {
+          name: ScoreBands.AVERAGE,
+          startPercentage: 1,
+          lessThanPercentage: 50
+        },
+        {
+          name: ScoreBands.STRONG,
+          startPercentage: 50,
+          lessThanPercentage: Infinity
+        }
       ],
       maxScore: 0
     }
@@ -140,24 +152,103 @@ describe('mapToFinalResult', () => {
   it('should throw an error when no matching score band is found', () => {
     // Create a score that doesn't match any score bands
     const rawScores = [
-      { questionId: 'q1', score: { value: 50, band: ScoreBands.STRONG } },
-      { questionId: 'q2', score: { value: 50, band: ScoreBands.STRONG } }
+      { questionId: 'q1', score: { value: 3, band: ScoreBands.STRONG } },
+      { questionId: 'q2', score: { value: 4, band: ScoreBands.STRONG } }
     ]
 
     // Config with score bands that don't match the total score
     const configWithGap = {
       ...scoringConfig,
       scoreBand: [
-        { name: ScoreBands.WEAK, minValue: 0, maxValue: 5 },
-        { name: ScoreBands.AVERAGE, minValue: 6, maxValue: 10 },
-        // Gap between 10 and 200
-        { name: ScoreBands.STRONG, minValue: 200, maxValue: 300 }
+        { name: ScoreBands.WEAK, startPercentage: 0, lessThanPercentage: 5 },
+        {
+          name: ScoreBands.AVERAGE,
+          startPercentage: 6,
+          lessThanPercentage: 10
+        },
+        // Gap between 10 and 50%
+        {
+          name: ScoreBands.STRONG,
+          startPercentage: 50,
+          lessThanPercentage: 100
+        }
       ]
     }
 
     expect(() => mapToFinalResult(configWithGap, rawScores)).toThrow(
-      'No matching score band found for total score 100. Check configuration for scoreBand gaps.'
+      'No matching score band found for total score 7. Check configuration for scoreBand gaps.'
     )
     expect(log).toHaveBeenCalled()
+  })
+
+  describe('scoring config total bands range tests', () => {
+    it('should match the WEAK band when score percentage is 19.99%', () => {
+      const rawScores = [
+        { questionId: 'q1', score: { value: 10, band: ScoreBands.WEAK } },
+        { questionId: 'q2', score: { value: 9.99, band: ScoreBands.WEAK } }
+      ]
+
+      const adjustedConfig = {
+        ...scoringConfig,
+        questions: [
+          { id: 'q1', answers: [], maxScore: 60 },
+          { id: 'q2', answers: [], maxScore: 40 }
+        ],
+        maxScore: 100
+      }
+
+      const result = mapToFinalResult(adjustedConfig, rawScores)
+
+      expect(result.score).toEqual({
+        value: 19.99,
+        band: ScoreBands.WEAK
+      })
+    })
+
+    it('should match the AVERAGE band at 49.99% with simple values', () => {
+      const rawScores = [
+        { questionId: 'q1', score: { value: 30, band: ScoreBands.AVERAGE } },
+        { questionId: 'q2', score: { value: 19.99, band: ScoreBands.AVERAGE } }
+      ]
+
+      const adjustedConfig = {
+        ...scoringConfig,
+        questions: [
+          { id: 'q1', answers: [], maxScore: 60 },
+          { id: 'q2', answers: [], maxScore: 40 }
+        ],
+        maxScore: 100
+      }
+
+      const result = mapToFinalResult(adjustedConfig, rawScores)
+
+      expect(result.score).toEqual({
+        value: 49.99,
+        band: ScoreBands.AVERAGE
+      })
+    })
+
+    it('should match the STRONG band at 99.99% with simple values', () => {
+      const rawScores = [
+        { questionId: 'q1', score: { value: 60, band: ScoreBands.AVERAGE } },
+        { questionId: 'q2', score: { value: 39.99, band: ScoreBands.AVERAGE } }
+      ]
+
+      const adjustedConfig = {
+        ...scoringConfig,
+        questions: [
+          { id: 'q1', answers: [], maxScore: 60 },
+          { id: 'q2', answers: [], maxScore: 40 }
+        ],
+        maxScore: 100
+      }
+
+      const result = mapToFinalResult(adjustedConfig, rawScores)
+
+      expect(result.score).toEqual({
+        value: 99.99,
+        band: ScoreBands.STRONG
+      })
+    })
   })
 })
