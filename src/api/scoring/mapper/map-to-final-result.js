@@ -26,10 +26,10 @@ function mapToFinalResult(scoringConfig, rawScores) {
     throw new TypeError('rawScores must be an array')
   }
 
-  const totalScore = rawScores.reduce(
-    (sum, result) => sum + result.score.value,
-    0
-  )
+  const totalScore =
+    Math.round(
+      rawScores.reduce((sum, result) => sum + result.score.value, 0) * 100
+    ) / 100
 
   // Calculate max score by summing up the highest possible score for each question
   const maxScore = scoringConfig.maxScore
@@ -38,8 +38,8 @@ function mapToFinalResult(scoringConfig, rawScores) {
   // Find the matching score band - handle case when no band matches
   const matchingBand = scoringConfig.scoreBand.find(
     (band) =>
-      totalScorePercentage >= band.minPercentage &&
-      totalScorePercentage < band.maxPercentage
+      totalScorePercentage >= band.startPercentage &&
+      totalScorePercentage < band.lessThanPercentage
   )
 
   if (!matchingBand) {
