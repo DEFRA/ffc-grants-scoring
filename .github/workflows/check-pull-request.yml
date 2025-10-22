@@ -11,35 +11,94 @@ on:
       - synchronize
       - ready_for_review
 
+permissions: { contents: read }
+
 jobs:
-  pr-validator:
-    name: Run Pull Request Checks
+  test:
+    name: Test code and Create Test Coverage Reports
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Test code and Create Test Coverage Reports
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version-file: '.nvmrc'
           cache: npm
-      - run: |
+
+      - name: Install, build, format, lint, and test
+        run: |
           npm ci
           npm run build
           npm run format:check
           npm run lint
           npm test
 
-      - name: Test Docker Image Build
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage
+          path: coverage
+          retention-days: 7
+
+  docker:
+    name: Test Docker Image Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Build image
         run: |
           set +e
-          docker build --no-cache --tag cdp-node-backend-template .
+          docker build --no-cache --tag ffc-grants-scoring:test .
           exit $?
 
+  snyk:
+    name: Snyk Security Scan
+    runs-on: ubuntu-latest
+    if: github.actor != 'dependabot[bot]'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run Snyk test
+        uses: snyk/actions/node@9adf32b # v1.0.0
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+
+  sonarcloud:
+    name: SonarCloud Scan
+    runs-on: ubuntu-latest
+    needs: test
+    if: github.actor != 'dependabot[bot]'
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Download coverage report
+        uses: actions/download-artifact@v4
+        with:
+          name: coverage
+          path: coverage
+
       - name: SonarCloud Scan
-        if: github.actor != 'dependabot[bot]'
-        uses: sonarsource/sonarqube-scan-action@master
+        uses: SonarSource/sonarqube-scan-action@fd88b7d # v6.0.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
