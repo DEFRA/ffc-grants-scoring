@@ -94,5 +94,8 @@
     "snyk": "1.1300.1",
     "tsx": "4.20.6",
     "typescript": "5.9.3"
+  },
+  "overrides": {
+    "@apidevtools/swagger-parser": "12.1.0"
   }
 }
