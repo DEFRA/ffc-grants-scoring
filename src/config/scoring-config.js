@@ -7,5 +7,5 @@ const scoringConfigs = {
 }
 
 export const getScoringConfig = (grantType) => {
-  return scoringConfigs[grantType] || null
+  return scoringConfigs[grantType] ?? null
 }
