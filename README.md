@@ -166,14 +166,12 @@ The project includes a Postman collection to make it easier to test and interact
    If you don’t already have Postman installed, download it from [Postman’s official site](https://www.postman.com/).
 
 2. **Import the Collection**
-
    - Open Postman.
    - Go to **File > Import**.
    - Select the file `postman/ffc-grants-scoring.postman_collection.json`.
 
 3. **Import the Environment (Optional)**
    If the project includes an environment file:
-
    - Go to **File > Import**.
    - Select the file `postman/ffc-grants-scoring.dev.postman_environment.json`.
    - Update variables like `base_url`, `api_key` or `grant_type` as needed.
@@ -205,6 +203,10 @@ project-root/
 │ └── ffc-grants-scoring.dev.postman_environment.json
 
 ```
+
+### Snyk
+
+Run `snyk auth` to authenticate your local machine with Snyk.
 
 ### Dependabot
 
