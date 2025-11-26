@@ -96,6 +96,9 @@
     "typescript": "5.9.3"
   },
   "overrides": {
-    "@apidevtools/swagger-parser": "12.1.0"
+    "@apidevtools/swagger-parser": "12.1.0",
+    "@apidevtools/json-schema-ref-parser": {
+      "js-yaml": "4.1.1"
+    }
   }
 }
