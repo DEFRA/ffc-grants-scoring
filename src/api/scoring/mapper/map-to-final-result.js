@@ -2,8 +2,8 @@ import { log, LogCodes } from '~/src/api/logging/log.js'
 
 /**
  * Checks if the score belongs to a question that is only for scoring (not included in answers).
- * @param {import('~/src/api/scoring/mapper/scoring-mapper-types.js').RawScore} score
- * @param {import('~/src/config/scoring-types.js').ScoringConfig} scoringConfig
+ * @param {import('~/src/api/scoring/mapper/scoring-mapper-types.js').RawScore} score - The raw score to check.
+ * @param {import('~/src/config/scoring-types.js').ScoringConfig} scoringConfig - The scoring configuration.
  * @returns {boolean}
  */
 const isScoreOnly = (score, scoringConfig) => {

@@ -1,6 +1,6 @@
 # ffc-grants-scoring
 
-Core delivery platform Node.js Backend Template.
+Stateless ancillary scoring API for grants-ui. Accepts grant application answers and returns scores with banding.
 
 - [Requirements](#requirements)
   - [Node.js](#nodejs)
@@ -14,27 +14,21 @@ Core delivery platform Node.js Backend Template.
   - [Formatting](#formatting)
     - [Windows prettier issue](#windows-prettier-issue)
 - [API endpoints](#api-endpoints)
-- [Development helpers](#development-helpers)
 - [Docker](#docker)
   - [Development image](#development-image)
   - [Production image](#production-image)
   - [Docker Compose](#docker-compose)
-  - [Dependabot](#dependabot)
-  - [SonarCloud](#sonarcloud)
 - [Postman Collection](#postman-collection)
-  - [Getting Started](#getting-started)
-  - [Usage](#usage)
-    - [Dynamic Request Body Handling](#dynamic-request-body-handling)
-  - [Keeping the Collection Updated](#keeping-the-collection-updated)
-  - [Example Folder Structure](#example-folder-structure)
+- [Snyk](#snyk)
+- [Dependabot](#dependabot)
+- [SonarCloud](#sonarcloud)
 - [Licence](#licence)
-  - [About the licence](#about-the-licence)
 
 ## Requirements
 
 ### Node.js
 
-Please install [Node.js](http://nodejs.org/) `>= v18` and [npm](https://nodejs.org/) `>= v9`. You will find it
+Please install [Node.js](http://nodejs.org/) `>= v22` and [npm](https://nodejs.org/) `>= v9`. You will find it
 easier to use the Node Version Manager [nvm](https://github.com/creationix/nvm)
 
 To use the correct version of Node.js for this application, via nvm:
@@ -64,11 +58,43 @@ npm run dev
 
 ### Testing
 
-To test the application run:
+To run all tests (unit and integration) with coverage:
 
 ```bash
-npm run test
+npm test
 ```
+
+To run without coverage:
+
+```bash
+npm run test:no-cov
+```
+
+To run in watch mode during development:
+
+```bash
+npm run test:watch
+```
+
+#### Test structure
+
+```
+src/**/*.test.js          # Unit tests (co-located with source)
+test/integration/         # Integration tests (Hapi server.inject)
+├── health.test.js
+├── scoring.test.js
+├── documentation.test.js
+├── observability.test.js
+└── adding-value/
+    ├── scoring.test.js
+    ├── single-scoring.test.js
+    ├── multi-scoring.test.js
+    ├── matrix-scoring.test.js
+    └── schema-validation.test.js
+```
+
+- **Unit tests** use `jest.mock()` for isolation and are co-located alongside the source files they test.
+- **Integration tests** spin up a real Hapi server instance and use `server.inject()` to test HTTP endpoints. The `adding-value` tests validate scoring logic against the real grant configuration with exact score value assertions. The schema validation test checks that API responses conform to the service's own OpenAPI specification.
 
 ### Production
 
@@ -110,10 +136,12 @@ git config --global core.autocrlf false
 
 ## API endpoints
 
-| Endpoint                                        | Description                |
-| :---------------------------------------------- | :------------------------- |
-| `GET: /health`                                  | Health                     |
-| `POST: /scoring/api/v1/{{grantType}}/score    ` | Evaluate Grant Eligibility |
+| Endpoint                                  | Description         |
+| :---------------------------------------- | :------------------ |
+| `GET: /health`                            | Health check        |
+| `POST: /scoring/api/v1/{grantType}/score` | Score grant answers |
+| `GET: /scoring/api/v1/documentation`      | Swagger UI          |
+| `GET: /scoring/api/v1/swagger.json`       | OpenAPI JSON schema |
 
 ## Docker
 
@@ -204,16 +232,16 @@ project-root/
 
 ```
 
-### Snyk
+## Snyk
 
 Run `snyk auth` to authenticate your local machine with Snyk.
 
-### Dependabot
+## Dependabot
 
 We have added an example dependabot configuration file to the repository. You can enable it by renaming
 the [.github/example.dependabot.yml](.github/example.dependabot.yml) to `.github/dependabot.yml`
 
-### SonarCloud
+## SonarCloud
 
 Instructions for setting up SonarCloud can be found in [sonar-project.properties](./sonar-project.properties)
 
@@ -234,7 +262,3 @@ information providers in the public sector to license the use and re-use of thei
 licence.
 
 It is designed to encourage use and re-use of information freely and flexibly, with only a few conditions.
-
-# committing to get sonarqube report
-
-committing to get sonarqube report
