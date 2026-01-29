@@ -64,11 +64,6 @@ export const scoringPayloadSchema = Joi.object({
   })
   .label('scoring-payload')
 
-const fundingPriorities = [
-  'Improve processing and supply chains',
-  'Grow your business'
-]
-
 export const scoringResponseSchema = Joi.object({
   answers: Joi.array()
     .items(
