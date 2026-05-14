@@ -1,5 +1,12 @@
 # ffc-grants-scoring
 
+This project isnt currently being maintained. Follows is a list of TODOs to bring it back if we need to:
+* Upgrade to the version of node that grants-ui uses
+* Upgrade testing and logging to bring in line with grants-ui
+* Update service to service auth to match grants-ui
+* Ensure that the service is configurable and uses config broker. 
+
+
 Stateless ancillary scoring API for grants-ui. Accepts grant application answers and returns scores with banding.
 
 - [Requirements](#requirements)
